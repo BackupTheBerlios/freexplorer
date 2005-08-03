@@ -1,0 +1,5 @@
+$nice_caption $vlc_caption
+$vlc_elapsed_percent
+$vlc_elapsed_more50%
+$vlc_elapsed_less50%
+$vlc_duration_time

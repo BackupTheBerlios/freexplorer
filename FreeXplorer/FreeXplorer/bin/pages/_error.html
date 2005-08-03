@@ -1,0 +1,57 @@
+﻿<!DOCTYPE HTML PUBLIC "-//Freebox//DTD HTML 3.2//EN">
+<html>
+<head>
+	<title>{0} {1}</title>
+	<meta name="home_page" content="/$$/home.html">
+	<link rel="help"       href=   "/$$/help.html">
+	<link rel="guide"      href=   "/$$/$explore">
+	<link rel="yellow"     href=   "/$$/back">
+	<link rel="info"       href=   "/$$/playing.html">
+
+	<!--link rel="options"    href=   "/$$/$$options"> <!-- pour les link, href peut aussi etre "back" ou "none" -->
+	
+	<!--link rel="red"        href=   "/$$/$$red"-->
+	<!--link rel="green"      href=   "/$$/$$green"-->
+	<!--link rel="blue"       href=   "/$$/{1}"-->
+	
+	<!--link rel="left"       href=   "/$$/$$left">  <!-- si non attribué et sans volume_key, la touche navigue ds les liens -->
+	<!--link rel="right"      href=   "/$$/$$right"> <!-- si non attribué et sans volume_key, la touche navigue ds les liens -->
+	<!--link rel="up"         href=   "/$$/$$up">    <!-- si non attribué et sans program_key,la touche navigue ds les liens -->
+	<!--link rel="down"       href=   "/$$/$$down">  <!-- si non attribué et sans program_key,la touche navigue ds les liens -->
+	<!-- manque la valeur de rel= pour la touche "OK" -->
+	
+	<link rel="pause"      href=   "/$$/seek.html?action=play&_action=Lecture">
+	<!--link rel="play"       href=   "/$$/$$play"> <!-- n'a pas l'air utilisé (on a "pause" à la place) -->
+	<link rel="stop"       href=   "/$$/seek.html?action=stop&_action=Stop">
+	<!-- manque la valeur de rel= pour la touche "record" -->
+	
+	<!-- <meta name=disappear content=0> <!-- ? -->
+	<!-- <meta name=nopicture content="4;url=nopicture.html"> <!-- après x sec, arrete de jouer le flux, ecran noir et va sur l'url -->
+	
+	<meta name=channel content="5"> <!-- channel en cours? channels disponibles? max/min ? -->
+	<flags program_key=true> <!-- pour que les touches haut/bas soit assignées de force au zapping des chaines -->
+
+	<flags volume_key=true> <!-- pour que les touches gauche/droite soit assignées de force au reglage du volume -->
+</head>
+<body bgcolor="#00000028">
+<h1 align=center>Une erreur est intervenue :</h1>
+<table width=100%>
+<tr>
+<td width="3%"></td>
+<td width="92%">
+<h2 align=center>{3}</h2>
+<br>&nbsp;
+<h3 align=center>La requete {2} ne peut aboutir</h3>
+<br>&nbsp;
+<br>
+<h3 align=center>Appuyez sur la touche Bleu pour r&eacute;essayer l'action en cours<br>
+la touche Jaune pour revenir &agrave; l'&eacute;cran pr&eacute;c&eacute;dent<br>
+ou sur Maison pour revenir au sommaire
+</h3>
+</td>
+<td width="3%"></td>
+</tr>
+</table>
+	
+</body>
+</html>
