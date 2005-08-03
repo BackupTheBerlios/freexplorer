@@ -1,0 +1,58 @@
+<wml>
+	<head>
+		<meta http-equiv="Cache-Control" content="must-revalidate,no-cache,private" forua="true"/>
+	</head>
+	<template>
+		<do type="prev" label="Retour">
+			<prev/>
+		</do>
+	</template>
+	<card id="id" title="pagesjaunes">
+		<p align="center" >
+			<img src="http://wapv1-1f.pagesjaunes.fr/images/pagesjaunes.wbmp" alt="Loading"/>
+		</p>
+		<p align="left" >
+			<b>Activit&#xE9; : </b>
+			<a href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=18&amp;I=jnvO&amp;K=1" title="ok">Guide</a>
+			<br/>
+			<anchor>
+				Top Activit&#xE9;s<go href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=16&amp;PM=0.4&amp;I=jnvO&amp;K=1" >
+					<setvar name="cActTopTen" value=""/>
+				</go>
+			</anchor>
+			<br/>
+			<anchor>
+				Saisir<go href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=16&amp;PM=0.5&amp;I=jnvO&amp;K=1" >
+					<setvar name="act" value=""/>
+				</go>
+			</anchor>
+			<br/>
+			<b>Nom :</b>
+			<br/>
+			<anchor>
+				Saisir<go href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=16&amp;PM=0.7&amp;I=jnvO&amp;K=1" >
+					<setvar name="nom" value=""/>
+				</go>
+			</anchor>
+			<br/>
+			<b>Localit&#xE9; / Code postal :</b>
+			<br/>
+			<anchor>
+				Top Localit&#xE9;s<go href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=16&amp;PM=0.9&amp;I=jnvO&amp;K=1" >
+					<setvar name="cLoc" value=""/>
+				</go>
+			</anchor>
+			<br/>
+			<anchor>
+				Saisir<go href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=16&amp;PM=0.10&amp;I=jnvO&amp;K=1" >
+					<setvar name="loc" value=""/>
+				</go>
+			</anchor>
+			<br/>
+			<a href="http://wapv1-1f.pagesjaunes.fr/index.php4?p=16&amp;pcrit=1&amp;I=jnvO&amp;K=1" title="ok">Plus de crit&#xE8;res</a>
+			<br/>
+			<a href="http://wapv1-1f.pagesjaunes.fr/index.php4?act=$(act)&amp;nom=$(nom)&amp;adr=$(adr)&amp;loc=$(loc)&amp;dep=$(dep)&amp;cActTopTen=$(cActTopTen)&amp;cLoc=$(cLoc)&amp;p=106&amp;I=jnvO&amp;K=1" title="Ok">Valider</a>
+			<img src="http://e.pagesjaunes.fr/cgi-bin/wap/219019161604?p=FR-WAP-ACC&amp;g=213013161598&amp;c=PJ&amp;u=&amp;n=115" alt="Loading"/>
+		</p>
+	</card>
+</wml>
