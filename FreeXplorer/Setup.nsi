@@ -34,7 +34,7 @@
 !system 'copy "${__FILE__}"	 				 					"archive\${TAGNAME}\"'
 !system 'copy "Setup.nsh"	 				 					"archive\${TAGNAME}\"'
 !system 'echo !define ARCHIVED >> "archive\${TAGNAME}\Setup.nsh"'
-OutFile "archive\${TAGNAME}\FreeXplorer-setup.exe"
+OutFile "archive\${TAGNAME}\FreeXplorer-win32-setup.exe"
 !endif
 
 
