@@ -100,7 +100,7 @@ OutFile "archive\${TAGNAME}\FreeXplorer-setup.exe"
 
 	!insertmacro MUI_LANGUAGE "French"
 
-	LangString AskUninstall ${LANG_FRENCH}			"Une précédente installation de ${PRODUCT} a été détectée.$\n$\nVoulez-vous la désinstaller ?$\n$\n(vos réglages seront conservés)"
+	LangString AskUninstall ${LANG_FRENCH}			"Une précédente installation de ${PRODUCT} a été détectée et va être desinstallée.$\n$\nVoulez-vous conserver vos réglages ?"
 	LangString StillActive	${LANG_FRENCH}			"Impossible de continuer car ${PRODUCT} est en cours d'exécution.$\nVeuillez arreter le programme d'abord"
 
 	LicenseLangString license ${LANG_FRENCH}		"license-FR.txt"
@@ -220,16 +220,19 @@ found.NETFramework:
 	ReadRegStr $R1 HKLM "${UNINSTALLKEY}" "InstallLocation"
 	InitPluginsDir
 	CreateDirectory "$APPDATA\FreeXplorer"
+	; la ligne suivante est pour compatibilité avec les versions < 0.9.3 qui stockait les reglages dans le rep de l'application
 	CopyFiles "$R1\*.xml" "$APPDATA\FreeXplorer"
-	MessageBox MB_YESNO|MB_ICONQUESTION $(AskUninstall) /SD IDYES IDNO noUninstall
-retryUninstall:
+	MessageBox MB_YESNOCANCEL|MB_ICONQUESTION $(AskUninstall) /SD IDYES IDYES uninstall IDCANCEL noUninstall
+	; IDNO: on supprime les réglages précédents
+	Delete "$APPDATA\FreeXplorer\*.xml"
+uninstall:
 	CopyFiles $R0 $PLUGINSDIR\Uninstall.exe
 	ExecWait '"$PLUGINSDIR\Uninstall.exe" /S _?=$R1'
 	IfErrors uninstallError
 	MessageBox MB_OK|MB_ICONINFORMATION $(MUI_UNTEXT_FINISH_SUBTITLE) /SD IDOK
 	Return
 uninstallError:
-	MessageBox MB_RETRYCANCEL|MB_ICONSTOP $(MUI_UNTEXT_ABORT_SUBTITLE) /SD IDOK IDRETRY retryUninstall
+	MessageBox MB_RETRYCANCEL|MB_ICONSTOP $(MUI_UNTEXT_ABORT_SUBTITLE) /SD IDOK IDRETRY uninstall
 	Abort
 noUninstall: 
 FunctionEnd

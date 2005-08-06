@@ -36,17 +36,22 @@ namespace Wizou.FreeXplorer
             {
                 mainForm = new MainForm();
             }
-#if DEBUG
             catch (ApplicationException e)
-#else
-            catch (Exception e) // en mode RELEASE, catch toutes les exceptions pour afficher un message d'erreur
-#endif
             {
-                MessageBox.Show("Une erreur inattendue s'est produite lors du démarrage de FreeXplorer:\r\n\r\n"+
-                    e.Message+"\r\n\r\nLe programme ne peut pas se lancer correctement et va s'arreter", "Initialisation",
+                MessageBox.Show("Une erreur inattendue s'est produite lors du démarrage de FreeXplorer:\r\n\r\n" +
+                    e.Message + "\r\n\r\nLe programme ne peut pas se lancer correctement et va s'arreter", "Initialisation",
                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+#if !DEBUG
+            catch (Exception e) // en mode RELEASE, catch toutes les exceptions pour afficher un message d'erreur
+            {
+                MessageBox.Show("Une erreur inattendue s'est produite lors du démarrage de FreeXplorer:\r\n\r\n"+
+                    e+"\r\n\r\nLe programme ne peut pas se lancer correctement et va s'arreter\r\n(tapez Ctrl-C pour copier ces informations)", "Initialisation",
+                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+#endif
             Application.Run(mainForm);
         }
     }

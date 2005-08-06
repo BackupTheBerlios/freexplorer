@@ -75,32 +75,40 @@ namespace Wizou.FreeXplorer
                 return;
             }
 
-            lircServer.Active = configForm.LIRCActive.Checked;
-            
-            // lancer VLC avant le TcpListener pour que le process de VLC n'hérite pas du handle et le conserve ouvert
-            IPHostEntry freeboxIP;
             try
             {
-                freeboxIP = Dns.GetHostEntry("freeplayer.freebox.fr");
-                FreeboxIP.Text = string.Format("Adresse IP de la Freebox: " + freeboxIP.AddressList[0]);
-            }
-            catch (SocketException)
-            {
-                freeboxIP = new IPHostEntry();
-                MessageBox.Show("Impossible de résoudre l'adresse IP de la Freebox\r\n" +
-                                "Verifiez la configuration", "Initialisation",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                lircServer.Active = configForm.LIRCActive.Checked;
 
-            try
-            {
-                freeboxServer = new FreeboxServer(Path.Combine(Application.StartupPath, "pages"), freeboxIP.AddressList[0], vlcApp, lircServer);
-                freeboxServer.Start();
+                // lancer VLC avant le TcpListener pour que le process de VLC n'hérite pas du handle et le conserve ouvert
+                IPHostEntry freeboxIP;
+                try
+                {
+                    freeboxIP = Dns.GetHostEntry("freeplayer.freebox.fr");
+                    FreeboxIP.Text = string.Format("Adresse IP de la Freebox: " + freeboxIP.AddressList[0]);
+                }
+                catch (SocketException)
+                {
+                    freeboxIP = new IPHostEntry();
+                    MessageBox.Show("Impossible de résoudre l'adresse IP de la Freebox\r\n" +
+                                    "Verifiez la configuration", "Initialisation",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                try
+                {
+                    freeboxServer = new FreeboxServer(Path.Combine(Application.StartupPath, "pages"), freeboxIP.AddressList[0], vlcApp, lircServer);
+                    freeboxServer.Start();
+                }
+                catch (SocketException)
+                {
+                    throw new Exception("Le port 8080 de cette machine est déjà occupé !\r\n" +
+                                    "Vérifiez que FreeXplorer, VLC, un autre Freeplayer ou un serveur proxy n'est pas déjà actif");
+                }
             }
-            catch (SocketException)
+            catch
             {
-                throw new Exception("Le port 8080 de cette machine est déjà occupé !\r\n" +
-                                "Vérifiez que FreeXplorer, VLC, un autre Freeplayer ou un serveur proxy n'est pas déjà actif");
+                vlcApp.Stop();
+                throw;
             }
         }
 

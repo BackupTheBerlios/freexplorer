@@ -1,8 +1,8 @@
 !define VERSION_MAJOR   1
-!define VERSION_MINOR   0
-!define VERSION         "1.0"
+!define VERSION_MINOR   1
+!define VERSION         "1.1"
 !define MAINEXENAME     "FreeXplorer.exe"
-!define TAGNAME         "FreeXplorer_1_0"
+!define TAGNAME         "FreeXplorer_1_1"
 
 !define MFG             "Wizou"
 !define FULLMFG         "Olivier Marcoux"

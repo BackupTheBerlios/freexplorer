@@ -47,7 +47,7 @@
 
     <xsl:template match="anchor">
 	<form method="GET" action="{substring-before(concat(go/@href,'?'),'?')}">
-		<input type="hidden" name="_dummy_" value="{concat('&amp;',substring-after(go/@href,'?'))}"/>
+		<input type="hidden" name="($$dummy)" value="{concat('&amp;',substring-after(go/@href,'?'))}"/>
          	<input type="text" size="40" name="{go/setvar/@name}" value="{go/setvar/@value}"/>
 		<input type="submit" value="{.}"/>
 	</form>
@@ -57,10 +57,24 @@
         <br/>
     </xsl:template>
 
-    <xsl:template match="input">
+	<xsl:template match="do[@type='options']">
+		<p>
+			[<a href="{go/@href}">
+				<xsl:value-of select="@label"/>
+			</a>]
+		</p>
+	</xsl:template>
+
+	<xsl:template match="input">
 	<form method="GET" action="{substring-before(concat(following::a/@href,'?'),'?')}">
-		<input type="hidden" name="_dummy_" value="{concat('&amp;',substring-after(following::a/@href,'?'))}"/>
-            	<input type="text" size="40" maxlength="{@maxlength}" name="({@name})" value="{@value}"/>
+		<input type="hidden" name="($$dummy)" value="{concat('&amp;',substring-after(following::a/@href,'?'))}"/>
+        <input type="text" size="40" name="({@name})" value="{@value}">
+			<xsl:if test="@maxlength">
+				<xsl:attribute name="maxlength">
+					<xsl:value-of select="@maxlength" />
+				</xsl:attribute>
+			</xsl:if>
+		</input>
 		<input type="submit" value="{following::a}"/>
 	</form>
     </xsl:template>

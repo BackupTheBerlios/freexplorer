@@ -74,6 +74,8 @@ namespace Wizou.FreeXplorer
 
             if (Url[0] != '/') throw new Exception("L'URL doit commencer par un /");
 
+            vlcCache.Invalidate();
+
             int index;
             if (Url.StartsWith("/$$/"))
             {
@@ -88,22 +90,12 @@ namespace Wizou.FreeXplorer
                 Host = Host.Substring(index + 1);
                 return HandleInternetRequest();
             }
-            
-            vlcCache.Invalidate();
 
-            // enregistre les nouvelles valeurs des variables globales données sur la requete
-            foreach (string argname in QueryArgs)
-                if (argname[0] == '_')
-                    GlobalVars[argname] = QueryArgs[argname];
-
-            // effectue les actions demandées par la requete
-            string[] actions = QueryArgs.GetValues("action");
-            if (actions != null)
-                DoActions(actions);
+            HandleSpecialQueryArgs();
 
             // cas des URL variable : on obtient le nom de l'URL via GetHTMLArgument
             if ((Url.Length > 2) && (Url[1] == '$'))
-                Url = (string)Evaluate(Url.Substring(1));
+                Url = (string) Evaluate(Url.Substring(1));
 
             string path = Path.GetFullPath(Path.Combine(BaseDir, Url.Substring(1)));
             string extension = Path.GetExtension(path);
@@ -127,6 +119,19 @@ namespace Wizou.FreeXplorer
                 return base.HandleRequest();
             else
                 return ReplyHtmlFile(Url);
+        }
+
+        private void HandleSpecialQueryArgs()
+        {
+            // enregistre les nouvelles valeurs des variables globales données sur la requete
+            foreach (string argname in QueryArgs)
+                if (argname[0] == '_')
+                    GlobalVars[argname] = QueryArgs[argname];
+
+            // effectue les actions demandées par la requete
+            string[] actions = QueryArgs.GetValues("action");
+            if (actions != null)
+                DoActions(actions);
         }
 
         override protected void HandleAfterReply()
@@ -453,27 +458,38 @@ namespace Wizou.FreeXplorer
 
         private HttpStatusCode HandleInternetRequest()
         {
-            /*
-             line = originURL.Replace("&amp;", "&") + '&';
-                    scan = -1;
-                    int scanend;
-                    while ((scan = line.IndexOf("$(", scan + 1)) >= 0)
+            // la boucle suivant réarrange les paramètres de l'URL suivant les regles suivantes :
+            // dans la valeur de chaque paramètre, $(XX) est remplacé par la valeur du paramètre (XX)
+            // chaque paramètre dont le nom est entre parenthese est retiré
+            // cela permet de supporter le format bizarre des cartes WML avec input
+            int index;
+            for (index = 0; index < QueryArgs.Count; index++)
+            {
+                string name = QueryArgs.GetKey(index);
+                if ((name[0] == '(') && name[name.Length - 1] == ')')
+                {
+                    QueryArgs.Remove(name);
+                    index--;
+                    if (name == "($$freexplorer)") // l'argument ($$freexplorer) present dans l'URL
+                        HandleSpecialQueryArgs();   // indique de supporter les action= et variables comme en local
+                }
+                else
+                {
+                    string arg = QueryArgs[name];
+                    int scan = arg.IndexOf("$(");
+                    if (scan >= 0)
                     {
-                        scanend = line.IndexOf(')', scan + 2);
+                        int scanend = arg.IndexOf(')', scan + 2);
                         if (scanend >= 0)
                         {
-                            string var = line.Substring(scan + 2, scanend - scan - 2);
-                            scanend = line.IndexOf("&(" + var + ")=", scanend);
-                            if (scanend >= 0)
-                            {
-                                int valueend = line.IndexOf('&', scanend + 4);
-                                string value = line.Substring(scanend + var.Length + 4, valueend - scanend - var.Length - 4);
-                                line = line.Remove(scanend, valueend - scanend);
-                                line = line.Replace("$(" + var + ")", value);
-                            }
+                            string valname = arg.Substring(scan + 1, scanend - scan);
+                            QueryArgs[name] = arg.Replace("$" + valname, QueryArgs[valname]);
                         }
                     }
-             */
+                }
+            }
+            Query = "?" + QueryArgs.ToString(); // on reforme la chaine Query
+
             HttpWebRequest webRequest = (HttpWebRequest) WebRequest.Create("http://" + Host + Url + Query);
             webRequest.Timeout = 10000;
             webRequest.Method = HttpMethod;
@@ -487,7 +503,7 @@ namespace Wizou.FreeXplorer
             //protected string Host;
             if (IfModifiedSince != new DateTime())
                 webRequest.IfModifiedSince = IfModifiedSince;
-            int index = Referer.IndexOf("212.27.38.254 ");
+            index = Referer.IndexOf("212.27.38.254 ");
             if (index >= 0)
                 webRequest.Referer = Referer.Remove(index, 14).Replace(":8080", "");
             webRequest.UserAgent = UserAgent;
@@ -530,17 +546,21 @@ namespace Wizou.FreeXplorer
             settings.ProhibitDtd = false;
             settings.ValidationType = ValidationType.None;
             XmlReader wmlDoc = XmlReader.Create(Content, settings);
-            Content.Close();
-            Content = null;
             StringWriter htmlWriter = new StringWriter();
             try
             {
                 xslt.Transform(wmlDoc, null, htmlWriter);
             }
+            catch (WebException e)
+            {
+                throw new ApplicationException("Erreur dans la conversion WML vers HTML: " + e.Message, e);
+            }
             catch (XmlException e)
             {
                 throw new ApplicationException("Erreur dans la conversion WML vers HTML: " + e.Message, e);
             }
+            Content.Close();
+            Content = null;
             string html = htmlWriter.ToString();
             html = ArrangeHTMLLinks(html);
             ContentType.MediaType = "text/html";
