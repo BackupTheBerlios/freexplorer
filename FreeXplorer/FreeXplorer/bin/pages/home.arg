@@ -1,1 +1,5 @@
 $version
+$comment_if $not $pc_control_allowed
+$end_comment_if $not $pc_control_allowed
+$comment_if $pc_control_allowed
+$end_comment_if $pc_control_allowed

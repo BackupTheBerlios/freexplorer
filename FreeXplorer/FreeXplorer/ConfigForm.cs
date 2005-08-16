@@ -37,7 +37,9 @@ namespace Wizou.FreeXplorer
             get
             {
                 return TranscodeMPGA.Checked ? VLC.AudioTranscode.MPGA :
-                        TranscodeA52.Checked ? VLC.AudioTranscode.A52 : VLC.AudioTranscode.None;
+                        TranscodeA52.Checked ? VLC.AudioTranscode.A52 :
+                        TranscodePC.Checked  ? VLC.AudioTranscode.PC : 
+                                               VLC.AudioTranscode.None;
             }
         }
 
@@ -50,6 +52,7 @@ namespace Wizou.FreeXplorer
             SoundExts.Text = VLC.Utility.SoundExts;
             PictureExts.Text = VLC.Utility.PictureExts;
             VideoExts.Text = VLC.Utility.VideoExts;
+            FreeboxServer.PCControlAllowed = PCControlAllowed.Checked;
             LoadConfig();
             SetVlcConfig();
         }
@@ -81,21 +84,23 @@ namespace Wizou.FreeXplorer
                         case "VideoExts": VideoExts.Text = value; break;
                         case "AudioLanguage": AudioLanguage.Text = value; break;
                         case "SubLanguage": SubLanguage.Text = value; break;
-                        case "ShowVLC": ShowVLC.Checked = (value == "1"); break;
+                        case "ShowVLC": ShowVLC.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
                         case "Transcode":
                             switch (value.ToUpper())
                             {
                                 case "MPGA": TranscodeMPGA.Checked = true; break;
                                 case "A52": TranscodeA52.Checked = true; break;
+                                case "PC": TranscodePC.Checked = true; break;
                                 default: TranscodeNone.Checked = true; break;
                             }
                             break;
-                        case "StartMinimized": StartMinimized.Checked = (value == "1"); break;
-                        case "MinimizeToTray": MinimizeToTray.Checked = (value == "1"); break;
-                        case "FFMpegInterlace": FFMpegInterlace.Checked = (value == "1"); break;
-                        case "HalfScale": HalfScale.Checked = (value == "1"); break;
-                        case "LIRCActive": LIRCActive.Checked = (value == "1"); break;
+                        case "StartMinimized": StartMinimized.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
+                        case "MinimizeToTray": MinimizeToTray.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
+                        case "FFMpegInterlace": FFMpegInterlace.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
+                        case "HalfScale": HalfScale.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
+                        case "LIRCActive": LIRCActive.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
                         case "TranscodeVB": TranscodeVB.Text = value; break;
+                        case "PCControlAllowed": PCControlAllowed.Checked = Convert.ToBoolean(value); break;
                     }
                 }
             } while (reader.Read());
@@ -119,17 +124,18 @@ namespace Wizou.FreeXplorer
             writer.WriteElementString("VideoExts", VideoExts.Text);
             writer.WriteElementString("AudioLanguage", AudioLanguage.Text);
             writer.WriteElementString("SubLanguage", SubLanguage.Text);
-            writer.WriteElementString("ShowVLC", ShowVLC.Checked ? "1" : "0");
+            writer.WriteElementString("ShowVLC", ShowVLC.Checked.ToString());
             writer.WriteElementString("Transcode",  TranscodeMPGA.Checked   ? "MPGA" :
-                                                    TranscodeA52.Checked    ? "A52" : "NONE");
-            writer.WriteElementString("StartMinimized", StartMinimized.Checked ? "1" : "0");
-            writer.WriteElementString("MinimizeToTray", MinimizeToTray.Checked ? "1" : "0");
-            writer.WriteElementString("FFMpegInterlace", FFMpegInterlace.Checked ? "1" : "0");
-            writer.WriteElementString("HalfScale", HalfScale.Checked ? "1" : "0");
-            writer.WriteElementString("LIRCActive", LIRCActive.Checked ? "1" : "0");
+                                                    TranscodeA52.Checked ? "A52" :
+                                                    TranscodePC.Checked ? "PC" : 
+                                                                           "NONE");
+            writer.WriteElementString("StartMinimized", StartMinimized.Checked.ToString());
+            writer.WriteElementString("MinimizeToTray", MinimizeToTray.Checked.ToString());
+            writer.WriteElementString("FFMpegInterlace", FFMpegInterlace.Checked.ToString());
+            writer.WriteElementString("HalfScale", HalfScale.Checked.ToString());
+            writer.WriteElementString("LIRCActive", LIRCActive.Checked.ToString());
             writer.WriteElementString("TranscodeVB", TranscodeVB.Text);
-            
-            
+            writer.WriteElementString("PCControlAllowed", PCControlAllowed.Checked.ToString());
             
             writer.Close();
             VLC.Utility.SoundExts = SoundExts.Text;
@@ -163,6 +169,14 @@ namespace Wizou.FreeXplorer
                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "FreeXplorer.lnk"));
             else
                 File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "FreeXplorer.lnk"));
+        }
+
+        private void PCControlAllowed_CheckedChanged(object sender, EventArgs e)
+        {
+            FreeboxServer.PCControlAllowed = PCControlAllowed.Checked;
+            if (!PCControlAllowed.Checked)
+                LIRCActive.Checked = false;
+            LIRCActive.Enabled = PCControlAllowed.Checked;
         }
     }
 }

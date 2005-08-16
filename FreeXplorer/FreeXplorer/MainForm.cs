@@ -130,6 +130,7 @@ namespace Wizou.FreeXplorer
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
+            if (configForm == null) return; // init pas complete
             if ((WindowState == FormWindowState.Minimized))
             {
                 if (configForm.MinimizeToTray.Checked)

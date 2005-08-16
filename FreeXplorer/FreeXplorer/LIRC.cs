@@ -74,15 +74,20 @@ namespace Wizou.LIRC
 
         public void KeyPressed(string key)
         {
-            foreach (Socket socket in sockets)
+            int index = 0;
+            while (index < sockets.Count)
             {
-                if (socket.Connected)
+                Socket socket = (Socket) sockets[index++];
+                string line = "0000000000000000 00 " + key + " freebox\n";
+                try
                 {
-                    string line = "0000000000000000 00 " + key + " freebox\n";
                     socket.Send(Encoding.Default.GetBytes(line));
                 }
-                else
-                    sockets.Remove(socket);
+                catch (SocketException e)
+                {
+                    if (!socket.Connected)
+                        sockets.RemoveAt(--index);
+                }
             }
         }
     }

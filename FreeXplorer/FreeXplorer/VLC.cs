@@ -50,6 +50,7 @@ namespace Wizou.VLC
             {
                 case AudioTranscode.MPGA: return " --sout-transcode-acodec=mpga --sout-transcode-ab=384 --sout-transcode-channels=2";
                 case AudioTranscode.A52: return " --sout-transcode-acodec=a52 --sout-transcode-ab=448 --sout-transcode-channels=6";
+                case AudioTranscode.PC: return " --sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio}";
                 default: return " --sout-transcode-acodec= --sout-transcode-ab= --sout-transcode-channels=";
             }
         }
@@ -672,7 +673,8 @@ namespace Wizou.VLC
     {
         None,
         MPGA,
-        A52
+        A52,
+        PC
     };
 
     static class Utility

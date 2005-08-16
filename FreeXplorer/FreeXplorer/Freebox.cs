@@ -40,6 +40,7 @@ namespace Wizou.FreeXplorer
         private LIRC.LIRCServer lircServer;
         public VLCApp vlcApp;
         public VLCCache vlcCache;
+        public static Boolean PCControlAllowed;
         private IPAddress FreeboxAddress;
         private StringDictionary GlobalVars; // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
 
@@ -95,7 +96,7 @@ namespace Wizou.FreeXplorer
 
             // cas des URL variable : on obtient le nom de l'URL via GetHTMLArgument
             if ((Url.Length > 2) && (Url[1] == '$'))
-                Url = (string) Evaluate(Url.Substring(1));
+                Url = Evaluate(Url.Substring(1)).ToString();
 
             string path = Path.GetFullPath(Path.Combine(BaseDir, Url.Substring(1)));
             string extension = Path.GetExtension(path);
@@ -194,7 +195,7 @@ namespace Wizou.FreeXplorer
             int index = expression.IndexOf(' ');
             if (index >= 0) // y a t-il un parametre à evaluer ?
             {
-                param = (string)Evaluate(expression.Substring(index + 1));
+                param = Evaluate(expression.Substring(index + 1)).ToString();
                 expression = expression.Substring(0, index);
             }
             else
@@ -249,6 +250,17 @@ namespace Wizou.FreeXplorer
 
                 case "$audio_mode": // mode audio dans lequel placer la Freebox
                     return Freebox.AudioTranscode2MetaAud(vlcApp.AudioTranscode);
+
+                case "$pc_control_allowed": // le controle du PC est-il autorisé ?
+                    return PCControlAllowed;
+
+                case "$not": // renvoit l'inverse du booleen en paramètre
+                    return !Convert.ToBoolean(param);
+
+                case "$comment_if":
+                    return Convert.ToBoolean(param) ? "<!-- " : "";
+                case "$end_comment_if":
+                    return Convert.ToBoolean(param) ? " -->" : "";
 
                 case "$version": // version de FreeXplorer
                     Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
@@ -308,18 +320,18 @@ namespace Wizou.FreeXplorer
                 switch (action)
                 {
                     case "sendkeys":
-                        System.Windows.Forms.SendKeys.SendWait(QueryArgs["keys"]);
+                        if (PCControlAllowed) System.Windows.Forms.SendKeys.SendWait(QueryArgs["keys"]);
                         break;
                     case "appcommand":
                         IntPtr fWindow = SysWin32.GetForegroundWindow();
-                        if (fWindow != IntPtr.Zero)
+                        if (PCControlAllowed && (fWindow != IntPtr.Zero))
                         {
                             foreach (string key in QueryArgs.GetValues("cmd"))
                                 SysWin32.SendMessage(fWindow, SysWin32.WM_APPCOMMAND, fWindow, Convert.ToInt32(key) << 16);
                         }
                         break;
                     case "lirc":
-                        lircServer.KeyPressed(QueryArgs["key"]);
+                        if (PCControlAllowed) lircServer.KeyPressed(QueryArgs["key"]);
                         break;
                     case "favadd":
                         Helper.FavoritesAdd(QueryArgs["file"], QueryArgs["kind"], QueryArgs["title"]);
@@ -442,13 +454,13 @@ namespace Wizou.FreeXplorer
             switch (afterAction)
             {
                 case "suspend":
-                    WindowsController.ExitWindows(RestartOptions.Suspend, false);
+                    if (PCControlAllowed) WindowsController.ExitWindows(RestartOptions.Suspend, false);
                     break;
                 case "poweroff":
-                    WindowsController.ExitWindows(RestartOptions.PowerOff, false);
+                    if (PCControlAllowed) WindowsController.ExitWindows(RestartOptions.PowerOff, false);
                     break;
                 case "reboot":
-                    WindowsController.ExitWindows(RestartOptions.Reboot, false);
+                    if (PCControlAllowed) WindowsController.ExitWindows(RestartOptions.Reboot, false);
                     break;
             }
         }        
