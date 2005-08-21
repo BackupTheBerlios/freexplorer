@@ -243,13 +243,25 @@ LangString TEXT_IO_SUBTITLE ${LANG_ENGLISH} "FreeXplorer nécessite que Freeplaye
 
 
 Function CustomPageVLC
-	IfFileExists $APPDATA\FreeXplorer\config.xml abort
+	StrCmp $VLC_PATH "" 0 gotVlcPath ; /VLC_PATH a été spécifié
 
-	StrCmp $VLC_PATH "" +3  ;si /VLC_PATH n'a pas été trouvé, on demande VLC a l'utilisateur
-	IfFileExists $VLC_PATH 0 +2
-abort:
+	; si pas d'ancien fichier de config, on demande VLC a l'utilisateur
+	IfFileExists $APPDATA\FreeXplorer\config.xml 0 askUser
+	; on a un ancien fichier de config, on verifie l'ancien VLCPath
+	nsisXML::create
+	nsisXML::load $APPDATA\FreeXplorer\config.xml
+	nsisXML::select '/Config/VLCPath'
+	IntCmp $2 0 askUser
+	nsisXML::getText
+	StrCpy $VLC_PATH $3
+	; ici on a recupéré dans $VLC_PATH la valeur VLCPath du fichier de config
+
+	StrCmp $VLC_PATH "" askUser 
+gotVlcPath:
+	IfFileExists $VLC_PATH 0 askUser
 	Abort
 
+askUser:
 	!insertmacro MUI_HEADER_TEXT "$(TEXT_IO_TITLE)" "$(TEXT_IO_SUBTITLE)"
 	!insertmacro MUI_INSTALLOPTIONS_DISPLAY "ioVLC.ini"
 	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 1" "State"
