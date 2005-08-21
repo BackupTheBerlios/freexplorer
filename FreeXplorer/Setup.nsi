@@ -326,16 +326,19 @@ noNewFavorites:
 	FileWrite $0 "<Recents></Recents>"
 	FileClose $0
 noNewRecents:
-	IfFileExists $APPDATA\FreeXplorer\config.xml noNewConfig
 	nsisXML::create
+	IfFileExists $APPDATA\FreeXplorer\config.xml noNewConfig
 	nsisXML::createElement "Config"
 	nsisXML::appendChild
 	StrCpy $1 $2
 	nsisXML::createElement "VLCPath"
-	nsisXML::setText $VLC_PATH
 	nsisXML::appendChild
 	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 noNewConfig:
+	nsisXML::load $APPDATA\FreeXplorer\config.xml
+	nsisXML::select '/Config/VLCPath'
+	nsisXML::setText $VLC_PATH
+	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 
 	File "${RELEASE_DIR}\vlcrc"
 	File "Lisez-Moi.html"
