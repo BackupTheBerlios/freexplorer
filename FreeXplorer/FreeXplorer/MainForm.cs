@@ -123,8 +123,13 @@ namespace Wizou.FreeXplorer
 
         private void ConfigButton_Click(object sender, EventArgs e)
         {
-            configForm.ShowDialog(this);
-            lircServer.Active = configForm.LIRCActive.Checked;
+            if (configForm.Visible)
+                configForm.BringToFront();
+            else
+            {
+                configForm.ShowDialog(this);
+                lircServer.Active = configForm.LIRCActive.Checked;
+            }
         }
 
 

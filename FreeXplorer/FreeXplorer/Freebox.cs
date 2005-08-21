@@ -662,6 +662,8 @@ namespace Wizou.FreeXplorer
 
     static class Helper
     {
+        public static Boolean LessIconsInExplorer;
+        
         internal static void FavoritesAdd(string file, string kind, string title)
         {
             XmlDocument doc = new XmlDocument();
@@ -748,9 +750,13 @@ namespace Wizou.FreeXplorer
                 VLC.Utility.MediaType mediaType = VLC.Utility.GetMediaType(file);
                 if (mediaType == VLC.Utility.MediaType.Unknown)
                     continue; // skip unknown type files
-                html.Append("<img src=");
-                html.Append("img/mediafile.gif"); // TODO: mettre le bon icone suivant le mediaType
-                html.Append(" width=16 height=17>&nbsp;<a href=\"play.html?action=add&_file=");
+                if (!LessIconsInExplorer)
+                {
+                    html.Append("<img src=");
+                    html.Append("img/mediafile.gif"); // TODO: mettre le bon icone suivant le mediaType
+                    html.Append(" width=16 height=17>");
+                }
+                html.Append("&nbsp;<a href=\"play.html?action=add&_file=");
                 html.Append(HttpUtility.UrlEncode(file));
                 html.Append("&param=Lecture+du+fichier...\"");
                 if (Path.GetFileName(file) == deffile)
@@ -779,7 +785,6 @@ namespace Wizou.FreeXplorer
                 }
                 for (int i = 0; i < level; i++)
                     html.Append("&nbsp;&nbsp;&nbsp;");
-                html.Append("<img src=");
                 if (level == 1)
                 {
                     folder = folder.TrimEnd(Path.DirectorySeparatorChar);
@@ -787,13 +792,12 @@ namespace Wizou.FreeXplorer
                     int dummy;
                     int iResult = SysWin32.GetVolumeInformation(path, out volumeName, out dummy, out dummy, out dummy, out fileSystemName);
                     if (fileSystemName == "CDFS")
-                        html.Append("img/cddvd.gif");
+                        html.Append("<img src=img/cddvd.gif width=16 height=17>&nbsp;");
                     else
-                        html.Append("img/harddisk.gif");
+                        html.Append("<img src=img/harddisk.gif width=16 height=17>&nbsp;");
                     if (volumeName.Length != 0)
                         folder = volumeName + " (" + folder + ")";
                     
-                    html.Append(" width=16 height=17>&nbsp;");
                     if (iResult != 0)
                     try
                     {
@@ -805,8 +809,10 @@ namespace Wizou.FreeXplorer
                 }
                 else
                 {
-                    html.Append("img/folder.gif");
-                    html.Append(" width=16 height=17>&nbsp;");
+                    if (!LessIconsInExplorer)
+                    {
+                        html.Append("<img src=img/folder.gif width=16 height=17>&nbsp;");
+                    }
                     try
                     {
                         subdirs = Directory.GetDirectories(path);

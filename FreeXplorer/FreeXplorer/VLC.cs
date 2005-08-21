@@ -715,18 +715,26 @@ namespace Wizou.VLC
         // can return null if no options !
         public static string[] GetMediaMRLOptions(string media)
         {
-            if (GetMediaType(media) == MediaType.Picture)
-                return new string[]
-                {
-                    "fake-file=" + media,
-                    "sout-transcode-width=720",
-                    "sout-transcode-height=576",
-                    "sout-transcode-vfilter=deinterlace",
-                    "sout-deinterlace-mode=blend",
-                    "sout-ffmpeg-keyint=1",
-                };
-            else
-                return null;
+            switch (GetMediaType(media))
+            {
+                case MediaType.Picture:
+                    return new string[]
+                    {
+                        "fake-file=" + media,
+                        "sout-transcode-width=720",
+                        "sout-transcode-height=576",
+                        "sout-transcode-vfilter=deinterlace",
+                        "sout-deinterlace-mode=blend",
+                        "sout-ffmpeg-keyint=1",
+                    };
+                case MediaType.Video:
+                    if (File.Exists(Path.ChangeExtension(media,".srt")))
+                        return new string[] { "sub-track=0" };
+                    else
+                        return null;
+                default:
+                    return null;
+            }
         }
 
         public static string GetMediaMRL(string media)

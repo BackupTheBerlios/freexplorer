@@ -101,6 +101,7 @@ namespace Wizou.FreeXplorer
                         case "LIRCActive": LIRCActive.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
                         case "TranscodeVB": TranscodeVB.Text = value; break;
                         case "PCControlAllowed": PCControlAllowed.Checked = Convert.ToBoolean(value); break;
+                        case "LessIconsInExplorer": LessIconsInExplorer.Checked = Convert.ToBoolean(value); break;
                     }
                 }
             } while (reader.Read());
@@ -136,6 +137,7 @@ namespace Wizou.FreeXplorer
             writer.WriteElementString("LIRCActive", LIRCActive.Checked.ToString());
             writer.WriteElementString("TranscodeVB", TranscodeVB.Text);
             writer.WriteElementString("PCControlAllowed", PCControlAllowed.Checked.ToString());
+            writer.WriteElementString("LessIconsInExplorer", LessIconsInExplorer.Checked.ToString());
             
             writer.Close();
             VLC.Utility.SoundExts = SoundExts.Text;
@@ -177,6 +179,11 @@ namespace Wizou.FreeXplorer
             if (!PCControlAllowed.Checked)
                 LIRCActive.Checked = false;
             LIRCActive.Enabled = PCControlAllowed.Checked;
+        }
+
+        private void LessIconsInExplorer_CheckedChanged(object sender, EventArgs e)
+        {
+            Helper.LessIconsInExplorer = LessIconsInExplorer.Checked;
         }
     }
 }

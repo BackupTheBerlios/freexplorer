@@ -83,7 +83,7 @@ namespace Wizou.LIRC
                 {
                     socket.Send(Encoding.Default.GetBytes(line));
                 }
-                catch (SocketException e)
+                catch (SocketException)
                 {
                     if (!socket.Connected)
                         sockets.RemoveAt(--index);
