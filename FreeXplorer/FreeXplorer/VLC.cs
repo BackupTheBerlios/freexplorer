@@ -359,8 +359,7 @@ namespace Wizou.VLC
                         result--;
                 }
             } while (line != "playlist: returned 0 (no error)");
-            if (count != itemAddedCounter)
-                throw new VLCException("Indices de lecture non concordants");
+            itemAddedCounter = count;
             return result;
         }
 
@@ -401,18 +400,8 @@ namespace Wizou.VLC
                 playlistSize = 1;
             else
             {
-                // analyse la playlist pour trouver le nombre d'elements qui vont être joués
-                playlistSize = 0;
-                using (StreamReader m3uFile = new StreamReader(media))
-                {
-                    string line;
-                    while ((line = m3uFile.ReadLine()) != null)
-                    {
-                        line = line.Trim();
-                        if (!line.StartsWith("#"))
-                            playlistSize++;
-                    }
-                }
+                playlistSize = -1; // obtenir de VLC la taille de la playlist
+                itemAddedCounter = 0;
             }
             WriteLine("add " + MRL);
             if (!ReadLine().StartsWith("trying to add "))
@@ -436,6 +425,7 @@ namespace Wizou.VLC
         {
             if (playlistSize == 1) return;
             int index = GetPlayingIndex();
+            if (playlistSize == -1) playlistSize = -index;
             if (index > -playlistSize)
                 Command("prev");
         }
@@ -443,6 +433,7 @@ namespace Wizou.VLC
         public void PlaylistNext()
         {
             if (playlistSize == 1) return;
+            if (playlistSize == -1) playlistSize = -GetPlayingIndex();
             Command("next");
         }
 

@@ -344,7 +344,15 @@ namespace Wizou.FreeXplorer
                         if (filename.StartsWith("http://"))
                         {
                             WebRequest webRequest = WebRequest.Create(filename);
-                            WebResponse webResponse = webRequest.GetResponse();
+                            WebResponse webResponse;
+                            try
+                            {
+                                webResponse = webRequest.GetResponse();
+                            }
+                            catch (WebException)
+                            {
+                                break;
+                            }
                             Stream responseStream = webResponse.GetResponseStream();
                             long contentLength = webResponse.ContentLength;
                             if (contentLength == -1) throw new Exception("Le site web n'indique pas de Content-Length pour cette image");
@@ -478,6 +486,7 @@ namespace Wizou.FreeXplorer
             for (index = 0; index < QueryArgs.Count; index++)
             {
                 string name = QueryArgs.GetKey(index);
+                if (name == null) continue;
                 if ((name[0] == '(') && name[name.Length - 1] == ')')
                 {
                     QueryArgs.Remove(name);
@@ -500,7 +509,13 @@ namespace Wizou.FreeXplorer
                     }
                 }
             }
-            Query = "?" + QueryArgs.ToString(); // on reforme la chaine Query
+            Query = QueryArgs.HasKeys() ? "?" + QueryArgs.ToString() : ""; // on reforme la chaine Query
+            if (Url.EndsWith(".m3u", StringComparison.InvariantCultureIgnoreCase))
+            {
+                GlobalVars["_file"] = "http://" + Host + Url + Query;
+                DoActions(new string[] { "add" });
+                return HttpStatusCode.OK;
+            }
 
             HttpWebRequest webRequest = (HttpWebRequest) WebRequest.Create("http://" + Host + Url + Query);
             webRequest.Timeout = 10000;
@@ -584,19 +599,27 @@ namespace Wizou.FreeXplorer
 
         private void HandleInternetResponseHTML()
         {
-            if (ContentLength == -1) ContentLength = 16384;
-            byte[] bytes = new byte[ContentLength];
-            ContentLength = Content.Read(bytes, 0, (int) ContentLength);
+            if (ContentLength == -1) ContentLength = 0xFFFFFF;
+            string html = "";
+            while (ContentLength > 0)
+            {
+                byte[] bytes = new byte[4096];
+                //Content.R
+                int bytesRead = Content.Read(bytes, 0, (int) 4096);
+                if (bytesRead == 0) break;
+                html += Encoding.Default.GetString(bytes, 0, bytesRead);
+                ContentLength -= bytesRead;
+            }
             Content.Close();
             Content = null;
-            string html = Encoding.Default.GetString(bytes);
+             
 #if DEBUG
             Console.WriteLine("AVANT: "+html);
 #endif
 
             if (html.Substring(0, 5).ToLower() == "<wml>")
             { // pour les sites qui renvoient du WML avec text/html
-                Content = new MemoryStream(bytes);
+                Content = new MemoryStream(Encoding.Default.GetBytes(html));
                 HandleInternetResponseWML();
                 return;
             }
