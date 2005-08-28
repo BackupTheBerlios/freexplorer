@@ -34,7 +34,7 @@
 !system 'copy "${__FILE__}"	 				 					"archive\${TAGNAME}\"'
 !system 'copy "Setup.nsh"	 				 					"archive\${TAGNAME}\"'
 !system 'echo !define ARCHIVED >> "archive\${TAGNAME}\Setup.nsh"'
-OutFile "archive\${TAGNAME}\FreeXplorer-win32-setup.exe"
+OutFile "archive\${TAGNAME}\${TAGNAME}-win32-setup.exe"
 !endif
 
 
@@ -220,11 +220,9 @@ found.NETFramework:
 	ReadRegStr $R1 HKLM "${UNINSTALLKEY}" "InstallLocation"
 	InitPluginsDir
 	CreateDirectory "$APPDATA\FreeXplorer"
-	; la ligne suivante est pour compatibilité avec les versions < 0.9.3 qui stockait les reglages dans le rep de l'application
-	CopyFiles "$R1\*.xml" "$APPDATA\FreeXplorer"
 	MessageBox MB_YESNOCANCEL|MB_ICONQUESTION $(AskUninstall) /SD IDYES IDYES uninstall IDCANCEL noUninstall
 	; IDNO: on supprime les réglages précédents
-	Delete "$APPDATA\FreeXplorer\*.xml"
+	Delete "$APPDATA\FreeXplorer\*"
 uninstall:
 	CopyFiles $R0 $PLUGINSDIR\Uninstall.exe
 	ExecWait '"$PLUGINSDIR\Uninstall.exe" /S _?=$R1'
