@@ -1,6 +1,6 @@
 /*
  * FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
- * Copyright (C) 2005 Olivier Marcoux (wiz0u@free.fr / http://wiz0u.free.fr/freexplorer)
+ * Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
  * 
  * Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
  * termes de la Licence Publique Générale GNU publiée par la Free Software 
@@ -34,7 +34,8 @@ namespace Wizou.HTTP
     {
         public string ErrorFile = "/_error.html"; // doit commencer par un slash
         public string BaseDir;
-        private TcpListener tcpListener;
+        private int tcpPort;
+        private TcpListener tcpListener = null;
         protected bool HackStatusCodeAlwaysOK = false; // cas particulier pour les clients HTTP qui n'aiment pas autre chose qu'OK (ex: Freebox ...)
 
         // Requête HTTP:
@@ -67,20 +68,27 @@ namespace Wizou.HTTP
         public BasicHttpServer(string baseDir, int port)
         {
             BaseDir = baseDir;
-            tcpListener = new TcpListener(IPAddress.Any, port);
+            this.tcpPort = port;
         }
 
 
         public void Start()
         {
+            if ((tcpListener != null) && tcpListener.Server.IsBound) return;
+            // le new TcpListener est effectué ici pour avoir lieu *après* le lancement de VLC
+            tcpListener = new TcpListener(IPAddress.Any, tcpPort);
             tcpListener.Start();
+            Console.WriteLine("HTTP started");
             Thread serverThread = new Thread(new ThreadStart(ThreadLoop));
             serverThread.Start();
         }
 
         public void Stop()
         {
+            if ((tcpListener == null) || !tcpListener.Server.IsBound) return;
             tcpListener.Stop();
+            tcpListener = null;
+            Console.WriteLine("HTTP stopped");
         }
 
         private void ThreadLoop()

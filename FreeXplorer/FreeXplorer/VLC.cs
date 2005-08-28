@@ -1,6 +1,6 @@
 /*
  * FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
- * Copyright (C) 2005 Olivier Marcoux (wiz0u@free.fr / http://wiz0u.free.fr/freexplorer)
+ * Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
  * 
  * Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
  * termes de la Licence Publique Générale GNU publiée par la Free Software 
@@ -68,7 +68,7 @@ namespace Wizou.VLC
                 AudioTranscode2Options(audioTranscode)+
                 " --sout-transcode-vb=" + transcode_vb.ToString() +
                 " --wxwin-config-last=(-1,0,0,1280,1024)(0,650,21,363,141)");
-            startInfo.UseShellExecute = false;
+            startInfo.UseShellExecute = true;
         }
 
         public void Start()
@@ -84,6 +84,7 @@ namespace Wizou.VLC
                 throw new VLCException("Le processus n'a pas démarré normalement");
             }
             if (!showWindow) SysWin32.ShowWindow(process.MainWindowHandle, SysWin32.SW_HIDE);
+            Console.WriteLine("VLC started");
             tcpClient = null;
             for (int retries = 0; retries < 5; retries++)
             {
@@ -138,6 +139,7 @@ namespace Wizou.VLC
                 {
                 }
             active = false;
+            Console.WriteLine("VLC stopped");
         }
 
         private void MustBeStopped()
@@ -670,8 +672,8 @@ namespace Wizou.VLC
 
     static class Utility
     {
-        public static string VideoExts = ".mpg.ts.mp2.mpeg.vob.avi.ogg.mkv.mp4.mov.mjpeg.asf.wmv.wma";
-        public static string SoundExts = ".mp3.aac.au.aif.aiff.wav";
+        public static string VideoExts = ".mpg.ts.mp2.mpeg.vob.avi.ogm.mkv.mp4.mov.mjpeg.asf.wmv.wma.divx";
+        public static string SoundExts = ".mp3.aac.au.aif.aiff.wav.ogg";
         public static string PictureExts = ".jpg.jpeg.png.tiff.gif";
 
         public enum MediaType
@@ -688,7 +690,15 @@ namespace Wizou.VLC
         {
             if (media.StartsWith("dvdsimple://"))
                 return MediaType.DVD;
-            string value = Path.GetExtension(media).ToLower();
+            string value;
+            try
+            {
+                value = Path.GetExtension(media).ToLower();
+            }
+            catch (ArgumentException)
+            {
+                return MediaType.Unknown;
+            }
             if (value.Length != 0)
             {
                 if (value == ".m3u")

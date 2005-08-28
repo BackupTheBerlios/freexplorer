@@ -1,5 +1,5 @@
 ; FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
-; Copyright (C) 2005 Olivier Marcoux (wiz0u@free.fr / http://wiz0u.free.fr/freexplorer)
+; Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
 ; 
 ; Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
 ; termes de la Licence Publique Générale GNU publiée par la Free Software 
@@ -333,11 +333,19 @@ noNewRecents:
 	StrCpy $1 $2
 	nsisXML::createElement "VLCPath"
 	nsisXML::appendChild
+	nsisXML::createElement "StartMinimized"
+	nsisXML::appendChild
+	nsisXML::createElement "MinimizeToTray"
+	nsisXML::appendChild
 	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 noNewConfig:
 	nsisXML::load $APPDATA\FreeXplorer\config.xml
 	nsisXML::select '/Config/VLCPath'
 	nsisXML::setText $VLC_PATH
+	nsisXML::select '/Config/StartMinimized'
+	nsisXML::setText "True"
+	nsisXML::select '/Config/MinimizeToTray'
+	nsisXML::setText "True"
 	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 
 	File "${RELEASE_DIR}\vlcrc"

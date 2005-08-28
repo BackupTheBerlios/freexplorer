@@ -1,6 +1,6 @@
 /*
  * FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
- * Copyright (C) 2005 Olivier Marcoux (wiz0u@free.fr / http://wiz0u.free.fr/freexplorer)
+ * Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
  * 
  * Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
  * termes de la Licence Publique Générale GNU publiée par la Free Software 
@@ -32,28 +32,49 @@ using System.Xml;
 using System.Web;
 using System.Globalization;
 using System.Diagnostics;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Wizou.FreeXplorer
 {
     class FreeboxServer : BasicHttpServer
     {
         private LIRC.LIRCServer lircServer;
-        public VLCApp vlcApp;
-        public VLCCache vlcCache;
-        public static Boolean PCControlAllowed;
+        private VLCApp vlcApp;
+        private VLCCache vlcCache;
+        public Boolean PCControlAllowed;
         private IPAddress FreeboxAddress;
-        private StringDictionary GlobalVars; // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
+        private StringDictionary GlobalVars = new StringDictionary(); // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
+        private CookieContainer webCookieContainer;
+        string keyboardHTML;
+        string keyboardURL;
 
-        public FreeboxServer(string baseDir, IPAddress freeboxAddress, VLCApp vlcApp, LIRC.LIRCServer lircServer)
+        public FreeboxServer(string baseDir)
             : base(baseDir, 8080)
         {
             HackStatusCodeAlwaysOK = true; // la Freebox ne reagit pas lorsqu'on envoie des StatusCode d'erreur, donc toujours envoyer OK à la Freebox
+            GlobalVars["_file"] = "C:\\";
+            //Opens file "cookies.dat" and deserializes the CookieContainer from it.
+            try
+            {
+                Stream stream = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/cookies.dat"), FileMode.Open);
+                BinaryFormatter formatter = new BinaryFormatter();
+                webCookieContainer = (CookieContainer)formatter.Deserialize(stream);
+                stream.Close();
+            }
+            catch
+            {
+                webCookieContainer = new CookieContainer();
+            }
+
+        }
+
+        public void Init(IPAddress freeboxAddress, VLCApp vlcApp, LIRC.LIRCServer lircServer)
+        {
             this.FreeboxAddress = freeboxAddress;
             this.vlcApp = vlcApp;
             this.vlcCache = new VLCCache(vlcApp);
             this.lircServer = lircServer;
-            GlobalVars = new StringDictionary();
-            GlobalVars["_file"] = "C:\\";
         }
 
         override protected HttpStatusCode HandleRequest()
@@ -78,7 +99,12 @@ namespace Wizou.FreeXplorer
             vlcCache.Invalidate();
 
             int index;
-            if (Url.StartsWith("/$$/"))
+            if (Url == "/$$keyboard")
+            {
+                HandleKeyboardRequest(QueryArgs["v"], QueryArgs["f"]);
+                return HttpStatusCode.OK;
+            }
+            else if (Url.StartsWith("/$$/"))
             {
                 Url = Url.Substring(3);
                 if (Host.Contains(" "))
@@ -375,7 +401,7 @@ namespace Wizou.FreeXplorer
                         waitForBkgnd = true;
                         break;
                     case "add":
-                        if (waitForBkgnd) Thread.Sleep(1500);
+                        if (waitForBkgnd) Thread.Sleep(1600);
                         vlcApp.Command("stop");
                         vlcApp.Command("play");
                         filename = GlobalVars["_file"];
@@ -478,6 +504,7 @@ namespace Wizou.FreeXplorer
 
         private HttpStatusCode HandleInternetRequest()
         {
+            bool freexplorerAware = false;
             // la boucle suivant réarrange les paramètres de l'URL suivant les regles suivantes :
             // dans la valeur de chaque paramètre, $(XX) est remplacé par la valeur du paramètre (XX)
             // chaque paramètre dont le nom est entre parenthese est retiré
@@ -492,7 +519,10 @@ namespace Wizou.FreeXplorer
                     QueryArgs.Remove(name);
                     index--;
                     if (name == "($$freexplorer)") // l'argument ($$freexplorer) present dans l'URL
+                    {
                         HandleSpecialQueryArgs();   // indique de supporter les action= et variables comme en local
+                        freexplorerAware = true;
+                    }
                 }
                 else
                 {
@@ -518,6 +548,7 @@ namespace Wizou.FreeXplorer
             }
 
             HttpWebRequest webRequest = (HttpWebRequest) WebRequest.Create("http://" + Host + Url + Query);
+            webRequest.CookieContainer = webCookieContainer;
             webRequest.Timeout = 10000;
             webRequest.Method = HttpMethod;
             webRequest.ProtocolVersion = ProtocolVersion;
@@ -548,15 +579,22 @@ namespace Wizou.FreeXplorer
                 throw new ApplicationException(e.Message, e);
             }
 #endif
+            //Opens "cookies.dat" and serializes the CookieContainer into it in Soap/XML format.
+            Stream stream = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/cookies.dat"), FileMode.Create);
+            BinaryFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, webCookieContainer);
+            stream.Close();
+
             ContentType = new ContentType(webResponse.ContentType);
             LastModified = webResponse.LastModified;
             ResponseHeaders = webResponse.Headers;
             ContentLength = webResponse.ContentLength;
             Content = webResponse.GetResponseStream();
+            
 
             if (ContentType.MediaType == "text/html")
             {
-                HandleInternetResponseHTML();
+                HandleInternetResponseHTML(freexplorerAware);
             } 
             else if (ContentType.MediaType == "text/vnd.wap.wml")
             {
@@ -597,7 +635,7 @@ namespace Wizou.FreeXplorer
             ReplyString(html);
         }
 
-        private void HandleInternetResponseHTML()
+        private void HandleInternetResponseHTML(bool freexplorerAware)
         {
             if (ContentLength == -1) ContentLength = 0xFFFFFF;
             string html = "";
@@ -631,7 +669,7 @@ namespace Wizou.FreeXplorer
                 if (scan >= 0)
                 {
                     html = html.Insert(scan, " bgcolor=#F0F0F030 text=#0000003F link=#0000FF3F alink=#FF00003F vlink=#FF00FF3F>"+
-                        "<link rel=\"yellow\" href=\"back\"/><hr><table><tr><td width=3%>&nbsp;</td><td width=92%");
+                        "<link rel=\"yellow\" href=\"back\"/><table><tr><td width=3%>&nbsp;</td><td width=94%");
                     scan = CultureInfo.InvariantCulture.CompareInfo.IndexOf(html, "</body>", CompareOptions.IgnoreCase);
                     if (scan >= 0)
                     {
@@ -648,9 +686,127 @@ namespace Wizou.FreeXplorer
                 html = html.Remove(scan, scanend + 8 - scan);
             }
             html = ArrangeHTMLLinks(html);
+            if (freexplorerAware)
+            {
+                string paramname = QueryArgs["$$keyboard"];
+                if (paramname.Length != 0)
+                {
+                    string paramvalue = QueryArgs[paramname];
+                    QueryArgs.Remove("$$keyboard");
+                    QueryArgs.Remove(paramname);
+                    keyboardHTML = html;
+                    keyboardURL = "http://212.27.38.254 " + Host + ":8080" + Url + "?" +
+                        (QueryArgs.HasKeys() ? QueryArgs.ToString() + '&' : "") + paramname + '=';
+                    HandleKeyboardRequest(paramvalue, null);
+                    return;
+                }
+            }
 #if DEBUG
             Console.WriteLine("APRES: " + html);
 #endif
+            ReplyString(html);
+        }
+
+        private void HandleKeyboardRequest(string value, string focus)
+        {
+            string keyboard = @"
+<a href=/$$keyboard?v=¤A&f=A>A</a> 
+<a href=/$$keyboard?v=¤B&f=B>B</a> 
+<a href=/$$keyboard?v=¤C&f=C>C</a> 
+<a href=/$$keyboard?v=¤D&f=D>D</a> 
+<a href=/$$keyboard?v=¤E&f=E>E</a> 
+<a href=/$$keyboard?v=¤F&f=F>F</a> 
+<a href=/$$keyboard?v=¤G&f=G>G</a> 
+<a href=/$$keyboard?v=¤H&f=H>H</a> 
+<a href=/$$keyboard?v=¤I&f=I>I</a> 
+<a href=/$$keyboard?v=¤J&f=J>J</a> 
+<a href=/$$keyboard?v=¤K&f=K>K</a> 
+<a href=/$$keyboard?v=¤L&f=L>L</a> 
+<a href=/$$keyboard?v=¤M&f=M>M</a> 
+<a href=/$$keyboard?v=¤N&f=N>N</a> 
+<a href=/$$keyboard?v=¤O&f=O>O</a> 
+<a href=/$$keyboard?v=¤P&f=P>P</a> 
+<a href=/$$keyboard?v=¤Q&f=Q>Q</a> 
+<a href=/$$keyboard?v=¤R&f=R>R</a> 
+<a href=/$$keyboard?v=¤S&f=S>S</a> 
+<a href=/$$keyboard?v=¤T&f=T>T</a> 
+<a href=/$$keyboard?v=¤U&f=U>U</a> 
+<a href=/$$keyboard?v=¤V&f=V>V</a> 
+<a href=/$$keyboard?v=¤W&f=W>W</a> 
+<a href=/$$keyboard?v=¤X&f=X>X</a> 
+<a href=/$$keyboard?v=¤Y&f=Y>Y</a> 
+<a href=/$$keyboard?v=¤Z&f=Z>Z</a>
+</td></tr><tr><td>
+&nbsp;<a href=/$$keyboard?v=¤+&f=+>Espace</a> |
+<a href=/$$keyboard?v=¤a&f=a>a</a> 
+<a href=/$$keyboard?v=¤b&f=b>b</a> 
+<a href=/$$keyboard?v=¤c&f=c>c</a> 
+<a href=/$$keyboard?v=¤d&f=d>d</a> 
+<a href=/$$keyboard?v=¤e&f=e>e</a> 
+<a href=/$$keyboard?v=¤f&f=f>f</a> 
+<a href=/$$keyboard?v=¤g&f=g>g</a> 
+<a href=/$$keyboard?v=¤h&f=h>h</a> 
+<a href=/$$keyboard?v=¤i&f=i>i</a> 
+<a href=/$$keyboard?v=¤j&f=j>j</a> 
+<a href=/$$keyboard?v=¤k&f=k>k</a> 
+<a href=/$$keyboard?v=¤l&f=l>l</a> 
+<a href=/$$keyboard?v=¤m&f=m>m</a> 
+<a href=/$$keyboard?v=¤n&f=n>n</a> 
+<a href=/$$keyboard?v=¤o&f=o>o</a> 
+<a href=/$$keyboard?v=¤p&f=p>p</a> 
+<a href=/$$keyboard?v=¤q&f=q>q</a> 
+<a href=/$$keyboard?v=¤r&f=r>r</a> 
+<a href=/$$keyboard?v=¤s&f=s>s</a> 
+<a href=/$$keyboard?v=¤t&f=t>t</a> 
+<a href=/$$keyboard?v=¤u&f=u>u</a> 
+<a href=/$$keyboard?v=¤v&f=v>v</a> 
+<a href=/$$keyboard?v=¤w&f=w>w</a> 
+<a href=/$$keyboard?v=¤x&f=x>x</a> 
+<a href=/$$keyboard?v=¤y&f=y>y</a> 
+<a href=/$$keyboard?v=¤z&f=z>z&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+</td></tr><tr><td>&nbsp;";
+            string keyboard2 = @"
+<a href=/$$keyboard?v=¤%26&f=%26>&</a> 
+<a href=/$$keyboard?v=¤%27&f='>'</a> 
+<a href=/$$keyboard?v=¤(&f=(>(</a> 
+<a href=/$$keyboard?v=¤)&f=)>)</a> 
+<a href=/$$keyboard?v=¤%5b&f=%5b>[</a> 
+<a href=/$$keyboard?v=¤%5d&f=%5d>]</a> 
+<a href=/$$keyboard?v=¤%7b&f=%7b>{</a> 
+<a href=/$$keyboard?v=¤%7d&f=%7d>}</a> 
+<a href=/$$keyboard?v=¤%3c&f=%3c>&lt;</a> 
+<a href=/$$keyboard?v=¤%3e&f=%3e>&gt;</a> 
+<a href=/$$keyboard?v=¤%7c&f=%7c>|</a> 
+<a href=/$$keyboard?v=¤_&f=_>_</a> 
+<a href=/$$keyboard?v=¤%24&f=%24>$</a> 
+<a href=/$$keyboard?v=¤%2b&f=%2b>+</a> 
+<a href=/$$keyboard?v=¤-&f=->-</a> 
+<a href=/$$keyboard?v=¤*&f=*>*</a> 
+<a href=/$$keyboard?v=¤%2f&f=%2f>/</a> 
+<a href=/$$keyboard?v=¤%3d&f=%3d>=</a> 
+<a href=/$$keyboard?v=¤%5c&f=%5c>\</a> 
+<a href=/$$keyboard?v=¤!&f=!>!</a> 
+<a href=/$$keyboard?v=¤%3f&f=%3f>?</a> 
+<a href=/$$keyboard?v=¤%25&f=%25>%</a> 
+<a href=/$$keyboard?v=¤%3a&f=%3a>:</a> 
+<a href=/$$keyboard?v=¤%3b&f=%3b>;</a> 
+<a href=/$$keyboard?v=¤.&f=.>.</a> 
+<a href=/$$keyboard?v=¤%23&f=%23>#</a>
+<a href=/$$keyboard?v=¤%40&f=%40>@</a>";
+            keyboard = @"<meta name=nochannel_page content=/$$keyboard?v=^%d>
+<table border=1 cellspacing=0><tr><td>
+&nbsp;<a href='" + keyboardURL + HttpUtility.UrlEncode(value) + "'&f=valid>Valider</a> |" + keyboard;
+            if (value.Length != 0)
+                keyboard += "<a href=/$$keyboard?v=&f=valid>Vider</a> | <a href=/$$keyboard?v=" + HttpUtility.UrlEncode(value.Substring(0, value.Length - 1)) + "&f=delete><font family=Symbol>$$</font></a> | ";
+            keyboard += keyboard2.Replace("^", HttpUtility.UrlEncode(value));
+            keyboard = keyboard.Replace("¤", HttpUtility.UrlEncode(value));
+            if (focus != null)
+            {
+                focus = HttpUtility.UrlEncode(focus);
+                keyboard = keyboard.Replace("&f=" + focus, "&f=" + focus + " focused");
+            }
+            string html = keyboardHTML.Replace("$$keyboardhtml", HttpUtility.HtmlEncode(value).Replace(" ","&nbsp;")+"|")
+                .Replace("$$keyboardval", value+"|").Replace("$$keyboard", keyboard+"</td></tr></table>");
             ReplyString(html);
         }
 

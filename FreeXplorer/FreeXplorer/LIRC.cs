@@ -10,24 +10,29 @@ namespace Wizou.LIRC
 {
     class LIRCServer
     {
-        private TcpListener tcpListener = new TcpListener(IPAddress.Loopback, 8765);
+        private TcpListener tcpListener = null;
         private ArrayList sockets = new ArrayList(1);
 
         public void Start()
         {
-            if (tcpListener.Server.IsBound) return;
+            if ((tcpListener != null) && tcpListener.Server.IsBound) return;
+            // le new TcpListener est effectué ici pour avoir lieu *après* le lancement de VLC
+            tcpListener = new TcpListener(IPAddress.Loopback, 8765);
             tcpListener.Start();
+            Console.WriteLine("LIRC started");
             Thread serverThread = new Thread(new ThreadStart(ThreadLoop));
             serverThread.Start();
         }
 
         public void Stop()
         {
-            if (!tcpListener.Server.IsBound) return;
+            if ((tcpListener == null) || !tcpListener.Server.IsBound) return;
             foreach (Socket socket in sockets)
                 socket.Close();
             sockets.Clear();
             tcpListener.Stop();
+            tcpListener = null;
+            Console.WriteLine("LIRC stopped");
         }
 
         public bool Active
