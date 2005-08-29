@@ -47,6 +47,7 @@ namespace Wizou.FreeXplorer
         private StringDictionary GlobalVars = new StringDictionary(); // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
         private CookieContainer webCookieContainer;
         string keyboardHTML;
+        string keyboardReferer = null;
         string keyboardURL;
 
         public FreeboxServer(string baseDir)
@@ -104,7 +105,13 @@ namespace Wizou.FreeXplorer
                 HandleKeyboardRequest(QueryArgs["v"], QueryArgs["f"]);
                 return HttpStatusCode.OK;
             }
-            else if (Url.StartsWith("/$$/"))
+            else if (Referer.Contains("$$keyboard") && (keyboardReferer != null))
+            {
+                Referer = keyboardReferer;
+                keyboardReferer = null;
+            }
+
+            if (Url.StartsWith("/$$/"))
             {
                 Url = Url.Substring(3);
                 if (Host.Contains(" "))
@@ -152,7 +159,7 @@ namespace Wizou.FreeXplorer
         {
             // enregistre les nouvelles valeurs des variables globales données sur la requete
             foreach (string argname in QueryArgs)
-                if (argname[0] == '_')
+                if ((argname != null) && (argname[0] == '_'))
                     GlobalVars[argname] = QueryArgs[argname];
 
             // effectue les actions demandées par la requete
@@ -668,7 +675,7 @@ namespace Wizou.FreeXplorer
                 scan = html.IndexOf('>', scan + 5);
                 if (scan >= 0)
                 {
-                    html = html.Insert(scan, " bgcolor=#F0F0F030 text=#0000003F link=#0000FF3F alink=#FF00003F vlink=#FF00FF3F>"+
+                    html = html.Insert(scan, " bgcolor=#F0F0F037 text=#0000003F link=#0000FF3F alink=#FF00003F vlink=#FF00FF3F>"+
                         "<link rel=\"yellow\" href=\"back\"/><table><tr><td width=3%>&nbsp;</td><td width=94%");
                     scan = CultureInfo.InvariantCulture.CompareInfo.IndexOf(html, "</body>", CompareOptions.IgnoreCase);
                     if (scan >= 0)
@@ -692,8 +699,10 @@ namespace Wizou.FreeXplorer
                 if (paramname.Length != 0)
                 {
                     string paramvalue = QueryArgs[paramname];
+                    if (paramvalue == null) paramvalue = "";
                     QueryArgs.Remove("$$keyboard");
                     QueryArgs.Remove(paramname);
+                    keyboardReferer = Referer;
                     keyboardHTML = html;
                     keyboardURL = "http://212.27.38.254 " + Host + ":8080" + Url + "?" +
                         (QueryArgs.HasKeys() ? QueryArgs.ToString() + '&' : "") + paramname + '=';
@@ -763,7 +772,16 @@ namespace Wizou.FreeXplorer
 <a href=/$$keyboard?v=¤w&f=w>w</a> 
 <a href=/$$keyboard?v=¤x&f=x>x</a> 
 <a href=/$$keyboard?v=¤y&f=y>y</a> 
-<a href=/$$keyboard?v=¤z&f=z>z&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+<a href=/$$keyboard?v=¤z&f=z>z</a> | 
+<a href=/$$keyboard?v=¤%c3%a0&f=%c3%a0>à</a>
+<a href=/$$keyboard?v=¤%c3%a7&f=%c3%a7>ç</a>
+<a href=/$$keyboard?v=¤%c3%a9&f=%c3%a9>é</a>
+<a href=/$$keyboard?v=¤%c3%a8&f=%c3%a8>è</a>
+<a href=/$$keyboard?v=¤%c3%aa&f=%c3%aa>ê</a>
+<a href=/$$keyboard?v=¤%c3%af&f=%c3%af>ï</a>
+<a href=/$$keyboard?v=¤%c3%b4&f=%c3%b4>ô</a>
+<a href=/$$keyboard?v=¤%c3%b9&f=%c3%b9>ù</a>
+<a href=/$$keyboard?v=¤%c3%bb&f=%c3%bb>û</a>
 </td></tr><tr><td>&nbsp;";
             string keyboard2 = @"
 <a href=/$$keyboard?v=¤%26&f=%26>&</a> 
@@ -791,14 +809,16 @@ namespace Wizou.FreeXplorer
 <a href=/$$keyboard?v=¤%3a&f=%3a>:</a> 
 <a href=/$$keyboard?v=¤%3b&f=%3b>;</a> 
 <a href=/$$keyboard?v=¤.&f=.>.</a> 
+<a href=/$$keyboard?v=¤%5e&f=%5e>^</a> 
 <a href=/$$keyboard?v=¤%23&f=%23>#</a>
-<a href=/$$keyboard?v=¤%40&f=%40>@</a>";
-            keyboard = @"<meta name=nochannel_page content=/$$keyboard?v=^%d>
+<a href=/$$keyboard?v=¤%40&f=%40>@</a>
+";
+            keyboard = @"<meta name=nochannel_page content=/$$keyboard?v=¤%d>
 <table border=1 cellspacing=0><tr><td>
-&nbsp;<a href='" + keyboardURL + HttpUtility.UrlEncode(value) + "'&f=valid>Valider</a> |" + keyboard;
+&nbsp;<a href=""" + keyboardURL + HttpUtility.UrlEncode(value) + @"""&f=valid>Valider</a> |" + keyboard;
             if (value.Length != 0)
                 keyboard += "<a href=/$$keyboard?v=&f=valid>Vider</a> | <a href=/$$keyboard?v=" + HttpUtility.UrlEncode(value.Substring(0, value.Length - 1)) + "&f=delete><font family=Symbol>$$</font></a> | ";
-            keyboard += keyboard2.Replace("^", HttpUtility.UrlEncode(value));
+            keyboard += keyboard2.Replace("¤", HttpUtility.UrlEncode(value));
             keyboard = keyboard.Replace("¤", HttpUtility.UrlEncode(value));
             if (focus != null)
             {
