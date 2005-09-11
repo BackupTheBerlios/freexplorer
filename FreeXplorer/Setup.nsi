@@ -275,7 +275,7 @@ Function ValidateCustomVLC
 	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
 	StrCmp $R0 1 downloadFreeplayerV1
 	
-	ReadINIStr $VLC_PATH "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
+	ReadINIStr $VLC_PATH "$PLUGINSDIR\ioVLC.ini" "Field 5" "State"
 	IfFileExists $VLC_PATH vlcFound
 
 	MessageBox MB_ICONEXCLAMATION|MB_OK "Vous devez indiquer l'emplacement du programme VLC.EXE fourni avec le Freeplayer !"
