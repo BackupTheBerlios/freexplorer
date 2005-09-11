@@ -198,11 +198,25 @@ namespace Wizou.VLC
 
         private string ReadLine()
         {
+#if DEBUG
+            Array.Clear(RC_buffer, RC_buffer_count, 1024 - RC_buffer_count);
+#endif
             int index = 0;
             while (index+1 < RC_buffer_count)
             {
                 if (RC_buffer[index] == 0x0A)
                     if (RC_buffer[index + 1] == 0x0D)
+                    {
+                        string result = Encoding.Default.GetString(RC_buffer, 0, index);
+                        RC_buffer_count -= index + 2;
+                        Array.Copy(RC_buffer, index + 2, RC_buffer, 0, RC_buffer_count);
+                        Console.WriteLine("VLC<   " + result);
+                        return result;
+                    }
+                    else
+                        throw new VLCException("Réponse inattendue");
+                else if (RC_buffer[index] == 0x0D)
+                    if (RC_buffer[index + 1] == 0x0A)
                     {
                         string result = Encoding.Default.GetString(RC_buffer, 0, index);
                         RC_buffer_count -= index + 2;
@@ -241,6 +255,17 @@ namespace Wizou.VLC
                         }
                         else
                             throw new VLCException("Réponse inattendue");
+                    else if (RC_buffer[index] == 0x0D)
+                        if (RC_buffer[index + 1] == 0x0A)
+                        {
+                            string result = Encoding.Default.GetString(RC_buffer, 0, index);
+                            RC_buffer_count -= index + 2;
+                            Array.Copy(RC_buffer, index + 2, RC_buffer, 0, RC_buffer_count);
+                            Console.WriteLine("VLC<   " + result);
+                            return result;
+                        }
+                        else
+                            throw new VLCException("Réponse inattendue");
                     index++;
                 }
             }
@@ -253,12 +278,12 @@ namespace Wizou.VLC
             {
 #if DEBUG
                 string temp = Encoding.Default.GetString(RC_buffer, 0, RC_buffer_count);
-                Debugger.Break();
+                //Debugger.Break();
 #endif
                 while (networkStream.DataAvailable)
                     networkStream.Read(RC_buffer, 0, 1024);
                 RC_buffer_count = 0;
-                throw new VLCException("Lignes inattendues dans la reponse precedente");
+                //throw new VLCException("Lignes inattendues dans la reponse precedente");
             }
         }
 
@@ -267,7 +292,11 @@ namespace Wizou.VLC
         #region RC commands
         private void ReadCheckNoError(string command)
         {
-            if (ReadLine() != command + ": returned 0 (no error)")
+            string line;
+            do
+                line = ReadLine();
+            while (line.StartsWith("status change: "));
+            if (line != command + ": returned 0 (no error)")
                 throw new VLCException("La commande RC a renvoyée une erreur");
         }
 
@@ -406,7 +435,11 @@ namespace Wizou.VLC
                 itemAddedCounter = 0;
             }
             WriteLine("add " + MRL);
-            if (!ReadLine().StartsWith("trying to add "))
+            string line;
+            do
+                line = ReadLine();
+            while (line.StartsWith("status change: "));
+            if (!line.StartsWith("trying to add "))
                 throw new VLCException("Réponse inattendue pour 'add'");
             ReadCheckNoError("add");
             itemAddedCounter += playlistSize;

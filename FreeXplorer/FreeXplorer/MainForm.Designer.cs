@@ -472,7 +472,6 @@ namespace Wizou.FreeXplorer
             this.TrayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("TrayIcon.Icon")));
             this.TrayIcon.Text = "FreeXplorer {0} actif";
             this.TrayIcon.DoubleClick += new System.EventHandler(this.TrayConfig_Click);
-            this.TrayIcon.BalloonTipClicked += new System.EventHandler(this.TrayConfig_Click);
             // 
             // TrayContextMenu
             // 

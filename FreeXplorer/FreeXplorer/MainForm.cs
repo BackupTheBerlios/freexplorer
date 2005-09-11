@@ -61,7 +61,8 @@ namespace Wizou.FreeXplorer
                                 "Verifiez la configuration", "Initialisation",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            freeboxServer.Init(freeboxIP.AddressList[0], vlcApp, lircServer);
+            if (freeboxIP.AddressList != null) 
+                freeboxServer.Init(freeboxIP.AddressList[0], vlcApp, lircServer);
 
             LoadConfig();
             ApplyConfig(true);

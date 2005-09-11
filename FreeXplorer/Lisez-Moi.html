@@ -3,7 +3,7 @@
 <html>
 <table border=1>
 <tr><td><h1>
-FreeXplorer 1.3.2
+FreeXplorer 1.5
 </h1></td></tr>
 </table>
 <h3>Interface de commande pour Freebox et VLC permettant de :</h3>
@@ -24,20 +24,31 @@ Site Officiel: <a href="http://wiz0u.free/freexplorer">http://wiz0u.free/freexpl
 <hr>
 <b><font size=+2>Listes des changements:</font></b> <i>(du plus recent au plus ancien)</i><br>
 
+<h4>FreeXplorer 1.5</h4>
+<ul>
+<li>Support du Freeplayer V2
+<li>Support de tous les formats d'images dans les pages Internet !!
+	 (conversion à la volée en GIFs compatible Freebox)
+<li>Mise à jour de l'installeur pour le Freeplayer V2
+<li>Le clic sur la bulle d'aide n'affiche plus la fenetre
+<li>Support de références aux GIF de FreeXplorer dans les pages Internet
+<li>La version de FreeXplorer est ajoutée dans le User-Agent
+</ul>
+
 <h4>FreeXplorer 1.3.2</h4>
 <ul>
-<li>retouches sur la gestion du clavier virtuel
+<li>Retouches sur la gestion du clavier virtuel
 </ul>
 
 <h4>FreeXplorer 1.3</h4>
 <ul>
-<li>accès à 130 WebRadios francophones et plus de 30 WebTV
-<li>fusion de la fenetre principale et de la fenetre de configuration
-<li>possibilité d'activer un clavier virtuel pour des saisies
-<li>support des cookies pour les services online
-<li>les pages Internet ne sont plus tronquées
-<li>possibilité de lancer une playlist M3U sur Internet
-<li>petites améliorations diverses
+<li>Accès à 130 WebRadios francophones et plus de 30 WebTV
+<li>Fusion de la fenetre principale et de la fenetre de configuration
+<li>Possibilité d'activer un clavier virtuel pour des saisies
+<li>Support des cookies pour les services online
+<li>Les pages Internet ne sont plus tronquées
+<li>Possibilité de lancer une playlist M3U sur Internet
+<li>Petites améliorations diverses
 </ul>
 
 <h4>FreeXplorer 1.2</h4>
@@ -169,77 +180,4 @@ Site Officiel: <a href="http://wiz0u.free/freexplorer">http://wiz0u.free/freexpl
 <li>Première release publique
 </ul>
 
-<hr>
-<h3>Explication sur le format des fichiers et les fonctions</h3>
-<i>(pour ceux qui souhaiterait retoucher les pages html standard)</i>
-<pre>
-Le serveur HTTP est très basique et répondra à toutes les requetes pour des fichiers .gif .htm .html .xml
-en allant chercher le fichier dans le repertoire de l'executable.
-Il n'accepte des requetes qu'en provenance de la Freebox elle-meme (pas de risque d'etre utilisé par qqun depuis Internet)
-Pour le format HTML de la freebox, se référer au document .PDF fourni avec le Freeplayer
-Si un fichier HTML est accompagné d'un fichier du meme nom mais avec l'extension .arg, ce dernier contient la liste
-des paramètres à remplacer dans le fichier HTML (ex: la 3eme ligne du .arg identifie ce que contiendra le tag {3} dans l'HTML)
-Chaque ligne du .ARG peut avoir 3 formes :
-- un identifiant => le tag sera remplacé par la valeur de l'identifiant passé dans l'URL
-	ex: param		=> /mapage.html?param=coucou		=> le tag {x} sera remplacé par coucou
-- une variable globale => le tag sera remplacé par la valeur de la variable globale
-	le nom des variables commencent par un underscore '_'
-	pour changer la valeur d'une variable globale, il suffit que son nom apparaisse en parametre d'une URL
-	sa valeur est ensuite conservée meme si les URL ulterieures n'y font plus reference
-		ex: /mapage.html?_file=toto
-	ex: _file		=> le tag {x} sera remplacé par la derniere valeur de _file donnée dans une URL
-- une fonction (eventuellement suivi d'un espace et d'un paramètre qui peut lui meme etre une fonction a son tour)
-	ex: $dir param		=> /mapage.html?param=C:\toto.txt	=> le tag {x} sera remplacé par C:\
-
-les fonctions disponibles sont :
-"$explore": // renvoit l'URL a utiliser suivant le contenu de la variable globale _file
-"$folders"+param: // HTML représentant la liste des dossiers avec comme dossier actif celui désigné
-"$files"+param: // HTML représentant la liste des fichiers du repertoire contenant le(s) fichier(s) désigné(s)
-"$fullurl": // retourne URL+Query (à l'exception de /settings.html qui devient /home.html)
-"$dir" + param: // repertoire contenant le fichier désigné par la variable globale _file
-"$url" + param: // version du parametre pour être placé dans une URL
-"$audio_mode": // mode audio dans lequel placer la Freebox
-
-// propriétés VLC directes
-"$vlc_chapter":
-"$vlc_chapter_max":
-"$vlc_title":
-"$vlc_title_max":
-"$vlc_caption":
-"$vlc_duration_time":
-"$vlc_elapsed_time":
-
-// propriétés VLC calculées
-"$vlc_elapsed_less50%": temps ecoulé si < 50% du film (sinon vide)
-"$vlc_elapsed_more50%": temps ecoulé si > 50% du film (sinon vide)
-"$vlc_elapsed_percent":
-"$vlc_chapter_percent":
-"$vlc_title_percent":
-
-"$nice_caption" + param: retouche le titre pour le rendre plus lisible
-
-$version : version de FreeXplorer
-
-ces fonctions peuvent aussi etre utilisée en début d'url pour indiquer le nom de la page HTML a utiliser
-(c'est surtout utilisé pour $explore)
-
-en paramètre d'une url, on peut trouver en paramètre: action=<xx> avec <xx> parmi
-"lirc": indique au serveur LIRC l'appui de la touche désignée par le paramètre key=
-"favadd": ajout d'un favori
-"favdel": retrait d'un favori
-controle de vlc:
-"add":
-"play":
-"rewind":
-"forward":
-"plprev":
-"plnext":
-"pause":
-"stop":
-
-en paramètre d'une url, on peut trouver en paramètre: afterAction=<xx> avec <xx> parmi
-suspend: pc en veille
-poweroff: extinction pc
-reboot: reboot pc
-</pre>
 </html>

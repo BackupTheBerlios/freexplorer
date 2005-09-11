@@ -63,6 +63,7 @@ namespace Wizou.HTTP
         public DateTime LastModified;
         //public CookieCollection Cookies;
         public WebHeaderCollection ResponseHeaders;
+        public Uri ResponseUri;
         public Stream Content;
         
         public BasicHttpServer(string baseDir, int port)
@@ -124,7 +125,14 @@ namespace Wizou.HTTP
                         Content = null;
                         try
                         {
-                            line = RequestContent.ReadLine();
+                            try
+                            {
+                                line = RequestContent.ReadLine();
+                            }
+                            catch (IOException e)
+                            {
+                                throw new ApplicationException(e.Message, e);
+                            }
                             Console.WriteLine("HTTP< " + line);
                             index = line.IndexOf(' ');
                             HttpMethod = line.Substring(0, index);
@@ -233,6 +241,7 @@ namespace Wizou.HTTP
                         writer.WriteLine("HTTP/{0}.{1} {2} {3}", ProtocolVersion.Major, ProtocolVersion.Minor,
                                                                 (int)StatusCode, StatusCode);
                         writer.WriteLine("Last-Modified: " + LastModified.ToString("R"));
+                        writer.WriteLine("Location: " + ResponseUri);
                         if (ProtocolVersion > HttpVersion.Version10)
                         {
                             writer.WriteLine("Connection: close"); // c'est un serveur vraiment basique... pas de Keep-Alive
@@ -257,41 +266,45 @@ namespace Wizou.HTTP
                         if (Content != null)
                         {
                             if (HttpMethod != "HEAD")
-                            {
-                                // TODO: faire un choix sur le comportement si la position n'est pas au debut du Stream)
-                                // actuellement, pour MemoryStream, on balance tout depuis le debut, meme si la position n'est pas au debut
-                                // et pour les autres Stream, on balance à partir de la position en cours
-                                // (ce qui permet de n'envoyer qu'une portion précise si on veut)
+                                try
+                                {
+                                    // TODO: faire un choix sur le comportement si la position n'est pas au debut du Stream)
+                                    // actuellement, pour MemoryStream, on balance tout depuis le debut, meme si la position n'est pas au debut
+                                    // et pour les autres Stream, on balance à partir de la position en cours
+                                    // (ce qui permet de n'envoyer qu'une portion précise si on veut)
 
-                                if ((Content is MemoryStream) && (ContentLength == Content.Length))
-                                { // variante optimisée pour les MemoryStream
-                                    ((MemoryStream)Content).WriteTo(networkStream);
-                                }
-                                else if (ContentLength == -1)
-                                {
-                                    byte[] buffer = new byte[4096L];
-                                    do
+                                    if ((Content is MemoryStream) && (ContentLength == Content.Length))
+                                    { // variante optimisée pour les MemoryStream
+                                        ((MemoryStream)Content).WriteTo(networkStream);
+                                    }
+                                    else if (ContentLength == -1)
                                     {
-                                        index = Content.Read(buffer, 0, 4096);
-                                        networkStream.Write(buffer, 0, index);
-                                    } while (index != 0);
-                                }
-                                else
-                                {
-                                    byte[] buffer = new byte[Math.Min(ContentLength, 4096L)];
-                                    while (ContentLength > 0)
-                                    {
-                                        index = Content.Read(buffer, 0, buffer.Length);
-                                        if (index == 0)
+                                        byte[] buffer = new byte[4096L];
+                                        do
                                         {
-                                            Console.WriteLine("BasicHttpServer: Supplied Content stream did not contain expected ContentLength");
-                                            break;
+                                            index = Content.Read(buffer, 0, 4096);
+                                            networkStream.Write(buffer, 0, index);
+                                        } while (index != 0);
+                                    }
+                                    else
+                                    {
+                                        byte[] buffer = new byte[Math.Min(ContentLength, 4096L)];
+                                        while (ContentLength > 0)
+                                        {
+                                            index = Content.Read(buffer, 0, buffer.Length);
+                                            if (index == 0)
+                                            {
+                                                Console.WriteLine("BasicHttpServer: Supplied Content stream did not contain expected ContentLength");
+                                                break;
+                                            }
+                                            networkStream.Write(buffer, 0, index);
+                                            ContentLength -= index;
                                         }
-                                        networkStream.Write(buffer, 0, index);
-                                        ContentLength -= index;
                                     }
                                 }
-                            }
+                                catch (IOException)
+                                {
+                                }
                             Content.Close();
                         } // if (Content != null)
                     } // using (content) => Terminate the connection

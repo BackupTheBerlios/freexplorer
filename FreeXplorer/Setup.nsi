@@ -26,6 +26,7 @@
 
 !system 'md														"archive\${TAGNAME}\"'
 !system 'copy "${RELEASE_DIR}\${MAINEXENAME}"					"archive\${TAGNAME}\"'
+!system 'copy "${RELEASE_DIR}\ImageManipulation.dll"			"archive\${TAGNAME}\"'
 !system 'copy "${RELEASE_DIR}\vlcrc"					"archive\${TAGNAME}\"'
 ;!system 'xcopy.exe /E "${RELEASE_DIR}\pages"					"archive\${TAGNAME}\pages"'
 !system 'copy "Lisez-Moi.html" 				 					"archive\${TAGNAME}\"'
@@ -75,8 +76,8 @@ OutFile "archive\${TAGNAME}\${TAGNAME}-win32-setup.exe"
 	!define MUI_WELCOMEPAGE_TITLE_3LINES
 	!insertmacro MUI_PAGE_WELCOME
 	!insertmacro MUI_PAGE_LICENSE $(license)
-	Page custom CustomPageVLC ValidateCustomVLC
 	!insertmacro MUI_PAGE_DIRECTORY
+	Page custom CustomPageVLC ValidateCustomVLC
 	!insertmacro MUI_PAGE_INSTFILES
 	!insertmacro MUI_PAGE_FINISH
 	
@@ -100,7 +101,7 @@ OutFile "archive\${TAGNAME}\${TAGNAME}-win32-setup.exe"
 
 	!insertmacro MUI_LANGUAGE "French"
 
-	LangString AskUninstall ${LANG_FRENCH}			"Une précédente installation de ${PRODUCT} a été détectée et va être desinstallée.$\n$\nVoulez-vous conserver vos réglages ?"
+	LangString AskUninstall ${LANG_FRENCH}			"Une précédente installation de ${PRODUCT} (version $R2)$\na été détectée et va être desinstallée.$\n$\nVoulez-vous conserver vos réglages ?"
 	LangString StillActive	${LANG_FRENCH}			"Impossible de continuer car ${PRODUCT} est en cours d'exécution.$\nVeuillez arreter le programme d'abord"
 
 	LicenseLangString license ${LANG_FRENCH}		"license-FR.txt"
@@ -218,6 +219,7 @@ found.NETFramework:
 	ReadRegStr $R0 HKLM "${UNINSTALLKEY}" "UninstallString"
 	IfFileExists "$R0" 0 noUninstall
 	ReadRegStr $R1 HKLM "${UNINSTALLKEY}" "InstallLocation"
+	ReadRegStr $R2 HKLM "${UNINSTALLKEY}" "DisplayVersion"
 	InitPluginsDir
 	CreateDirectory "$APPDATA\FreeXplorer"
 	MessageBox MB_YESNOCANCEL|MB_ICONQUESTION $(AskUninstall) /SD IDYES IDYES uninstall IDCANCEL noUninstall
@@ -261,36 +263,42 @@ gotVlcPath:
 
 askUser:
 	!insertmacro MUI_HEADER_TEXT "$(TEXT_IO_TITLE)" "$(TEXT_IO_SUBTITLE)"
+	WriteINIStr "$PLUGINSDIR\ioVLC.ini" "Field 4" "State" "$PROGRAMFILES\Freeplayer\vlc\vlc.exe"
 	!insertmacro MUI_INSTALLOPTIONS_DISPLAY "ioVLC.ini"
-	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 1" "State"
-
 FunctionEnd
 
 Function ValidateCustomVLC
-	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 2" "State"
-	StrCmp $R0 0 notInstalled
+	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
+	StrCmp $R0 0 downloadFreeplayer
 	
-	ReadINIStr $VLC_PATH "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
-	IfFileExists $VLC_PATH good
+	ReadINIStr $VLC_PATH "$PLUGINSDIR\ioVLC.ini" "Field 4" "State"
+	IfFileExists $VLC_PATH vlcFound
 
 	MessageBox MB_ICONEXCLAMATION|MB_OK "Vous devez indiquer l'emplacement du programme VLC.EXE fourni avec le Freeplayer !"
 	Abort
   
-notInstalled:
+downloadFreeplayer:
 
-	InetLoad::load /popup "Téléchargement de VLC" "ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050701.zip" "$PLUGINSDIR\vlc-0.8.4-fbx-1.zip"
+	InetLoad::load /popup "Installation de Freeplayer" /translate "URL" "Téléchargement" "Connection" "Fichier" "Recu" "Taille" "Temps restant" "Temps écoulé" "ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050905.exe" "$PLUGINSDIR\Freeplayer-Win32.exe"
 	Pop $R0 ;Get the return value
   	StrCmp $R0 "OK" +3
 	MessageBox MB_OK "Erreur lors du téléchargement: $R0$\r$\nEssayez de l'installer manuellement"
 	Abort
     
-	!insertmacro ZIPDLL_EXTRACTALL "$PLUGINSDIR\vlc-0.8.4-fbx-1.zip" "$PROGRAMFILES"
-	StrCpy $VLC_PATH "$PROGRAMFILES\Freeplayer\vlc\vlc.exe"
-	IfFileExists "$VLC_PATH" +3
+	ExecWait '"$PLUGINSDIR\Freeplayer-Win32.exe" /S /D=$INSTDIR\Freeplayer'
+	StrCpy $VLC_PATH "$INSTDIR\Freeplayer\vlc\vlc.exe"
+	IfFileExists "$VLC_PATH" installOk
 	MessageBox MB_OK "Le téléchargement de VLC a réussi mais l'installation automatique a échoué$\r$\nEssayez de l'installer manuellement"
 	Abort
+	
+installOk:
+	
+	SetShellVarContext all
+	RMDir /r "$SMPROGRAMS\Freeplayer"
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Freeplayer"
+	SetShellVarContext current
 
-good:
+vlcFound:
 
 FunctionEnd
 
@@ -346,6 +354,7 @@ noNewConfig:
 	nsisXML::setText "True"
 	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 
+	File "${RELEASE_DIR}\ImageManipulation.dll"
 	File "${RELEASE_DIR}\vlcrc"
 	File "Lisez-Moi.html"
 	File /r "${RELEASE_DIR}\pages"
@@ -416,7 +425,11 @@ Section "Uninstall"
 	SetAutoClose true
 	Quit
 removeOk:
-	Rmdir /r "$INSTDIR\pages"
+	CopyFiles "$INSTDIR\Freeplayer\Uninstall.exe" $PLUGINSDIR\Freeplayer-Uninstall.exe
+	ExecWait '"$PLUGINSDIR\Freeplayer-Uninstall" /S _?=$INSTDIR\Freeplayer'
+	RMDir /r "$INSTDIR\Freeplayer"
+	RMDir /r "$INSTDIR\pages"
+	Delete "$INSTDIR\ImageManipulation.dll"
 	Delete "$INSTDIR\vlcrc"
 	Delete "$INSTDIR\FreeXplorer.lnk"
 	Delete "$INSTDIR\Lisez-Moi.html"

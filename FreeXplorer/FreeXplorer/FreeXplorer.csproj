@@ -102,5 +102,11 @@
   <ItemGroup>
     <Content Include="AppIcon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImageManipulation\ImageManipulation.csproj">
+      <Project>{07DECDCF-C7D5-407A-8BF4-2D1187B47A27}</Project>
+      <Name>ImageManipulation</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

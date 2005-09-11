@@ -34,6 +34,10 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Collections;
+using ImageManipulation;
 
 namespace Wizou.FreeXplorer
 {
@@ -49,10 +53,13 @@ namespace Wizou.FreeXplorer
         string keyboardHTML;
         string keyboardReferer = null;
         string keyboardURL;
+        string appVersionText;
 
         public FreeboxServer(string baseDir)
             : base(baseDir, 8080)
         {
+            Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            appVersionText = appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
             HackStatusCodeAlwaysOK = true; // la Freebox ne reagit pas lorsqu'on envoie des StatusCode d'erreur, donc toujours envoyer OK à la Freebox
             GlobalVars["_file"] = "C:\\";
             //Opens file "cookies.dat" and deserializes the CookieContainer from it.
@@ -105,7 +112,7 @@ namespace Wizou.FreeXplorer
                 HandleKeyboardRequest(QueryArgs["v"], QueryArgs["f"]);
                 return HttpStatusCode.OK;
             }
-            else if (Referer.Contains("$$keyboard") && (keyboardReferer != null))
+            else if ((Referer != null) && Referer.Contains("$$keyboard") && (keyboardReferer != null))
             {
                 Referer = keyboardReferer;
                 keyboardReferer = null;
@@ -114,12 +121,12 @@ namespace Wizou.FreeXplorer
             if (Url.StartsWith("/$$/"))
             {
                 Url = Url.Substring(3);
-                if (Host.Contains(" "))
-                { // on vient d'un site Internet, il faut passer par la case "/settings.html" pour rectifier le "Host:" cible
-                    return ReplyHtmlFile("/settings.html");
+                if (Host.Contains(" ") && !Url.EndsWith(".gif"))
+                { // on vient d'un site Internet, il faut passer par la case "/$$back.html" pour rectifier le "Host:" cible
+                    return ReplyHtmlFile("/$$back.html");
                 }
             }
-            else if ((index = Host.IndexOf(' ')) >= 0) // indique que la freebox veut obtenir une page Internet
+            else if ((Host != null) && ((index = Host.IndexOf(' ')) >= 0)) // indique que la freebox veut obtenir une page Internet
             {
                 Host = Host.Substring(index + 1);
                 return HandleInternetRequest();
@@ -271,9 +278,8 @@ namespace Wizou.FreeXplorer
                     return Helper.ExploreFiles(dir, param);
 
 
-                case "$fullurl": // retourne URL+Query (à l'exception de /settings.html qui devient /home.html)
-                    param = Url + Query;
-                    return (param == "/settings.html") ? "/home.html" : param;
+                case "$fullurl": // retourne URL+Query
+                    return Url + Query;
 
                 case "$dir": // repertoire contenant le fichier désigné par la variable globale _file
                     return Helper.ExpandSpecialFolder(Path.GetDirectoryName(param));
@@ -296,8 +302,7 @@ namespace Wizou.FreeXplorer
                     return Convert.ToBoolean(param) ? " -->" : "";
 
                 case "$version": // version de FreeXplorer
-                    Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-                    return appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
+                    return appVersionText;
 
                 // propriétés VLC directes
                 case "$vlc_chapter":
@@ -571,7 +576,7 @@ namespace Wizou.FreeXplorer
             index = Referer.IndexOf("212.27.38.254 ");
             if (index >= 0)
                 webRequest.Referer = Referer.Remove(index, 14).Replace(":8080", "");
-            webRequest.UserAgent = UserAgent;
+            webRequest.UserAgent = UserAgent + " FreeXplorer/" + appVersionText;
             webRequest.Headers.Add(RequestHeaders);
             HttpWebResponse webResponse;
 #if DEBUG // TODO retirer lorsque j'aurais fini de travailler sur les sites Internet
@@ -594,6 +599,7 @@ namespace Wizou.FreeXplorer
 
             ContentType = new ContentType(webResponse.ContentType);
             LastModified = webResponse.LastModified;
+            ResponseUri = webResponse.ResponseUri;
             ResponseHeaders = webResponse.Headers;
             ContentLength = webResponse.ContentLength;
             Content = webResponse.GetResponseStream();
@@ -607,7 +613,69 @@ namespace Wizou.FreeXplorer
             {
                 HandleInternetResponseWML();
             }
+            else if (ContentType.MediaType.StartsWith("image/"))
+            {
+                HandleInternetResponseImage();
+            }
             return webResponse.StatusCode;
+        }
+
+        /// <summary>
+        /// Store the card palette
+        /// </summary>
+        private static ArrayList _freeboxPalette;
+
+        /// <summary>
+        /// Retrieve the palette used for the card
+        /// </summary>
+        /// <returns></returns>
+        public static ArrayList GetFreeboxPalette()
+        {
+            if (null == _freeboxPalette)
+            {
+                _freeboxPalette = new ArrayList();
+                _freeboxPalette.Add(Color.FromArgb(0, 0, 0, 0));
+                int[] cols = { 0, 51, 102, 153, 204, 255 };
+                foreach (int red in cols)
+                    foreach (int green in cols)
+                        foreach (int blue in cols)
+                        {
+                            if (red == 51)
+                            {
+                                if ((green == 102) || (blue == 102)) continue; // 51 102 not in palette
+                                if ((green == 51 ) ^  (blue == 51)) continue;  // 51 51 51 only in palette
+                                if ((green == 204) ^  (blue == 204)) continue; // 51 204 204 only in palette
+                            }
+                            _freeboxPalette.Add(Color.FromArgb(255, red, green, blue));
+                        }
+                for (int index = 192; index < 256; index++)
+                    _freeboxPalette.Add(Color.FromArgb(0, 0, 0, 0));
+            }
+
+            return _freeboxPalette;
+        }
+
+        private void HandleInternetResponseImage()
+        {
+            // GDI+ needed
+            using (Image originalImage = Image.FromStream(Content))
+            {
+                Content = new MemoryStream();
+                ContentLength = -1;
+                ContentType = new ContentType("image/gif");
+                // following line eventually do an ordered dither to a standard 256-color palette
+                originalImage.Save(Content, ImageFormat.Gif);
+                using (Bitmap ditheredImage = new Bitmap(Content)) // retrieve the dithered image
+                {
+                    Content = new MemoryStream();
+                    // create the quantizer for the freebox palette
+                    PaletteQuantizer quantizer = new PaletteQuantizer(GetFreeboxPalette()); 
+                    using (Bitmap quantized = quantizer.Quantize(ditheredImage))
+                    {
+                        quantized.Save(Content, ImageFormat.Gif);
+                    }
+                }
+            }
         }
 
         private void HandleInternetResponseWML()
@@ -661,6 +729,8 @@ namespace Wizou.FreeXplorer
 #if DEBUG
             Console.WriteLine("AVANT: "+html);
 #endif
+
+            if (html.Length < 5) return;
 
             if (html.Substring(0, 5).ToLower() == "<wml>")
             { // pour les sites qui renvoient du WML avec text/html
