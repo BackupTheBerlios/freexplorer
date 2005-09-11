@@ -50,7 +50,7 @@ namespace Wizou.VLC
             {
                 case AudioTranscode.MPGA: return " --sout-transcode-acodec=mpga --sout-transcode-ab=384 --sout-transcode-channels=2";
                 case AudioTranscode.A52: return " --sout-transcode-acodec=a52 --sout-transcode-ab=448 --sout-transcode-channels=6";
-                case AudioTranscode.PC: return " --sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio}";
+                case AudioTranscode.PC: return " --sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio} --audio-desync=850";
                 default: return " --sout-transcode-acodec= --sout-transcode-ab= --sout-transcode-channels=";
             }
         }
@@ -292,7 +292,11 @@ namespace Wizou.VLC
         #region RC commands
         private void ReadCheckNoError(string command)
         {
-            if (ReadLine() != command + ": returned 0 (no error)")
+            string line;
+            do
+                line = ReadLine();
+            while (line.StartsWith("status change: "));
+            if (line != command + ": returned 0 (no error)")
                 throw new VLCException("La commande RC a renvoyée une erreur");
         }
 
@@ -431,7 +435,11 @@ namespace Wizou.VLC
                 itemAddedCounter = 0;
             }
             WriteLine("add " + MRL);
-            if (!ReadLine().StartsWith("trying to add "))
+            string line;
+            do
+                line = ReadLine();
+            while (line.StartsWith("status change: "));
+            if (!line.StartsWith("trying to add "))
                 throw new VLCException("Réponse inattendue pour 'add'");
             ReadCheckNoError("add");
             itemAddedCounter += playlistSize;
@@ -747,11 +755,9 @@ namespace Wizou.VLC
                     return new string[]
                     {
                         "fake-file=" + media,
-                        "sout-transcode-width=720",
-                        "sout-transcode-height=576",
                         "sout-transcode-vfilter=deinterlace",
                         "sout-deinterlace-mode=blend",
-                        "sout-ffmpeg-keyint=1",
+                        "sout-ffmpeg-keyint=8",
                     };
                 case MediaType.Video:
                     if (File.Exists(Path.ChangeExtension(media,".srt")))

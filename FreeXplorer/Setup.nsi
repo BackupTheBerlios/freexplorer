@@ -263,29 +263,47 @@ gotVlcPath:
 
 askUser:
 	!insertmacro MUI_HEADER_TEXT "$(TEXT_IO_TITLE)" "$(TEXT_IO_SUBTITLE)"
-	WriteINIStr "$PLUGINSDIR\ioVLC.ini" "Field 4" "State" "$PROGRAMFILES\Freeplayer\vlc\vlc.exe"
+	WriteINIStr "$PLUGINSDIR\ioVLC.ini" "Field 5" "State" "$PROGRAMFILES\Freeplayer\vlc\vlc.exe"
 	!insertmacro MUI_INSTALLOPTIONS_DISPLAY "ioVLC.ini"
 FunctionEnd
 
 Function ValidateCustomVLC
+	SetOutPath "$INSTDIR"
+	Delete "$INSTDIR\vlcrc"
+	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 2" "State"
+	StrCmp $R0 1 downloadFreeplayerV2
 	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
-	StrCmp $R0 0 downloadFreeplayer
+	StrCmp $R0 1 downloadFreeplayerV1
 	
-	ReadINIStr $VLC_PATH "$PLUGINSDIR\ioVLC.ini" "Field 4" "State"
+	ReadINIStr $VLC_PATH "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
 	IfFileExists $VLC_PATH vlcFound
 
 	MessageBox MB_ICONEXCLAMATION|MB_OK "Vous devez indiquer l'emplacement du programme VLC.EXE fourni avec le Freeplayer !"
 	Abort
   
-downloadFreeplayer:
+downloadFreeplayerV2:
 
-	InetLoad::load /popup "Installation de Freeplayer" /translate "URL" "Téléchargement" "Connection" "Fichier" "Recu" "Taille" "Temps restant" "Temps écoulé" "ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050905.exe" "$PLUGINSDIR\Freeplayer-Win32.exe"
+	InetLoad::load /popup "Installation de Freeplayer V2" /translate "URL" "Téléchargement" "Connection" "Fichier" "Recu" "Taille" "Temps restant" "Temps écoulé" "ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050905.exe" "$PLUGINSDIR\Freeplayer-Win32.exe"
 	Pop $R0 ;Get the return value
   	StrCmp $R0 "OK" +3
 	MessageBox MB_OK "Erreur lors du téléchargement: $R0$\r$\nEssayez de l'installer manuellement"
 	Abort
     
 	ExecWait '"$PLUGINSDIR\Freeplayer-Win32.exe" /S /D=$INSTDIR\Freeplayer'
+	StrCpy $VLC_PATH "$INSTDIR\Freeplayer\vlc\vlc.exe"
+	IfFileExists "$VLC_PATH" installOk
+	MessageBox MB_OK "Le téléchargement de VLC a réussi mais l'installation automatique a échoué$\r$\nEssayez de l'installer manuellement"
+	Abort
+
+downloadFreeplayerV1:
+	File /oname=vlcrc "${RELEASE_DIR}\vlcrcV1"
+	InetLoad::load /popup "Installation de Freeplayer V1" /translate "URL" "Téléchargement" "Connection" "Fichier" "Recu" "Taille" "Temps restant" "Temps écoulé" "ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050701.zip" "$PLUGINSDIR\Freeplayer-Win32.zip"
+	Pop $R0 ;Get the return value
+  	StrCmp $R0 "OK" +3
+	MessageBox MB_OK "Erreur lors du téléchargement: $R0$\r$\nEssayez de l'installer manuellement"
+	Abort
+
+    !insertmacro ZIPDLL_EXTRACTALL "$PLUGINSDIR\Freeplayer-Win32.zip" "$INSTDIR"
 	StrCpy $VLC_PATH "$INSTDIR\Freeplayer\vlc\vlc.exe"
 	IfFileExists "$VLC_PATH" installOk
 	MessageBox MB_OK "Le téléchargement de VLC a réussi mais l'installation automatique a échoué$\r$\nEssayez de l'installer manuellement"
@@ -355,7 +373,8 @@ noNewConfig:
 	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 
 	File "${RELEASE_DIR}\ImageManipulation.dll"
-	File "${RELEASE_DIR}\vlcrc"
+	IfFileExists "$INSTDIR\vlcrc" +2
+		File "${RELEASE_DIR}\vlcrc"
 	File "Lisez-Moi.html"
 	File /r "${RELEASE_DIR}\pages"
 
