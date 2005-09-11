@@ -292,11 +292,7 @@ namespace Wizou.VLC
         #region RC commands
         private void ReadCheckNoError(string command)
         {
-            string line;
-            do
-                line = ReadLine();
-            while (line.StartsWith("status change: "));
-            if (line != command + ": returned 0 (no error)")
+            if (ReadLine() != command + ": returned 0 (no error)")
                 throw new VLCException("La commande RC a renvoyée une erreur");
         }
 
@@ -435,11 +431,7 @@ namespace Wizou.VLC
                 itemAddedCounter = 0;
             }
             WriteLine("add " + MRL);
-            string line;
-            do
-                line = ReadLine();
-            while (line.StartsWith("status change: "));
-            if (!line.StartsWith("trying to add "))
+            if (!ReadLine().StartsWith("trying to add "))
                 throw new VLCException("Réponse inattendue pour 'add'");
             ReadCheckNoError("add");
             itemAddedCounter += playlistSize;
