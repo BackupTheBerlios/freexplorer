@@ -1375,7 +1375,7 @@ sout-transcode-soverlay=1
 # Icône dans la barre système (Booléen)
 #wxwin-systray=0
 # last config (Chaîne)
-wxwin-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
+wxwin-config-last=(-1,0,0,1280,1024)(0,650,21,363,141)
 
 [x264] # Encodeur vidéo h264 utilisant la bibliothèque x264
 

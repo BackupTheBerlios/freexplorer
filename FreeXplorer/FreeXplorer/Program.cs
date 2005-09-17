@@ -23,6 +23,7 @@ namespace Wizou.FreeXplorer
 {
     static class Program
     {
+        public static string appVersionText;
         
         /// <summary>
         /// The main entry point for the application.
@@ -31,6 +32,8 @@ namespace Wizou.FreeXplorer
         static void Main()
         {
             Application.EnableVisualStyles();
+            Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            appVersionText = appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
             MainForm mainForm;
             try
             {

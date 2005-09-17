@@ -40,11 +40,9 @@ namespace Wizou.FreeXplorer
         public MainForm()
         {
             InitializeComponent();
-            Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            string appVersionText = appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
-            TrayIcon.Text = String.Format(TrayIcon.Text, appVersionText); ;
-            TrayIcon.BalloonTipTitle = String.Format(TrayIcon.BalloonTipTitle, appVersionText); ;
-            Text = String.Format(Text, appVersionText);
+            TrayIcon.Text = String.Format(TrayIcon.Text, Program.appVersionText); ;
+            TrayIcon.BalloonTipTitle = String.Format(TrayIcon.BalloonTipTitle, Program.appVersionText); ;
+            Text = String.Format(Text, Program.appVersionText);
 #if DEBUG
             Text = "Debug";
 #endif
@@ -67,7 +65,10 @@ namespace Wizou.FreeXplorer
             LoadConfig();
             ApplyConfig(true);
             if (StartMinimized.Checked)
+            {
                 WindowState = FormWindowState.Minimized;
+                VLCPath.Select(0,0); // sinon le champ etait sélectionné bizarrement (scrollé)
+            }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)

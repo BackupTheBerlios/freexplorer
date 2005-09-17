@@ -38,17 +38,26 @@ namespace Wizou.VLC
         private NetworkStream networkStream;
         private int playlistSize;
         private int itemAddedCounter;
-        
-        ProcessStartInfo startInfo;
+
+        private ProcessStartInfo startInfo;
         private int rc_host_port;// = 31186;
         private char dvdLetter;// = 'D';
         private AudioTranscode audioTranscode;// = AudioTranscode.MPGA;
-
+        private enum VlcMode
+        {
+            FreeplayerV1,
+            FreeplayerV2,
+        }
+        private VlcMode vlcMode;
+        private Encoding vlcEncoding;
+        private byte vlcNewlineChar1;
+        private byte vlcNewlineChar2;
+        
         private static string AudioTranscode2Options(AudioTranscode audioTranscode)
         {
             switch (audioTranscode)
             {
-                case AudioTranscode.MPGA: return " --sout-transcode-acodec=mpga --sout-transcode-ab=384 --sout-transcode-channels=2";
+                case AudioTranscode.MPGA: return " --sout-transcode-acodec=mpga --sout-transcode-ab=192 --sout-transcode-channels=2";
                 case AudioTranscode.A52: return " --sout-transcode-acodec=a52 --sout-transcode-ab=448 --sout-transcode-channels=6";
                 case AudioTranscode.PC: return " --sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio} --audio-desync=850";
                 default: return " --sout-transcode-acodec= --sout-transcode-ab= --sout-transcode-channels=";
@@ -57,8 +66,33 @@ namespace Wizou.VLC
 
         public void SetConfig(string exeFilename, string audioLanguage, string subLanguage, bool ffmpeg_interlace, double transform_scale, int transcode_vb)
         {
+            switch (FileVersionInfo.GetVersionInfo(exeFilename).FileVersion)
+            {
+                case "0.8.4-svn": vlcMode = VlcMode.FreeplayerV1; break;
+                case "0.8.4-fbx-2": vlcMode = VlcMode.FreeplayerV2; break;
+                default:
+                    MessageBox.Show("FreeXplorer "+Wizou.FreeXplorer.Program.appVersionText+"n'est peut-être pas compatible avec cette version de vlc.exe\r\n\r\n" +
+                                "Cliquez sur Oui pour activer le mode de compatibilité Freeplayer V1\r\n"+
+                                "Cliquez sur Non pour activer le mode de compatibilité Freeplayer V2",
+                                "Compatibilité VLC",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    break;
+            }
+            switch (vlcMode)
+            {
+                case VlcMode.FreeplayerV1:
+                    vlcEncoding = Encoding.Default;
+                    vlcNewlineChar1 = 0x0A;
+                    vlcNewlineChar2 = 0x0D;
+                    break;
+                case VlcMode.FreeplayerV2:
+                    vlcEncoding = Encoding.UTF8;
+                    vlcNewlineChar1 = 0x0D;
+                    vlcNewlineChar2 = 0x0A;
+                    break;
+            }
             startInfo = new ProcessStartInfo(exeFilename,
-                " --config ." + Path.DirectorySeparatorChar + "vlcrc" +
+                " --config ." + Path.DirectorySeparatorChar + (vlcMode == VlcMode.FreeplayerV1 ? "vlcrcV1" : "vlcrcV2") +
                 " --rc-host 127.0.0.1:" + rc_host_port +
                 " --audio-language=" + audioLanguage +
                 " --sub-language=" + subLanguage +
@@ -182,7 +216,7 @@ namespace Wizou.VLC
             if (Crashed())
                 throw new VLCException("VLC vient (encore!) de planter...\r\nJe vais le relancer mais la lecture en cours est abandonnée");
             Console.WriteLine("VLC> " + value);
-            byte[] buffer = Encoding.Default.GetBytes(value);
+            byte[] buffer = vlcEncoding.GetBytes(value);
             networkStream.Write(buffer, 0, buffer.Length);
             try
             {
@@ -204,21 +238,10 @@ namespace Wizou.VLC
             int index = 0;
             while (index+1 < RC_buffer_count)
             {
-                if (RC_buffer[index] == 0x0A)
-                    if (RC_buffer[index + 1] == 0x0D)
+                if (RC_buffer[index] == vlcNewlineChar1)
+                    if (RC_buffer[index + 1] == vlcNewlineChar2)
                     {
-                        string result = Encoding.Default.GetString(RC_buffer, 0, index);
-                        RC_buffer_count -= index + 2;
-                        Array.Copy(RC_buffer, index + 2, RC_buffer, 0, RC_buffer_count);
-                        Console.WriteLine("VLC<   " + result);
-                        return result;
-                    }
-                    else
-                        throw new VLCException("Réponse inattendue");
-                else if (RC_buffer[index] == 0x0D)
-                    if (RC_buffer[index + 1] == 0x0A)
-                    {
-                        string result = Encoding.Default.GetString(RC_buffer, 0, index);
+                        string result = vlcEncoding.GetString(RC_buffer, 0, index);
                         RC_buffer_count -= index + 2;
                         Array.Copy(RC_buffer, index + 2, RC_buffer, 0, RC_buffer_count);
                         Console.WriteLine("VLC<   " + result);
@@ -244,21 +267,10 @@ namespace Wizou.VLC
                 }
                 while (index+1 < RC_buffer_count)
                 {
-                    if (RC_buffer[index] == 0x0A)
-                        if (RC_buffer[index+1] == 0x0D)
+                    if (RC_buffer[index] == vlcNewlineChar1) 
+                        if (RC_buffer[index + 1] == vlcNewlineChar2)
                         {
-                            string result = Encoding.Default.GetString(RC_buffer, 0, index);
-                            RC_buffer_count -= index + 2;
-                            Array.Copy(RC_buffer, index + 2, RC_buffer, 0, RC_buffer_count);
-                            Console.WriteLine("VLC<   " + result);
-                            return result;
-                        }
-                        else
-                            throw new VLCException("Réponse inattendue");
-                    else if (RC_buffer[index] == 0x0D)
-                        if (RC_buffer[index + 1] == 0x0A)
-                        {
-                            string result = Encoding.Default.GetString(RC_buffer, 0, index);
+                            string result = vlcEncoding.GetString(RC_buffer, 0, index);
                             RC_buffer_count -= index + 2;
                             Array.Copy(RC_buffer, index + 2, RC_buffer, 0, RC_buffer_count);
                             Console.WriteLine("VLC<   " + result);
@@ -277,7 +289,7 @@ namespace Wizou.VLC
             if ((RC_buffer_count != 0) || networkStream.DataAvailable)
             {
 #if DEBUG
-                string temp = Encoding.Default.GetString(RC_buffer, 0, RC_buffer_count);
+                string temp = vlcEncoding.GetString(RC_buffer, 0, RC_buffer_count);
                 //Debugger.Break();
 #endif
                 while (networkStream.DataAvailable)

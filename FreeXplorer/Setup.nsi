@@ -27,7 +27,8 @@
 !system 'md														"archive\${TAGNAME}\"'
 !system 'copy "${RELEASE_DIR}\${MAINEXENAME}"					"archive\${TAGNAME}\"'
 !system 'copy "${RELEASE_DIR}\ImageManipulation.dll"			"archive\${TAGNAME}\"'
-!system 'copy "${RELEASE_DIR}\vlcrc"					"archive\${TAGNAME}\"'
+!system 'copy "${RELEASE_DIR}\vlcrcV1"					"archive\${TAGNAME}\"'
+!system 'copy "${RELEASE_DIR}\vlcrcV2"					"archive\${TAGNAME}\"'
 ;!system 'xcopy.exe /E "${RELEASE_DIR}\pages"					"archive\${TAGNAME}\pages"'
 !system 'copy "Lisez-Moi.html" 				 					"archive\${TAGNAME}\"'
 !system 'copy "license.txt"				 					"archive\${TAGNAME}\"'
@@ -111,6 +112,7 @@ OutFile "archive\${TAGNAME}\${TAGNAME}-win32-setup.exe"
 ;Installer Functions
 
 Var VLC_PATH
+Var KEEPCONFIG
 
 Function .onInit
 	SetShellVarContext current
@@ -205,6 +207,44 @@ Function GetParameters
    Exch $R1
  FunctionEnd
 
+; IsDotNET2Installed
+;
+; Usage:
+;   Call IsDotNET2Installed
+;   Pop $0
+;   StrCmp $0 1 found.NETFramework no.NETFramework
+Function IsDotNET2Installed
+  Push $0
+  Push $1
+  Push $2
+  Push $3
+  ReadRegStr $3 HKEY_LOCAL_MACHINE \
+    "Software\Microsoft\.NETFramework" "InstallRoot"
+  # remove trailing back slash
+  Push $3
+  Exch $EXEDIR
+  Exch $EXEDIR
+  Pop $3
+  # if the root directory doesn't exist .NET is not installed
+  IfFileExists $3 0 noDotNET
+   StrCpy $0 0
+   EnumPolicy:
+     EnumRegValue $2 HKEY_LOCAL_MACHINE \
+      "Software\Microsoft\.NETFramework\Policy\v2.0" $0
+    IntOp $0 $0 + 1
+     StrCmp $2 "" noDotNET
+      IfFileExists "$3\v2.0.$2" foundDotNET EnumPolicy
+   noDotNET:
+    StrCpy $0 0
+    Goto done
+   foundDotNET:
+    StrCpy $0 1
+   done:
+    Pop $3
+    Pop $2
+    Pop $1
+    Exch $0
+FunctionEnd
 
 
 Function CheckInstalled
@@ -222,12 +262,14 @@ found.NETFramework:
 	ReadRegStr $R2 HKLM "${UNINSTALLKEY}" "DisplayVersion"
 	InitPluginsDir
 	CreateDirectory "$APPDATA\FreeXplorer"
+	StrCpy $KEEPCONFIG "/KEEPCONFIG"
 	MessageBox MB_YESNOCANCEL|MB_ICONQUESTION $(AskUninstall) /SD IDYES IDYES uninstall IDCANCEL noUninstall
 	; IDNO: on supprime les réglages précédents
+	StrCpy $KEEPCONFIG ""
 	Delete "$APPDATA\FreeXplorer\*"
 uninstall:
 	CopyFiles $R0 $PLUGINSDIR\Uninstall.exe
-	ExecWait '"$PLUGINSDIR\Uninstall.exe" /S _?=$R1'
+	ExecWait '"$PLUGINSDIR\Uninstall.exe" $KEEPCONFIG /S _?=$R1'
 	IfErrors uninstallError
 	MessageBox MB_OK|MB_ICONINFORMATION $(MUI_UNTEXT_FINISH_SUBTITLE) /SD IDOK
 	Return
@@ -269,7 +311,6 @@ FunctionEnd
 
 Function ValidateCustomVLC
 	SetOutPath "$INSTDIR"
-	Delete "$INSTDIR\vlcrc"
 	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 2" "State"
 	StrCmp $R0 1 downloadFreeplayerV2
 	ReadINIStr $R0 "$PLUGINSDIR\ioVLC.ini" "Field 3" "State"
@@ -296,7 +337,6 @@ downloadFreeplayerV2:
 	Abort
 
 downloadFreeplayerV1:
-	File /oname=vlcrc "${RELEASE_DIR}\vlcrcV1"
 	InetLoad::load /popup "Installation de Freeplayer V1" /translate "URL" "Téléchargement" "Connection" "Fichier" "Recu" "Taille" "Temps restant" "Temps écoulé" "ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050701.zip" "$PLUGINSDIR\Freeplayer-Win32.zip"
 	Pop $R0 ;Get the return value
   	StrCmp $R0 "OK" +3
@@ -373,8 +413,8 @@ noNewConfig:
 	nsisXML::save "$APPDATA\FreeXplorer\config.xml"
 
 	File "${RELEASE_DIR}\ImageManipulation.dll"
-	IfFileExists "$INSTDIR\vlcrc" +2
-		File "${RELEASE_DIR}\vlcrc"
+	File "${RELEASE_DIR}\vlcrcV1"
+	File "${RELEASE_DIR}\vlcrcV2"
 	File "Lisez-Moi.html"
 	File /r "${RELEASE_DIR}\pages"
 
@@ -429,6 +469,30 @@ Function un.GetParent
 		Exch $R0 ; put $R0 on top of stack, restore $R0 to original value
 FunctionEnd
 
+Function un.StrStr
+   Exch $R1
+   Exch 
+   Exch $R2
+   Push $R3
+   Push $R4
+   Push $R5
+   StrLen $R3 $R1
+   StrCpy $R4 0
+   loop:
+     StrCpy $R5 $R2 $R3 $R4
+     StrCmp $R5 $R1 done
+     StrCmp $R5 "" done
+     IntOp $R4 $R4 + 1
+     Goto loop
+ done:
+   StrCpy $R1 $R2 "" $R4
+   Pop $R5
+   Pop $R4
+   Pop $R3
+   Pop $R2
+   Exch $R1
+FunctionEnd
+
 ;--------------------------------
 ;Uninstaller Section
 
@@ -444,12 +508,24 @@ Section "Uninstall"
 	SetAutoClose true
 	Quit
 removeOk:
+	Push $CMDLINE
+	Push '/KEEPCONFIG'
+	Call un.StrStr
+    Pop $0
+	StrCmp $0 "" 0 keepConfig
+	; uninstaller was not called with /KEEPCONFIG option:
+	; delete user config files
+	RMDir /r "$APPDATA\FreeXplorer"
+	; delete the eventual Freeplayer that was stored inside FreeXplorer folder
 	CopyFiles "$INSTDIR\Freeplayer\Uninstall.exe" $PLUGINSDIR\Freeplayer-Uninstall.exe
 	ExecWait '"$PLUGINSDIR\Freeplayer-Uninstall" /S _?=$INSTDIR\Freeplayer'
+	; remove the folder completely if Freeplayer's uninstaller did not do it
 	RMDir /r "$INSTDIR\Freeplayer"
+keepConfig:
 	RMDir /r "$INSTDIR\pages"
 	Delete "$INSTDIR\ImageManipulation.dll"
-	Delete "$INSTDIR\vlcrc"
+	Delete "$INSTDIR\vlcrcV1"
+	Delete "$INSTDIR\vlcrcV2"
 	Delete "$INSTDIR\FreeXplorer.lnk"
 	Delete "$INSTDIR\Lisez-Moi.html"
 	Delete "$INSTDIR\Uninstall.exe"
@@ -470,43 +546,3 @@ removeOk:
 	DeleteRegKey /ifempty HKLM "Software\${MFG}\${PRODUCT}"
 	DeleteRegKey /ifempty HKLM "Software\${MFG}"
 SectionEnd
-
-
-; IsDotNET2Installed
-;
-; Usage:
-;   Call IsDotNET2Installed
-;   Pop $0
-;   StrCmp $0 1 found.NETFramework no.NETFramework
-Function IsDotNET2Installed
-  Push $0
-  Push $1
-  Push $2
-  Push $3
-  ReadRegStr $3 HKEY_LOCAL_MACHINE \
-    "Software\Microsoft\.NETFramework" "InstallRoot"
-  # remove trailing back slash
-  Push $3
-  Exch $EXEDIR
-  Exch $EXEDIR
-  Pop $3
-  # if the root directory doesn't exist .NET is not installed
-  IfFileExists $3 0 noDotNET
-   StrCpy $0 0
-   EnumPolicy:
-     EnumRegValue $2 HKEY_LOCAL_MACHINE \
-      "Software\Microsoft\.NETFramework\Policy\v2.0" $0
-    IntOp $0 $0 + 1
-     StrCmp $2 "" noDotNET
-      IfFileExists "$3\v2.0.$2" foundDotNET EnumPolicy
-   noDotNET:
-    StrCpy $0 0
-    Goto done
-   foundDotNET:
-    StrCpy $0 1
-   done:
-    Pop $3
-    Pop $2
-    Pop $1
-    Exch $0
-FunctionEnd

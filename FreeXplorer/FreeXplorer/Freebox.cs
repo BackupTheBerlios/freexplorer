@@ -53,13 +53,10 @@ namespace Wizou.FreeXplorer
         string keyboardHTML;
         string keyboardReferer = null;
         string keyboardURL;
-        string appVersionText;
 
         public FreeboxServer(string baseDir)
             : base(baseDir, 8080)
         {
-            Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-            appVersionText = appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
             HackStatusCodeAlwaysOK = true; // la Freebox ne reagit pas lorsqu'on envoie des StatusCode d'erreur, donc toujours envoyer OK à la Freebox
             GlobalVars["_file"] = "C:\\";
             //Opens file "cookies.dat" and deserializes the CookieContainer from it.
@@ -98,7 +95,7 @@ namespace Wizou.FreeXplorer
                 byte[] remoteAddrBytes = remoteAddr.GetAddressBytes();
                 if ((remoteAddrBytes[0] != 192) || (remoteAddrBytes[1] != 168))
                 {
-                    throw new Exception(string.Format("Adresse IP {0} non autorisée", ((IPEndPoint)Socket.RemoteEndPoint).Address));
+                    throw new ApplicationException(string.Format("Adresse IP {0} non autorisée", ((IPEndPoint)Socket.RemoteEndPoint).Address));
                 }
             }
 
@@ -302,7 +299,7 @@ namespace Wizou.FreeXplorer
                     return Convert.ToBoolean(param) ? " -->" : "";
 
                 case "$version": // version de FreeXplorer
-                    return appVersionText;
+                    return Program.appVersionText;
 
                 // propriétés VLC directes
                 case "$vlc_chapter":
@@ -576,7 +573,7 @@ namespace Wizou.FreeXplorer
             index = Referer.IndexOf("212.27.38.254 ");
             if (index >= 0)
                 webRequest.Referer = Referer.Remove(index, 14).Replace(":8080", "");
-            webRequest.UserAgent = UserAgent + " FreeXplorer/" + appVersionText;
+            webRequest.UserAgent = UserAgent + " FreeXplorer/" + Program.appVersionText;
             webRequest.Headers.Add(RequestHeaders);
             HttpWebResponse webResponse;
 #if DEBUG // TODO retirer lorsque j'aurais fini de travailler sur les sites Internet

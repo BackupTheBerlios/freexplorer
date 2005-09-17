@@ -261,7 +261,13 @@ namespace Wizou.HTTP
                             }
                         }
                         writer.WriteLine(); // termine les headers avec une ligne vide
-                        writer.Flush();
+                        try
+                        {
+                            writer.Flush();
+                        }
+                        catch (IOException)
+                        {
+                        }
 
                         if (Content != null)
                         {

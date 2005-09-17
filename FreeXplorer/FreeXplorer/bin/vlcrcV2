@@ -1483,7 +1483,7 @@ subsdec-encoding=ISO-8859-1
 # Icône dans la barre système (Booléen)
 #wx-systray=0
 # last config (Chaîne)
-wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,139)
+wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
 
 [x264] # Encodeur vidéo h264 utilisant la bibliothèque x264
 
