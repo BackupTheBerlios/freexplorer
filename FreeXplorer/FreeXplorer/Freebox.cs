@@ -410,7 +410,7 @@ namespace Wizou.FreeXplorer
                         waitForBkgnd = true;
                         break;
                     case "add":
-                        if (waitForBkgnd) Thread.Sleep(1600);
+                        if (waitForBkgnd) Thread.Sleep(2000);
                         vlcApp.Command("stop");
                         vlcApp.Command("play");
                         filename = GlobalVars["_file"];
@@ -548,7 +548,7 @@ namespace Wizou.FreeXplorer
                     }
                 }
             }
-            Query = QueryArgs.HasKeys() ? "?" + QueryArgs.ToString() : ""; // on reforme la chaine Query
+            Query = QueryArgs.HasKeys() ? "?" + Wizou.HTTP.Utility.ToString(QueryArgs) : ""; // on reforme la chaine Query
             if (Url.EndsWith(".m3u", StringComparison.InvariantCultureIgnoreCase))
             {
                 GlobalVars["_file"] = "http://" + Host + Url + Query;
@@ -742,8 +742,8 @@ namespace Wizou.FreeXplorer
                 scan = html.IndexOf('>', scan + 5);
                 if (scan >= 0)
                 {
-                    html = html.Insert(scan, " bgcolor=#F0F0F037 text=#0000003F link=#0000FF3F alink=#FF00003F vlink=#FF00FF3F>"+
-                        "<link rel=\"yellow\" href=\"back\"/><table><tr><td width=3%>&nbsp;</td><td width=94%");
+                    html = html.Insert(scan, " bgcolor=#F0F0F037 text=#5050503F link=#0000FF3F alink=#FF00003F vlink=#FF00FF3F>"+
+                        "<link rel=\"yellow\" href=\"back\"/><box height=5><table><tr><td width=3%>&nbsp;</td><td width=94%><box width=5");
                     scan = CultureInfo.InvariantCulture.CompareInfo.IndexOf(html, "</body>", CompareOptions.IgnoreCase);
                     if (scan >= 0)
                     {
@@ -759,6 +759,19 @@ namespace Wizou.FreeXplorer
                 if (scanend < 0) break;
                 html = html.Remove(scan, scanend + 8 - scan);
             }
+            html = html.Replace("<br/>", "<br>").Replace("<BR/>", "<BR>");
+            if ((CultureInfo.InvariantCulture.CompareInfo.IndexOf(html, "charset=UTF-8") >= 0) ||
+                ((CultureInfo.InvariantCulture.CompareInfo.IndexOf(html, "charset=iso") < 0) && (CultureInfo.InvariantCulture.CompareInfo.Compare(ContentType.CharSet, "UTF-8", CompareOptions.IgnoreCase) == 0)))
+                try
+                {
+                    html = Encoding.UTF8.GetString(Encoding.Default.GetBytes(html));
+                }
+                catch (Exception e)
+                {
+#if DEBUG
+                    Debugger.Break();
+#endif
+                }
             html = ArrangeHTMLLinks(html);
             if (freexplorerAware)
             {
@@ -772,7 +785,7 @@ namespace Wizou.FreeXplorer
                     keyboardReferer = Referer;
                     keyboardHTML = html;
                     keyboardURL = "http://212.27.38.254 " + Host + ":8080" + Url + "?" +
-                        (QueryArgs.HasKeys() ? QueryArgs.ToString() + '&' : "") + paramname + '=';
+                        (QueryArgs.HasKeys() ? Wizou.HTTP.Utility.ToString(QueryArgs) + '&' : "") + paramname + '=';
                     HandleKeyboardRequest(paramvalue, null);
                     return;
                 }
@@ -811,7 +824,7 @@ namespace Wizou.FreeXplorer
 <a href=/$$keyboard?v=¤W&f=W>W</a> 
 <a href=/$$keyboard?v=¤X&f=X>X</a> 
 <a href=/$$keyboard?v=¤Y&f=Y>Y</a> 
-<a href=/$$keyboard?v=¤Z&f=Z>Z</a>
+<a href=/$$keyboard?v=¤Z&f=Z>Z&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 </td></tr><tr><td>
 &nbsp;<a href=/$$keyboard?v=¤+&f=+>Espace</a> |
 <a href=/$$keyboard?v=¤a&f=a>a</a> 
@@ -899,14 +912,34 @@ namespace Wizou.FreeXplorer
 
         private string ArrangeHTMLLinks(string html)
         {
-            int scanend;
             int scan = -1;
+            int urlbegin, urlend, hostend;
             while ((scan = CultureInfo.InvariantCulture.CompareInfo.IndexOf(html, "http://", scan + 1, CompareOptions.IgnoreCase)) >= 0)
             {
-                scanend = html.IndexOfAny(new char[] { '/', '"' }, scan + 7);
-                if (scanend < 0) break;
-                html = html.Substring(0, scan) + "http://212.27.38.254 " + html.Substring(scan + 7, scanend - scan - 7) + ":8080" + html.Substring(scanend);
-                scan = scanend + 18;
+                urlbegin = scan;
+                while (html[--urlbegin] <= ' ') ;
+                char quotedURL = html[urlbegin];
+                if ((quotedURL != '"') && (quotedURL != '\''))
+                    quotedURL = '\0';
+                else
+                    while (html[--urlbegin] <= ' ') ;
+                if (html[urlbegin] != '=') 
+                    continue;
+                if (quotedURL != '\0')
+                    urlend = html.IndexOf(quotedURL, scan+7);
+                else
+                    urlend = html.IndexOfAny(new char[] { ' ', '\t', '>' }, scan+7);
+                hostend = html.IndexOfAny(new char[] { '/', '\'', '"', ' ', '\t', '>' }, scan + 7);
+                if ((hostend < 0) || (urlend < 0) || (hostend > urlend)) 
+                    break;
+                html = html.Substring(0, urlbegin) +
+                    "=\"http://212.27.38.254 " +
+                    html.Substring(scan + 7, hostend - scan - 7) +
+                    ":8080" +
+                    html.Substring(hostend, urlend-hostend)+
+                    "\""+
+                    html.Substring(urlend+(quotedURL == '\0' ? 0 : 1));
+                scan = urlbegin + 18;
             }
             return html;
         }
