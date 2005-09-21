@@ -26,6 +26,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Net.Mime;
+using System.Web;
 
 namespace Wizou.HTTP
 {
@@ -376,4 +377,24 @@ namespace Wizou.HTTP
                 return new ContentType(result);
         }
     }
+
+    class Utility
+    {
+        // the ToString() function from HttpValueCollection is buggy and produce %uHHHH combinations
+        // which are not standard
+        public static string ToString(NameValueCollection query)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach (string key in query)
+            {
+                if (result.Length > 0)
+                    result.Append('&');
+                result.Append(HttpUtility.UrlEncode(key, Encoding.UTF8));
+                result.Append('=');
+                result.Append(HttpUtility.UrlEncode(query[key], Encoding.UTF8));
+            }
+            return result.ToString();
+        }
+    }
+    
 }
