@@ -369,7 +369,7 @@ sout-ts-pid-video=68
 # PID audio (Entier)
 sout-ts-pid-audio=69
 # PID SPU (Entier)
-#sout-ts-pid-spu=0
+sout-ts-pid-spu=70
 # PID de la PMT (Entier)
 #sout-ts-pid-pmt=0
 # ID TS (Entier)
@@ -738,7 +738,7 @@ file-caching=1000
 # Fichier d’image (Chaîne)
 #fake-file=
 # Étirement du fond d’écran (Chaîne)
-#fake-aspect-ratio=4:3
+fake-aspect-ratio=4:3
 
 [freetype] # Moteur de rendu freetype2
 
@@ -818,9 +818,9 @@ file-caching=1000
 [http] # Interface de commande à distance HTTP
 
 # Adresse de l’hôte (Chaîne)
-#http-host=
+http-host=:8081
 # Répertoire source (Chaîne)
-#http-src=
+http-src=./http-fbx
 # Fichier certificat (Chaîne)
 #http-intf-cert=
 # Fichier de clé privée (Chaîne)
@@ -1036,7 +1036,7 @@ file-caching=1000
 # Entrée de commandes par Socket Unix (Chaîne)
 #rc-unix=
 # Entrée de commandes par TCP/IP (Chaîne)
-#rc-host=
+rc-host=127.0.0.1:31186
 # Ne pas ouvrir une interface de commande DOS (Booléen)
 rc-quiet=1
 
@@ -1184,7 +1184,7 @@ sout-standard-url=212.27.38.253:1234
 # Codec vidéo de destination (Chaîne)
 sout-transcode-vcodec=mp2v
 # Débit vidéo (Entier)
-sout-transcode-vb=9000
+sout-transcode-vb=8500
 # Dimensionnement vidéo (Flottant)
 #sout-transcode-scale=1,000000
 # Débit d’images vidéo (Flottant)

@@ -17,7 +17,7 @@
 # Utiliser la sortie audio S/PDIF lorsqu’elle est disponible (Booléen)
 #spdif=0
 # Compenser la désynchronisation de l’audio (Entier)
-#audio-desync=0
+audio-desync=850
 # Module de sortie audio (Chaîne)
 #aout=
 # Filtres audio (Chaîne)
@@ -551,6 +551,17 @@ file-caching=1000
 # Répertoire d’enregistrement (Chaîne)
 #record-path=
 
+[access_ftp] # Entrée FTP
+
+# Taille du cache en ms (Entier)
+#ftp-caching=600
+# Nom d’utilisateur FTP (Chaîne)
+#ftp-user=anonymous
+# Mot de passe FTP (Chaîne)
+#ftp-pwd=anonymous@dummy.org
+# Compte FTP (Chaîne)
+#ftp-account=anonymous
+
 [access_http] # Entrée HTTP
 
 # Serveur proxy HTTP (Chaîne)
@@ -616,6 +627,18 @@ file-caching=1000
 #smb-pwd=
 # Domaine SMB (Chaîne)
 #smb-domain=
+
+[access_tcp] # Entrée TCP
+
+# Taille du cache en ms (Entier)
+#tcp-caching=300
+
+[access_udp] # Entrée UDP/RTP
+
+# Taille du cache en ms (Entier)
+#udp-caching=300
+# Détection automatique du MTU (Booléen)
+#udp-auto-mtu=1
 
 [adjust] # Filtre vidéo d’ajustement d’image
 
@@ -1379,6 +1402,29 @@ subsdec-encoding=ISO-8859-1
 # Type de transformation (Chaîne)
 #transform-type=90
 
+[ts] # Démultiplexeur MPEG Transport Stream
+
+# PMT supplémentaire (Chaîne)
+#ts-extra-pmt=
+# Sélectionner l’id de l’ES pour le PID (Booléen)
+#ts-es-id-pid=0
+# Diffusion UDP rapide (Chaîne)
+#ts-out=
+# MTU pour le mode de sortie (Entier)
+#ts-out-mtu=1500
+# Clé CSA (Chaîne)
+#ts-csa-ck=
+# Packet size in bytes to decrypt (Entier)
+#ts-csa-pkt=188
+# Mode silencieux (Booléen)
+#ts-silent=0
+# Nom de fichier du dump (Chaîne)
+#ts-dump-file=
+# Ajouter (Booléen)
+#ts-dump-append=0
+# Dump buffer size (Entier)
+#ts-dump-size=16384
+
 [twolame] # Encodeur audio libtwolame
 
 # Qualité d’encodage (Flottant)
@@ -1560,44 +1606,6 @@ wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
 # Activer le mode papier peint (Booléen)
 #directx-wallpaper=0
 
-[access_ftp] # Entrée FTP
-# Taille du cache en ms (Entier)
-#ftp-caching=600
-# Nom d’utilisateur FTP (Chaîne)
-#ftp-user=anonymous
-# Mot de passe FTP (Chaîne)
-#ftp-pwd=anonymous@dummy.org
-# Compte FTP (Chaîne)
-#ftp-account=anonymous
-[access_tcp] # Entrée TCP
-# Taille du cache en ms (Entier)
-#tcp-caching=300
-[access_udp] # Entrée UDP/RTP
-# Taille du cache en ms (Entier)
-#udp-caching=300
-# Détection automatique du MTU (Booléen)
-#udp-auto-mtu=1
-[ts] # Démultiplexeur MPEG Transport Stream
-# PMT supplémentaire (Chaîne)
-#ts-extra-pmt=
-# Sélectionner l’id de l’ES pour le PID (Booléen)
-#ts-es-id-pid=0
-# Diffusion UDP rapide (Chaîne)
-#ts-out=
-# MTU pour le mode de sortie (Entier)
-#ts-out-mtu=1500
-# Clé CSA (Chaîne)
-#ts-csa-ck=
-# Packet size in bytes to decrypt (Entier)
-#ts-csa-pkt=188
-# Mode silencieux (Booléen)
-#ts-silent=0
-# Nom de fichier du dump (Chaîne)
-#ts-dump-file=
-# Ajouter (Booléen)
-#ts-dump-append=0
-# Dump buffer size (Entier)
-#ts-dump-size=16384
 [wxwindows] # Module d’interface wxWindows
 # Intégrer la vidéo dans l’interface (Booléen)
 #wxwin-embed=1
