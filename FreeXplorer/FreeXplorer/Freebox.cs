@@ -1043,6 +1043,8 @@ namespace Wizou.FreeXplorer
             {
                 return "<i>" + e.Message + "</i>";
             }
+            Array.Sort<string>(files);
+
             StringBuilder html = new StringBuilder(256 * files.Length); // chaque ligne prend environ 225 caractères
             foreach (string file in files)
             {
@@ -1120,6 +1122,7 @@ namespace Wizou.FreeXplorer
                     {
                     }
                 }
+                Array.Sort<string>(subdirs); 
                 if (path == dir)
                 {
                     html.Append("<a href=\"");
