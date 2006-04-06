@@ -371,10 +371,10 @@ namespace Wizou.FreeXplorer
                         if (PCControlAllowed) lircServer.KeyPressed(QueryArgs["key"]);
                         break;
                     case "favadd":
-                        Helper.FavoritesAdd(QueryArgs["file"], QueryArgs["kind"], QueryArgs["title"]);
+                        Favorites.Add(QueryArgs["file"], QueryArgs["kind"], QueryArgs["title"]);
                         break;
                     case "favdel":
-                        Helper.FavoritesDel(QueryArgs["file"]);
+                        Favorites.Del(QueryArgs["file"]);
                         break;
                     case "bkgnd":
                         filename = QueryArgs["bkgnd"];
@@ -964,35 +964,6 @@ namespace Wizou.FreeXplorer
     static class Helper
     {
         public static Boolean LessIconsInExplorer;
-        
-        internal static void FavoritesAdd(string file, string kind, string title)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
-            XmlElement root = doc.DocumentElement;
-            XmlElement node = root.SelectSingleNode("MRL[.='" + file + "']") as XmlElement;
-            if (node == null)
-            {
-                node = doc.CreateElement("MRL");
-                node.InnerText = file;
-                root.AppendChild(node);
-            }
-            node.SetAttribute("kind", kind);
-            node.SetAttribute("title", title);
-            doc.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
-            
-        }
-
-        internal static void FavoritesDel(string file)
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
-            XmlElement root = doc.DocumentElement;
-            XmlElement node = root.SelectSingleNode("MRL[.='" + file + "']") as XmlElement;
-            if (node != null) root.RemoveChild(node);
-            doc.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
-
-        }
 
         internal static void AddToRecents(string file)
         {
