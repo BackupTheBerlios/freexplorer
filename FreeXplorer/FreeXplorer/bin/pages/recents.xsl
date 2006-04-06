@@ -1,7 +1,11 @@
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns="http://www.w3.org/1999/xhtml">
-	
+
+<xsl:output method="html"
+            encoding="ISO-8859-1"
+            indent="no"/>
+
 <!-- following code taken from http://www.stylusstudio.com/xsllist/200208/post00750.html 
 	because MSXML is not yet XSLT 2.0 compliant and has no escape-uri() function -->
 <xsl:variable name="ascii-charset"> !&quot;#$%&amp;&apos;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~&#127;</xsl:variable>
@@ -79,7 +83,8 @@
         	<xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
         	<a>
         		<xsl:attribute name="href">play.html?action=add&amp;_file=<xsl:call-template name="do-escape-uri">
-   					<xsl:with-param name="str" select="."/>
+						<xsl:with-param name="str" select="."/>
+						<xsl:with-param name="allow-utf8">true</xsl:with-param>
   					</xsl:call-template>&amp;param=Lecture+du+fichier...</xsl:attribute>
 				<xsl:value-of select="."/></a>
 			<br></br>
