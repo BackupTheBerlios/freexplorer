@@ -27,7 +27,7 @@ namespace Wizou.FreeXplorer
 {
     static class Favorites
     {
-        internal static void Add(string file, string kind, string title)
+        public static void Add(string file, string kind, string title)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
@@ -45,7 +45,7 @@ namespace Wizou.FreeXplorer
 
         }
 
-        internal static void Del(string file)
+        public static void Del(string file)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
