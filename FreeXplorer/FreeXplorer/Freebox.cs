@@ -1,6 +1,8 @@
 /*
  * FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
+ *
  * Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
+ * Copyright (C) 2006 Roncaglia Julien <freexplorer@virtualblackfox.net>
  * 
  * Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
  * termes de la Licence Publique Générale GNU publiée par la Free Software 
