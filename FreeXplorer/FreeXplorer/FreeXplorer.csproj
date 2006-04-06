@@ -89,6 +89,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Recents.cs" />
     <Compile Include="SysWin32.cs" />
     <Compile Include="VLC.cs" />
     <Compile Include="WindowsController.cs" />

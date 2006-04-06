@@ -416,7 +416,7 @@ namespace Wizou.FreeXplorer
                         vlcApp.Command("stop");
                         vlcApp.Command("play");
                         filename = GlobalVars["_file"];
-                        Helper.AddToRecents(filename);
+                        Recents.Add(filename);
                         if (filename.EndsWith("/*"))
                             vlcApp.Play(Helper.GetPlayableFilesInDir(Path.GetDirectoryName(filename)));
                         else
@@ -964,33 +964,6 @@ namespace Wizou.FreeXplorer
     static class Helper
     {
         public static Boolean LessIconsInExplorer;
-
-        internal static void AddToRecents(string file)
-        {
-            XmlTextReader reader = new XmlTextReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.xml"));
-            reader.ReadStartElement("Recents");
-            XmlTextWriter writer = new XmlTextWriter(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.new"), null);
-            writer.Formatting = Formatting.Indented;
-            writer.WriteStartElement("Recents");
-            writer.WriteStartElement("MRL");
-            writer.WriteAttributeString("date", DateTime.Now.ToString());
-            writer.WriteString(file);
-            writer.WriteEndElement();
-            int counter = 0;
-            while (!reader.EOF)
-            {
-                writer.WriteNode(reader, false);
-                if (reader.NodeType == XmlNodeType.Element)
-                {
-                    counter++;
-                    if (counter == 25) break;
-                }
-            }
-            writer.Close();
-            reader.Close();
-            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.xml"));
-            File.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.new"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.xml"));
-        }
 
         internal static StringCollection GetPlayableFilesInDir(string path)
         {
