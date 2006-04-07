@@ -138,27 +138,30 @@ namespace Wizou.FreeXplorer
                 Url = Evaluate(Url.Substring(1)).ToString();
 
             string path = Path.GetFullPath(Path.Combine(BaseDir, Url.Substring(1)));
-            string extension = Path.GetExtension(path);
-            if ((extension != ".htm") && (extension != ".html") && (extension != ".gif") && (extension != ".xsl"))
-            {
-                ErrorDescription = "Extension de fichier " + extension + " non supportée";
-                return HttpStatusCode.UnsupportedMediaType;
-            }
             if (!File.Exists(path))
             {
                 ErrorDescription = "Page " + Url + " introuvable";
                 return HttpStatusCode.NotFound;
             }
 
-            if (extension == ".xsl")
+            string extension = Path.GetExtension(path);
+            switch (extension)
             {
-                LastModified = File.GetLastWriteTime(path);
-                return ReplyXSLT(path, QueryArgs["xml"]);
+                case ".xsl":
+                    LastModified = File.GetLastWriteTime(path);
+                    return ReplyXSLT(path, QueryArgs["xml"]);
+
+                case ".htm":
+                case ".html":
+                    return ReplyHtmlFile(Url);
+
+                case ".gif":
+                    return base.HandleRequest();
+
+                default:
+                    ErrorDescription = "Extension de fichier " + extension + " non supportée";
+                    return HttpStatusCode.UnsupportedMediaType;
             }
-            else if ((extension != ".htm") && (extension != ".html"))
-                return base.HandleRequest();
-            else
-                return ReplyHtmlFile(Url);
         }
 
         private void HandleSpecialQueryArgs()
@@ -1115,16 +1118,28 @@ namespace Wizou.FreeXplorer
 
         internal static string ExpandSpecialFolder(string folder)
         {
-            if (folder[0] != '$')
+            if ((folder.Length == 0) || (folder[0] != '$'))
+            {
                 return folder;
+            }
+
             switch (folder.ToLower())
             {
-                case "$personal": return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                case "$my music": return Environment.GetFolderPath(Environment.SpecialFolder.MyMusic); 
-                case "$my pictures": return Environment.GetFolderPath(Environment.SpecialFolder.MyPictures); 
-                case "$my video": return (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
-                                        "My Video", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)); 
-                default: throw new Exception("Dossier special inconnu: " + folder);
+                case "$personal":
+                    return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+                case "$my music":
+                    return Environment.GetFolderPath(Environment.SpecialFolder.MyMusic); 
+
+                case "$my pictures":
+                    return Environment.GetFolderPath(Environment.SpecialFolder.MyPictures); 
+
+                case "$my video":
+                    return (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
+                        "My Video", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)); 
+
+                default:
+                    throw new Exception("Dossier special inconnu: " + folder);
             }
         }
 
