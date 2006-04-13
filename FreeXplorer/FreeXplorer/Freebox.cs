@@ -1,7 +1,7 @@
 /*
  * FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
  *
- * Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
+ * Copyright (C) 2005-2006 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
  * Copyright (C) 2006 Roncaglia Julien <freexplorer@virtualblackfox.net>
  * 
  * Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
@@ -781,7 +781,7 @@ namespace Wizou.FreeXplorer
             if (freexplorerAware)
             {
                 string paramname = QueryArgs["$$keyboard"];
-                if (paramname.Length != 0)
+                if ((paramname != null) && (paramname.Length != 0))
                 {
                     string paramvalue = QueryArgs[paramname];
                     if (paramvalue == null) paramvalue = "";
