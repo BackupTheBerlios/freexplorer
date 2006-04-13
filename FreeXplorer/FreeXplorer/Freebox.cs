@@ -1003,7 +1003,7 @@ namespace Wizou.FreeXplorer
                 if (!LessIconsInExplorer)
                 {
                     html.Append("<img src=");
-                    html.Append("img/mediafile.gif"); // TODO: mettre le bon icone suivant le mediaType
+                    html.Append(GetIconForMediaType(mediaType, "img/mediafile.gif"));
                     html.Append(" width=16 height=17>");
                 }
                 html.Append("&nbsp;<a href=\"play.html?action=add&_file=");
@@ -1019,6 +1019,13 @@ namespace Wizou.FreeXplorer
                 return "<i>Aucun fichier multimedia dans ce dossier</i>\r\n";
             else
                 return html.ToString();
+        }
+
+        internal static string GetIconForMediaType(VLC.Utility.MediaType type, string defaultIcon)
+        {
+            FileInfo iconFile = new FileInfo("pages/img/media/" + type.ToString() + ".gif");
+            return iconFile.Exists ? "img/media/" + iconFile.Name : defaultIcon;
+
         }
 
         internal static void ExploreFolders(ref StringBuilder html, string[] folders, string dir, int level, string prefix)
