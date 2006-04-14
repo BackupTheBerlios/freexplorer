@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Olivier Marcoux")]
 [assembly: AssemblyProduct("FreeXplorer")]
-[assembly: AssemblyCopyright("Copyright © Olivier Marcoux 2005")]
+[assembly: AssemblyCopyright("Copyright © Olivier Marcoux 2005-2006")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

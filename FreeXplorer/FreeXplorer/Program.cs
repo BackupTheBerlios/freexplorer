@@ -1,6 +1,6 @@
 /*
  * FreeXplorer - Interface type Freeplayer de pilotage du PC et de VLC depuis une Freebox
- * Copyright (C) 2005 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
+ * Copyright (C) 2005-2006 Olivier Marcoux (freexplorer@free.fr / http://freexplorer.free.fr)
  * 
  * Ce programme est libre, vous pouvez le redistribuer et/ou le modifier selon les 
  * termes de la Licence Publique Générale GNU publiée par la Free Software 
@@ -32,6 +32,7 @@ namespace Wizou.FreeXplorer
         static void Main()
         {
             Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             appVersionText = appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
             MainForm mainForm;

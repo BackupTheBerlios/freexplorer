@@ -270,7 +270,7 @@ namespace Wizou.FreeXplorer
             // 
             this.ShowVLC.Location = new System.Drawing.Point(41, 297);
             this.ShowVLC.Name = "ShowVLC";
-            this.ShowVLC.Size = new System.Drawing.Size(235, 14);
+            this.ShowVLC.Size = new System.Drawing.Size(235, 17);
             this.ShowVLC.TabIndex = 25;
             this.ShowVLC.Text = "Afficher la fenêtre de VLC";
             this.ShowVLC.CheckedChanged += new System.EventHandler(this.ShowVLC_CheckedChanged);
@@ -312,9 +312,8 @@ namespace Wizou.FreeXplorer
             this.TranscodePC.AutoSize = true;
             this.TranscodePC.Location = new System.Drawing.Point(258, 1);
             this.TranscodePC.Name = "TranscodePC";
-            this.TranscodePC.Size = new System.Drawing.Size(82, 17);
+            this.TranscodePC.Size = new System.Drawing.Size(86, 17);
             this.TranscodePC.TabIndex = 3;
-            this.TranscodePC.TabStop = false;
             this.TranscodePC.Text = "Audio sur PC";
             // 
             // TranscodeA52
@@ -322,9 +321,8 @@ namespace Wizou.FreeXplorer
             this.TranscodeA52.AutoSize = true;
             this.TranscodeA52.Location = new System.Drawing.Point(159, 1);
             this.TranscodeA52.Name = "TranscodeA52";
-            this.TranscodeA52.Size = new System.Drawing.Size(93, 17);
+            this.TranscodeA52.Size = new System.Drawing.Size(97, 17);
             this.TranscodeA52.TabIndex = 2;
-            this.TranscodeA52.TabStop = false;
             this.TranscodeA52.Text = "A/52 Dolby 5.1";
             // 
             // TranscodeMPGA
@@ -333,8 +331,9 @@ namespace Wizou.FreeXplorer
             this.TranscodeMPGA.Checked = true;
             this.TranscodeMPGA.Location = new System.Drawing.Point(58, 1);
             this.TranscodeMPGA.Name = "TranscodeMPGA";
-            this.TranscodeMPGA.Size = new System.Drawing.Size(95, 17);
+            this.TranscodeMPGA.Size = new System.Drawing.Size(99, 17);
             this.TranscodeMPGA.TabIndex = 1;
+            this.TranscodeMPGA.TabStop = true;
             this.TranscodeMPGA.Text = "MPEG-II Stéréo";
             // 
             // TranscodeNone
@@ -342,9 +341,8 @@ namespace Wizou.FreeXplorer
             this.TranscodeNone.AutoSize = true;
             this.TranscodeNone.Location = new System.Drawing.Point(0, 1);
             this.TranscodeNone.Name = "TranscodeNone";
-            this.TranscodeNone.Size = new System.Drawing.Size(52, 17);
+            this.TranscodeNone.Size = new System.Drawing.Size(56, 17);
             this.TranscodeNone.TabIndex = 0;
-            this.TranscodeNone.TabStop = false;
             this.TranscodeNone.Text = "Aucun";
             // 
             // StartMinimized
@@ -353,7 +351,7 @@ namespace Wizou.FreeXplorer
             this.StartMinimized.CheckState = System.Windows.Forms.CheckState.Checked;
             this.StartMinimized.Location = new System.Drawing.Point(41, 277);
             this.StartMinimized.Name = "StartMinimized";
-            this.StartMinimized.Size = new System.Drawing.Size(235, 14);
+            this.StartMinimized.Size = new System.Drawing.Size(235, 17);
             this.StartMinimized.TabIndex = 23;
             this.StartMinimized.Text = "Minimiser au lancement";
             // 
@@ -363,7 +361,7 @@ namespace Wizou.FreeXplorer
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.StartAtBoot.Location = new System.Drawing.Point(283, 297);
             this.StartAtBoot.Name = "StartAtBoot";
-            this.StartAtBoot.Size = new System.Drawing.Size(247, 14);
+            this.StartAtBoot.Size = new System.Drawing.Size(247, 17);
             this.StartAtBoot.TabIndex = 26;
             this.StartAtBoot.Text = "Lancer FreeXplorer au démarrage de Windows";
             this.StartAtBoot.CheckedChanged += new System.EventHandler(this.StartAtBoot_CheckedChanged);
@@ -376,7 +374,7 @@ namespace Wizou.FreeXplorer
             this.MinimizeToTray.CheckState = System.Windows.Forms.CheckState.Checked;
             this.MinimizeToTray.Location = new System.Drawing.Point(283, 277);
             this.MinimizeToTray.Name = "MinimizeToTray";
-            this.MinimizeToTray.Size = new System.Drawing.Size(247, 14);
+            this.MinimizeToTray.Size = new System.Drawing.Size(247, 17);
             this.MinimizeToTray.TabIndex = 24;
             this.MinimizeToTray.Text = "Mini-icone près de l\'horloge lorsque minimisé";
             // 
@@ -386,7 +384,7 @@ namespace Wizou.FreeXplorer
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.FFMpegInterlace.Location = new System.Drawing.Point(41, 347);
             this.FFMpegInterlace.Name = "FFMpegInterlace";
-            this.FFMpegInterlace.Size = new System.Drawing.Size(489, 14);
+            this.FFMpegInterlace.Size = new System.Drawing.Size(489, 17);
             this.FFMpegInterlace.TabIndex = 29;
             this.FFMpegInterlace.Text = "Suppression du scintillement vidéo (plus agréable pour les yeux mais consomme du " +
                 "CPU)";
@@ -397,7 +395,7 @@ namespace Wizou.FreeXplorer
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.HalfScale.Location = new System.Drawing.Point(41, 367);
             this.HalfScale.Name = "HalfScale";
-            this.HalfScale.Size = new System.Drawing.Size(489, 14);
+            this.HalfScale.Size = new System.Drawing.Size(489, 17);
             this.HalfScale.TabIndex = 30;
             this.HalfScale.Text = "Mode d\'économie de CPU sans baisse de qualité visible (traitement sur moins de pi" +
                 "xels)";
@@ -408,7 +406,7 @@ namespace Wizou.FreeXplorer
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.LIRCActive.Location = new System.Drawing.Point(283, 317);
             this.LIRCActive.Name = "LIRCActive";
-            this.LIRCActive.Size = new System.Drawing.Size(247, 14);
+            this.LIRCActive.Size = new System.Drawing.Size(247, 17);
             this.LIRCActive.TabIndex = 28;
             this.LIRCActive.Text = "Activer le serveur LIRC";
             // 
@@ -446,7 +444,7 @@ namespace Wizou.FreeXplorer
             this.PCControlAllowed.CheckState = System.Windows.Forms.CheckState.Checked;
             this.PCControlAllowed.Location = new System.Drawing.Point(41, 317);
             this.PCControlAllowed.Name = "PCControlAllowed";
-            this.PCControlAllowed.Size = new System.Drawing.Size(235, 14);
+            this.PCControlAllowed.Size = new System.Drawing.Size(235, 17);
             this.PCControlAllowed.TabIndex = 27;
             this.PCControlAllowed.Text = "Autoriser le contrôle du PC par la Freebox";
             this.PCControlAllowed.CheckedChanged += new System.EventHandler(this.PCControlAllowed_CheckedChanged);
@@ -457,7 +455,7 @@ namespace Wizou.FreeXplorer
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.LessIconsInExplorer.Location = new System.Drawing.Point(41, 387);
             this.LessIconsInExplorer.Name = "LessIconsInExplorer";
-            this.LessIconsInExplorer.Size = new System.Drawing.Size(489, 14);
+            this.LessIconsInExplorer.Size = new System.Drawing.Size(489, 17);
             this.LessIconsInExplorer.TabIndex = 31;
             this.LessIconsInExplorer.Text = "Afficher moins d\'icônes dans l\'explorateur (accélère l\'affichage des pages)";
             this.LessIconsInExplorer.CheckedChanged += new System.EventHandler(this.LessIconsInExplorer_CheckedChanged);
@@ -475,26 +473,24 @@ namespace Wizou.FreeXplorer
             // 
             // TrayContextMenu
             // 
-            this.TrayContextMenu.Enabled = true;
-            this.TrayContextMenu.GripMargin = new System.Windows.Forms.Padding(2);
             this.TrayContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TrayConfig,
             this.TrayQuit});
-            this.TrayContextMenu.Location = new System.Drawing.Point(24, 65);
             this.TrayContextMenu.Name = "TrayContextMenu";
-            this.TrayContextMenu.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.TrayContextMenu.Size = new System.Drawing.Size(158, 48);
+            this.TrayContextMenu.Size = new System.Drawing.Size(180, 48);
             // 
             // TrayConfig
             // 
             this.TrayConfig.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
             this.TrayConfig.Name = "TrayConfig";
+            this.TrayConfig.Size = new System.Drawing.Size(179, 22);
             this.TrayConfig.Text = "Configuration";
             this.TrayConfig.Click += new System.EventHandler(this.TrayConfig_Click);
             // 
             // TrayQuit
             // 
             this.TrayQuit.Name = "TrayQuit";
+            this.TrayQuit.Size = new System.Drawing.Size(179, 22);
             this.TrayQuit.Text = "Arrêter FreeXplorer";
             this.TrayQuit.Click += new System.EventHandler(this.QuitBtn_Click);
             // 
@@ -555,9 +551,9 @@ namespace Wizou.FreeXplorer
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Configuration de FreeXplorer {0}";
-            this.Shown += new System.EventHandler(this.MainForm_Shown);
-            this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

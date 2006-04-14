@@ -771,7 +771,7 @@ namespace Wizou.FreeXplorer
                 {
                     html = Encoding.UTF8.GetString(Encoding.Default.GetBytes(html));
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
 #if DEBUG
                     Debugger.Break();
@@ -1152,3 +1152,22 @@ namespace Wizou.FreeXplorer
 
     }
 }
+/* notes diverses
+
+Webcam sur TV:
+ input: dshow://
+ output: sout=#transcode{vcodec=mp2v,vb=3072,scale=1,acodec=mpga,ab=256,channels=2} :duplicate{dst=std{access=udp,mux=ts,url=212.27.38.253:1234}}
+========================================================================
+Forcer le son à sortir par la carte son du PC
+    * Effacez les lignes contenant sout-transcode-ab et sout-transcode-acodec
+    * Ajouter la ligne #EXTVLCOPT:sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio} 
+========================================================================
+
+manuel:
+start vlc\vlc.exe --extraintf http --no-playlist-autostart --http-src=./http-fbx --http-host :8080 --sout="#transcode:std" --sout-standard-access=udp --sout-standard-mux=ts --sout-standard-url=212.27.38.253:1234 --sout-transcode-vcodec=mp2v --sout-transcode-vb=900 --sout-transcode-acodec=mpga --sout-transcode-ab=384 --sout-transcode-channels=2 --file-caching=1000 --sout-ts-pid-video=68 --sout-ts-pid-audio=69 --sout-ts-pcr=80 --sout-ts-dts-delay=400 --play-and-stop --open=
+
+sout=#transcode{vcodec=mp2v,vb=9000,scale=1,acodec=mpga,ab=384,channels=2} :duplicate{dst=std{access=udp,mux=ts,url=212.27.38.253:1234}}
+
+Note: Pour ceux qui sont en Wi-Fi, remplacez vb=9000 par vb=2000 pour ainsi éviter les freezes.
+
+*/
