@@ -7,7 +7,9 @@
 	<meta name="mail_page"      content="mediacenter.html?action=appcommand&cmd=15">
 	<meta name="mail2_page"     content="mediacenter.html?action=appcommand&cmd=7">
 	<meta name="nochannel_page" content="mediacenter.html?action=sendkeys&keys=%d">
-	<meta name="channel_page"   content="mediacenter.html?action=sendkeys&keys=#%d">
+	<meta name="channel_page"   content="mediacenter.html?action=sendkeys&keys=%d">
+	<meta name="prog_select_timeout" content="300">
+	<meta name="prog_expand_timeout" content="300">
 	<link rel="help"       href=   "mediacenter.html?action=appcommand&cmd=27">
 	<link rel="guide"      href=   "mediacenter.html?action=appcommand&cmd=18">
 	<link rel="yellow"     href=   "mediacenter.html?action=appcommand&cmd=1">
@@ -21,8 +23,10 @@
 	<link rel="up"         href=   "mediacenter.html?action=appcommand&cmd=49&cmd=51">
 	<link rel="down"       href=   "mediacenter.html?action=appcommand&cmd=50&cmd=52">
 	<link rel="pause"      href=   "mediacenter.html?action=appcommand&cmd=14">
-	<link rel="play"       href=   "mediacenter.html?action=appcommand&cmd=46">
+	<link rel="play"       href=   "mediacenter.html?action=appcommand&cmd=14">
 	<link rel="stop"       href=   "mediacenter.html?action=appcommand&cmd=13">
+	<link rel="star"       href=   "mediacenter.html?action=sendkeys&keys=*">
+	<link rel="sharp"      href=   "mediacenter.html?action=sendkeys&keys=#">
 </head>
 <body text="#FFFFFF3F">
 <box height=5 border=0>
@@ -59,9 +63,9 @@
 		<tr><td>Pause/Play</td><td>MEDIA_PLAY_PAUSE</td></tr>
 		<tr><td><font family="Symbol">V</font> P+</td><td>MEDIA_FASTFORWARD et &nbsp;MEDIA_CHANNEL_UP</td></tr>
 		<tr><td><font family="Symbol">U</font> P-</td><td>MEDIA_REWIND et &nbsp;MEDIA_CHANNEL_DOWN</td></tr>
-		<tr><td>Chiffres, OK</td><td><i>Tape le chiffre ou Entrée</i></td></tr>
-		<tr><td><font family="Symbol">S  #-</font></td><td>VOLUME_DOWN</td></tr>
-		<tr><td><font family="Symbol">T  #+</font></td><td>VOLUME_UP</td></tr>
+		<tr><td>Chiffres, *, #, OK</td><td><i>Tape le chiffre, *, # ou Entrée</i></td></tr>
+		<tr><td><font family="Symbol">S #</font>-</td><td>VOLUME_DOWN</td></tr>
+		<tr><td><font family="Symbol">T #</font>+</td><td>VOLUME_UP</td></tr>
 		<tr><td><font color=#FF00003F>Rouge</font></td><td>MEDIA_PREVIOUSTRACK</td></tr>
 		<tr><td><font color=#00FF003F>Vert</font></td><td>MEDIA_NEXTTRACK</td></tr>
 		<tr><td><font color=#FFFF003F>Jaune</font></td><td>BROWSER_BACKWARD</td></tr>

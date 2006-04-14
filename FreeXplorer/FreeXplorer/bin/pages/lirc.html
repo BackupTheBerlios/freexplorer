@@ -8,6 +8,8 @@
 	<meta name="mail2_page"     content="lirc.html?action=lirc&key=mail2">
 	<meta name="nochannel_page" content="lirc.html?action=lirc&key=%d">
 	<meta name="channel_page"   content="lirc.html?action=lirc&key=#%d">
+	<meta name="prog_select_timeout" content="300">
+	<meta name="prog_expand_timeout" content="300">
 	<link rel="help"       href=   "lirc.html?action=lirc&key=help">
 	<link rel="guide"      href=   "lirc.html?action=lirc&key=guide">
 	<link rel="yellow"     href=   "lirc.html?action=lirc&key=yellow">
@@ -20,9 +22,17 @@
 	<link rel="right"      href=   "lirc.html?action=lirc&key=right">
 	<link rel="up"         href=   "lirc.html?action=lirc&key=up">
 	<link rel="down"       href=   "lirc.html?action=lirc&key=down">
-	<link rel="pause"      href=   "lirc.html?action=lirc&key=pause">
-	<link rel="play"       href=   "lirc.html?action=lirc&key=play">
+	<link rel="pause"      href=   "lirc.html?action=lirc&key=ppause">
+	<link rel="play"       href=   "lirc.html?action=lirc&key=ppause">
 	<link rel="stop"       href=   "lirc.html?action=lirc&key=stop">
+	<link rel="star"       href=   "lirc.html?action=lirc&key=*">
+	<link rel="sharp"      href=   "lirc.html?action=lirc&key=#">
+
+	<!-- Fonction sympa pour eteindre le PC à la fin d'un film tout en restant dans le mode LIRC
+		Je la verrai bien sur l'appui-long de la touche '?' mais la balise meta correspondante n'est pas encore documentée
+		donc pour l'instant je la met sur 'rec', touche nouvellement documentée -->
+	<link rel="rec"        href=   "lirc.html?afterAction=suspend">
+
 	<meta name=refresh	content="10;url=lirc.html?key={2}">
 </head>
 <body text="#FFFFFF3F">
@@ -49,7 +59,7 @@
 	<td width=4%></td>
 	<td width=92% bgcolor="#00000030" height=480 valign=top>
 	<table cellspacing=0 cellpadding="0" align=center>
-		<tr><td width=30%>Coeur</td><td width=15%>love</td></tr>
+		<tr><td width=30%>Coeur</td><td width=25%>love</td></tr>
 		<tr><td>Coeur <i>(appui long)</i></td><td>love2</td></tr>
 		<tr><td>Lettre</td><td>mail</td></tr>
 		<tr><td>Lettre <i>(appui long)</i></td><td>mail2</td></tr>
@@ -58,17 +68,17 @@
 		<tr><td>Info</td><td>info</td></tr>
 		<tr><td>Guide</td><td>guide</td></tr>
 		<tr><td>Stop</td><td>stop</td></tr>
-		<tr><td>Pause/Play</td><td>pause</td></tr>
+		<tr><td>Pause/Play</td><td>ppause</td></tr>
 		<tr><td><font family="Symbol">V</font> P+</td><td>up</td></tr>
 		<tr><td><font family="Symbol">U</font> P-</td><td>down</td></tr>
 		<tr><td>OK</td><td>ok</td></tr>
-		<tr><td><font family="Symbol">S  #-</font></td><td>left</td></tr>
-		<tr><td><font family="Symbol">T  #+</font></td><td>right</td></tr>
+		<tr><td><font family="Symbol">S #</font>-</td><td>left</td></tr>
+		<tr><td><font family="Symbol">T #</font>+</td><td>right</td></tr>
 		<tr><td><font color=#FF00003F>Rouge</font></td><td>red</td></tr>
 		<tr><td><font color=#00FF003F>Vert</font></td><td>green</td></tr>
 		<tr><td><font color=#FFFF003F>Jaune</font></td><td>yellow</td></tr>
 		<tr><td><font color=#3F3FFF3F>Bleu</font></td><td>blue</td></tr>
-		<tr><td>Chiffres</td><td>&lt;le chiffre&gt;</td></tr>
+		<tr><td>Chiffres, *, #</td><td>&lt;le chiffre&gt;, *, #</td></tr>
 	</table>
 	</td>
 </tr>
