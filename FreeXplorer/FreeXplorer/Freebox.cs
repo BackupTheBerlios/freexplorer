@@ -64,7 +64,7 @@ namespace Wizou.FreeXplorer
             //Opens file "cookies.dat" and deserializes the CookieContainer from it.
             try
             {
-                Stream stream = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/cookies.dat"), FileMode.Open);
+                Stream stream = File.Open(Path.Combine(FreeXplorer.ConfigurationFolder, "cookies.dat"), FileMode.Open);
                 BinaryFormatter formatter = new BinaryFormatter();
                 webCookieContainer = (CookieContainer)formatter.Deserialize(stream);
                 stream.Close();
@@ -193,7 +193,7 @@ namespace Wizou.FreeXplorer
 
         private HttpStatusCode ReplyXSLT(string xslPath, string xmlName)
         {
-            string xmlPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/" + xmlName);
+            string xmlPath = Path.Combine(FreeXplorer.ConfigurationFolder, xmlName);
             if (!File.Exists(xslPath))
             {
                 ErrorDescription = "Données " + xmlName + " introuvable";
@@ -594,7 +594,7 @@ namespace Wizou.FreeXplorer
             }
 #endif
             //Opens "cookies.dat" and serializes the CookieContainer into it in Soap/XML format.
-            Stream stream = File.Open(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/cookies.dat"), FileMode.Create);
+            Stream stream = File.Open(Path.Combine(FreeXplorer.ConfigurationFolder, "cookies.dat"), FileMode.Create);
             BinaryFormatter formatter = new BinaryFormatter();
             formatter.Serialize(stream, webCookieContainer);
             stream.Close();
@@ -981,6 +981,24 @@ namespace Wizou.FreeXplorer
             return result;
         }
 
+        static string PathCombine(params string[] elems)
+        {
+            string result = "";
+            foreach (string elem in elems)
+            {
+                result = Path.Combine(result, elem);
+            }
+            return result;
+        }
+
+        internal static string GetIconForMediaType(VLC.Utility.MediaType type, string defaultIcon)
+        {
+            //FIXME: Path relatif au CurrentDirectory mais devrait être relatif au BaseDir du serveur
+            FileInfo iconFile = new FileInfo(PathCombine("pages", "img", "media", type.ToString() + ".gif"));
+            return iconFile.Exists ? "img/media/" + iconFile.Name : defaultIcon;
+
+        }
+
         internal static string ExploreFiles(string dir, string deffile)
         {
             string[] files;
@@ -1019,13 +1037,6 @@ namespace Wizou.FreeXplorer
                 return "<i>Aucun fichier multimedia dans ce dossier</i>\r\n";
             else
                 return html.ToString();
-        }
-
-        internal static string GetIconForMediaType(VLC.Utility.MediaType type, string defaultIcon)
-        {
-            FileInfo iconFile = new FileInfo("pages/img/media/" + type.ToString() + ".gif");
-            return iconFile.Exists ? "img/media/" + iconFile.Name : defaultIcon;
-
         }
 
         internal static void ExploreFolders(ref StringBuilder html, string[] folders, string dir, int level, string prefix)

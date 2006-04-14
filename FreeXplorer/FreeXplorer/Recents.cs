@@ -27,11 +27,19 @@ namespace Wizou.FreeXplorer
 {
     static class Recents
     {
+        static string FilePath
+        {
+            get
+            {
+                return Path.Combine(FreeXplorer.ConfigurationFolder, "recents.xml");
+            }
+        }
+
         public static void Add(string file)
         {
-            XmlTextReader reader = new XmlTextReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.xml"));
+            XmlTextReader reader = new XmlTextReader(FilePath);
             reader.ReadStartElement("Recents");
-            XmlTextWriter writer = new XmlTextWriter(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.new"), null);
+            XmlTextWriter writer = new XmlTextWriter(Path.ChangeExtension(FilePath, ".new"), null);
             writer.Formatting = Formatting.Indented;
             writer.WriteStartElement("Recents");
             writer.WriteStartElement("MRL");
@@ -50,8 +58,8 @@ namespace Wizou.FreeXplorer
             }
             writer.Close();
             reader.Close();
-            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.xml"));
-            File.Move(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.new"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/recents.xml"));
+            File.Delete(FilePath);
+            File.Move(Path.ChangeExtension(FilePath, ".new"), FilePath);
         }
     }
 }

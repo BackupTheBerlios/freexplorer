@@ -116,7 +116,7 @@ namespace Wizou.FreeXplorer
             VideoExts.Text = VLC.Utility.VideoExts;
 
             // chargement des valeurs des options depuis le fichier Config.xml
-            XmlTextReader reader = new XmlTextReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/config.xml"));
+            XmlTextReader reader = new XmlTextReader(Path.Combine(FreeXplorer.ConfigurationFolder, "config.xml"));
             reader.ReadStartElement("Config");
             do
             {
@@ -162,7 +162,7 @@ namespace Wizou.FreeXplorer
 
         public void SaveConfig()
         {
-            XmlTextWriter writer = new XmlTextWriter(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/config.xml"), null);
+            XmlTextWriter writer = new XmlTextWriter(Path.Combine(FreeXplorer.ConfigurationFolder, "config.xml"), null);
             writer.Formatting = Formatting.Indented;
             writer.WriteStartElement("Config");
             writer.WriteElementString("VLCPath", VLCPath.Text);

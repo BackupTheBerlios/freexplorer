@@ -27,10 +27,18 @@ namespace Wizou.FreeXplorer
 {
     static class Favorites
     {
+        static string FilePath
+        {
+            get
+            {
+                return Path.Combine(FreeXplorer.ConfigurationFolder, "favorites.xml");
+            }
+        }
+
         public static void Add(string file, string kind, string title)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
+            doc.Load(FilePath);
             XmlElement root = doc.DocumentElement;
             XmlElement node = root.SelectSingleNode("MRL[.='" + file + "']") as XmlElement;
             if (node == null)
@@ -41,19 +49,17 @@ namespace Wizou.FreeXplorer
             }
             node.SetAttribute("kind", kind);
             node.SetAttribute("title", title);
-            doc.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
-
+            doc.Save(FilePath);
         }
 
         public static void Del(string file)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
+            doc.Load(FilePath);
             XmlElement root = doc.DocumentElement;
             XmlElement node = root.SelectSingleNode("MRL[.='" + file + "']") as XmlElement;
             if (node != null) root.RemoveChild(node);
-            doc.Save(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "FreeXplorer/favorites.xml"));
-
+            doc.Save(FilePath);
         }
     }
 }
