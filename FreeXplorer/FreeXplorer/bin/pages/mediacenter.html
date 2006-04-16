@@ -26,7 +26,13 @@
 	<link rel="play"       href=   "mediacenter.html?action=appcommand&cmd=14">
 	<link rel="stop"       href=   "mediacenter.html?action=appcommand&cmd=13">
 	<link rel="star"       href=   "mediacenter.html?action=sendkeys&keys=*">
-	<link rel="sharp"      href=   "mediacenter.html?action=sendkeys&keys=#">
+	<link rel="sharp"      href=   "mediacenter_blank.html">
+
+	<!-- Fonction sympa pour eteindre le PC à la fin d'un film tout en restant dans le mode MediaCenter
+		Je la verrai bien sur l'appui-long de la touche '?' mais la balise meta correspondante n'est pas encore documentée
+		donc pour l'instant je la met sur 'rec', touche nouvellement documentée -->
+	<link rel="rec"        href=   "mediacenter.html?afterAction=suspend">
+
 </head>
 <body text="#FFFFFF3F">
 <box height=5 border=0>
