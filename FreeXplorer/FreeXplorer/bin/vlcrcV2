@@ -409,9 +409,9 @@ sout-ts-pcr=80
 # Retard DTS (ms) (Entier)
 #sout-ts-dts-delay=400
 # Cryptage audio (Booléen)
-#sout-ts-crypt-audio=1
+sout-ts-crypt-audio=0
 # Crypt video (Booléen)
-#sout-ts-crypt-video=1
+sout-ts-crypt-video=0
 # Clé CSA (Chaîne)
 #sout-ts-csa-ck=
 # Packet size in bytes to encrypt (Entier)
@@ -457,7 +457,7 @@ sout-ffmpeg-keyint=24
 # Hâter (Booléen)
 #sout-ffmpeg-hurry-up=0
 # Active l’encodage entrelacé (Booléen)
-sout-ffmpeg-interlace=1
+#sout-ffmpeg-interlace=0
 # Enable interlaced motion estimation (Booléen)
 sout-ffmpeg-interlace-me=0
 # Tolérance du débit de la vidéo (Entier)
@@ -796,11 +796,11 @@ fake-deinterlace=1
 # Police (Chaîne)
 #freetype-font=
 # Taille de la police en pixels (Entier)
-#freetype-fontsize=0
+freetype-fontsize=22
 # Opacité, 0 à 255 (Entier)
 #freetype-opacity=255
 # Couleur par défaut du texte (Entier)
-#freetype-color=16777215
+freetype-color=8421376
 # Taille (Entier)
 #freetype-rel-fontsize=16
 
