@@ -24,6 +24,7 @@ namespace Wizou.FreeXplorer
     static class Program
     {
         public static string appVersionText;
+        public static bool autostart = false;
         
         /// <summary>
         /// The main entry point for the application.
@@ -35,6 +36,11 @@ namespace Wizou.FreeXplorer
             Application.SetCompatibleTextRenderingDefault(false);
             Version appVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
             appVersionText = appVersion.ToString(appVersion.Build == 0 ? 2 : 3);
+            foreach (string arg in Environment.GetCommandLineArgs())
+            {
+                if (String.Compare(arg, "-autostart", true) == 0)
+                    autostart = true;
+            }
             MainForm mainForm;
             try
             {

@@ -421,7 +421,7 @@ noNewConfig:
 	
 	;Create shortcuts
 	CreateShortCut  "$SMPROGRAMS\${PRODUCT} ${VERSION}.lnk" "$INSTDIR\${MAINEXENAME}"
-	CreateShortCut  "$INSTDIR\FreeXplorer.lnk" "$INSTDIR\${MAINEXENAME}"
+	CreateShortCut  "$INSTDIR\FreeXplorer.lnk" "$INSTDIR\${MAINEXENAME}" "-autostart"
 	
 	;Create uninstaller
 	WriteUninstaller "$INSTDIR\Uninstall.exe"

@@ -83,7 +83,7 @@ namespace Wizou.FreeXplorer
         private void MainForm_Shown(object sender, EventArgs e)
         {
             MainForm_SizeChanged(null, e);
-            if (WindowState == FormWindowState.Minimized)
+            if ((WindowState == FormWindowState.Minimized) && !Program.autostart)
                 TrayIcon.ShowBalloonTip(5);
         }
 
