@@ -465,7 +465,7 @@ sout-ffmpeg-interlace-me=0
 # Activer la prédiction de mouvement (Booléen)
 #sout-ffmpeg-pre-me=0
 # Active le contrôle strict du débit (Booléen)
-#sout-ffmpeg-strict-rc=0
+sout-ffmpeg-strict-rc=1
 # Taille du buffer de contrôle de débit (Entier)
 #sout-ffmpeg-rc-buffer-size=1835008
 # Efficacité du contrôle de débit (Flottant)

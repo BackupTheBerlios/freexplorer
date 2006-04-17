@@ -425,7 +425,7 @@ namespace Wizou.FreeXplorer
             this.TranscodeVB.Name = "TranscodeVB";
             this.TranscodeVB.Size = new System.Drawing.Size(86, 20);
             this.TranscodeVB.TabIndex = 15;
-            this.TranscodeVB.Text = "8500";
+            this.TranscodeVB.Text = "8000";
             // 
             // label14
             // 
