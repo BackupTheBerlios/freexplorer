@@ -84,23 +84,24 @@ namespace Wizou.FreeXplorer
             this.lircServer = lircServer;
         }
 
-        override protected HttpStatusCode HandleRequest()
+        override protected bool ValidateRemoteAddr(IPAddress remoteAddr)
         {
             // verification de l'adresse IP du client :
             // les adresses acceptés sont:
             //  212.27.38.253 (freeplayer.freebox.fr) : Freebox en mode DHCP
             //  127.0.0.1 (localhost) : Pour tests en local
             //  192.168.xx.xx : Freebox en mode Routeur (pas trop de probleme de sécurité à ce niveau puisque ce sont des adresses LAN locales, pas Internet)
-            IPAddress remoteAddr = (Socket.RemoteEndPoint as IPEndPoint).Address;
             if (!remoteAddr.Equals(FreeboxAddress) && !IPAddress.IsLoopback(remoteAddr))
             {
                 byte[] remoteAddrBytes = remoteAddr.GetAddressBytes();
                 if ((remoteAddrBytes[0] != 192) || (remoteAddrBytes[1] != 168))
-                {
-                    throw new ApplicationException(string.Format("Adresse IP {0} non autorisée", ((IPEndPoint)Socket.RemoteEndPoint).Address));
-                }
+                    return false; // non-acceptée
             }
+            return base.ValidateRemoteAddr(remoteAddr);
+        }
 
+        override protected HttpStatusCode HandleRequest()
+        {
             if (Url[0] != '/') throw new Exception("L'URL doit commencer par un /");
 
             vlcCache.Invalidate();

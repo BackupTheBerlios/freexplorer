@@ -93,10 +93,17 @@ namespace Wizou.HTTP
             Console.WriteLine("HTTP stopped");
         }
 
+        // standard validation (usually overriden)
+        virtual protected bool ValidateRemoteAddr(IPAddress remoteAddr)
+        {
+            return true; // any address is accepted
+        }
+
         private void ThreadLoop()
         {
             while (true)
             {
+                if (Socket != null) Socket.Close(); // securité: on ferme l'eventuelle Socket précédente
                 try
                 {
                     Socket = tcpListener.AcceptSocket();
@@ -107,6 +114,7 @@ namespace Wizou.HTTP
                         return; // arrêt du serveur
                     throw;
                 }
+                if (ValidateRemoteAddr((Socket.RemoteEndPoint as IPEndPoint).Address))
                 try
                 {
                     NetworkStream networkStream = new NetworkStream(Socket, true);
@@ -135,6 +143,7 @@ namespace Wizou.HTTP
                                 throw new ApplicationException(e.Message, e);
                             }
                             Console.WriteLine("HTTP< " + line);
+                            if (line == null) continue;
                             index = line.IndexOf(' ');
                             HttpMethod = line.Substring(0, index);
                             line = line.Substring(index + 1);
@@ -348,6 +357,7 @@ namespace Wizou.HTTP
             return ReplyString(String.Format(File.ReadAllText(path, Encoding.Default), args));
         }
         
+        // standard handling (usually overriden)
         virtual protected HttpStatusCode HandleRequest()
         {
             if (Url[0] != '/') throw new Exception("URL should start with a slash");
