@@ -386,7 +386,7 @@ namespace Wizou.FreeXplorer
                         break;
                     case "bkgnd":
                         if (BlackBkgnds)
-                            filename = Path.Combine(BaseDir, "img"+Path.PathSeparator+"black.png");
+                            filename = "img" + Path.DirectorySeparatorChar + "black.png";
                         else
                             filename = QueryArgs["bkgnd"];
                         if (filename.StartsWith("http://"))
@@ -418,6 +418,8 @@ namespace Wizou.FreeXplorer
                             tempFile.Close();
                             responseStream.Close();
                         }
+                        else
+                            filename = Path.Combine(BaseDir, filename);
                         vlcApp.Play(filename, 0);
                         vlcCache.Invalidate();
                         waitForBkgnd = true;
