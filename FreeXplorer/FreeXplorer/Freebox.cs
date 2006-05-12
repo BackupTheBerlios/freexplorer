@@ -49,6 +49,7 @@ namespace Wizou.FreeXplorer
         private VLCApp vlcApp;
         private VLCCache vlcCache;
         public Boolean PCControlAllowed;
+        public Boolean BlackBkgnds;
         private IPAddress FreeboxAddress;
         private StringDictionary GlobalVars = new StringDictionary(); // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
         private CookieContainer webCookieContainer;
@@ -185,10 +186,13 @@ namespace Wizou.FreeXplorer
                 vlcApp.Stop();
                 vlcApp.Start();
             }
-            string[] afterActions = QueryArgs.GetValues("afterAction");
-            if (afterActions != null)
-                foreach (string afterAction in afterActions)
-                    DoAfterAction(afterAction);
+            if (QueryArgs != null)
+            {
+                string[] afterActions = QueryArgs.GetValues("afterAction");
+                if (afterActions != null)
+                    foreach (string afterAction in afterActions)
+                        DoAfterAction(afterAction);
+            }
             base.HandleAfterReply();
         }
 
@@ -381,7 +385,10 @@ namespace Wizou.FreeXplorer
                         Favorites.Del(QueryArgs["file"]);
                         break;
                     case "bkgnd":
-                        filename = QueryArgs["bkgnd"];
+                        if (BlackBkgnds)
+                            filename = Path.Combine(BaseDir, "img"+Path.PathSeparator+"black.png");
+                        else
+                            filename = QueryArgs["bkgnd"];
                         if (filename.StartsWith("http://"))
                         {
                             WebRequest webRequest = WebRequest.Create(filename);

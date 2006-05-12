@@ -118,6 +118,7 @@ namespace Wizou.HTTP
                 try
                 {
                     NetworkStream networkStream = new NetworkStream(Socket, true);
+                    networkStream.ReadTimeout = 1000; // timeout if read doesn't succeed after 1 sec
                     using (RequestContent = new StreamReader(networkStream, Encoding.Default))
                     {
                         string line = null;
@@ -127,6 +128,7 @@ namespace Wizou.HTTP
                         ErrorDescription = null;
                         Url = null;
                         Query = null;
+                        QueryArgs = null;
                         LastModified = DateTime.Now;
                         ResponseHeaders = new WebHeaderCollection();
                         ContentType = new ContentType("text/html");

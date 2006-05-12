@@ -151,6 +151,7 @@ namespace Wizou.FreeXplorer
                         case "TranscodeVB": TranscodeVB.Text = value; break;
                         case "PCControlAllowed": PCControlAllowed.Checked = Convert.ToBoolean(value); break;
                         case "LessIconsInExplorer": LessIconsInExplorer.Checked = Convert.ToBoolean(value); break;
+                        case "BlackBkgnds": BlackBkgnds.Checked = Convert.ToBoolean(value); break;
                     }
                 }
             } while (reader.Read());
@@ -186,6 +187,7 @@ namespace Wizou.FreeXplorer
             writer.WriteElementString("TranscodeVB", TranscodeVB.Text);
             writer.WriteElementString("PCControlAllowed", PCControlAllowed.Checked.ToString());
             writer.WriteElementString("LessIconsInExplorer", LessIconsInExplorer.Checked.ToString());
+            writer.WriteElementString("BlackBkgnds", BlackBkgnds.Checked.ToString());
             
             writer.Close();
         }
@@ -235,6 +237,7 @@ namespace Wizou.FreeXplorer
             // activation eventuelle des serveurs TCP
             lircServer.Active = LIRCActive.Checked;
             freeboxServer.PCControlAllowed = PCControlAllowed.Checked;
+            freeboxServer.BlackBkgnds = BlackBkgnds.Checked;
 
             try
             {
