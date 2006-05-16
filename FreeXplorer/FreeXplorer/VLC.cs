@@ -307,7 +307,7 @@ namespace Wizou.VLC
             string line;
             do
                 line = ReadLine();
-            while (line.StartsWith("status change: "));
+            while (line.StartsWith("status change: ") || (line=="press menu select or pause to continue"));
             if (line != command + ": returned 0 (no error)")
                 throw new VLCException("La commande RC a renvoyée une erreur");
         }
@@ -350,6 +350,8 @@ namespace Wizou.VLC
             MakeSureReadEmpty();
             WriteLine("chapter");
             string line = ReadLine();
+            if (line == "press menu select or pause to continue")
+                line = ReadLine();
             if (line == "chapter: returned 0 (no error)")
             {
                 max = 0;
@@ -369,6 +371,8 @@ namespace Wizou.VLC
             MakeSureReadEmpty();
             WriteLine("title");
             string line = ReadLine();
+            if (line == "press menu select or pause to continue")
+                line = ReadLine();
             if (line == "title: returned 0 (no error)")
             {
                 max = 0;
