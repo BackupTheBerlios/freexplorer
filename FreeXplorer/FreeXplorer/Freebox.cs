@@ -48,10 +48,10 @@ namespace Wizou.FreeXplorer
         private LIRC.LIRCServer lircServer;
         private VLCApp vlcApp;
         private VLCCache vlcCache;
-        public Boolean PCControlAllowed;
-        public Boolean BlackBkgnds;
+        public bool PCControlAllowed;
+        public bool BlackBkgnds;
         private IPAddress FreeboxAddress;
-        private StringDictionary GlobalVars = new StringDictionary(); // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
+        private Dictionary<string, string> GlobalVars = new Dictionary<string, string>(); // variables globales utilisées par les pages (conservées d'un appel à l'autre au serveur)
         private CookieContainer webCookieContainer;
         string keyboardHTML;
         string keyboardReferer = null;
@@ -978,9 +978,9 @@ namespace Wizou.FreeXplorer
     {
         public static Boolean LessIconsInExplorer;
 
-        internal static StringCollection GetPlayableFilesInDir(string path)
+        internal static List<string> GetPlayableFilesInDir(string path)
         {
-            StringCollection result = new StringCollection();
+            List<string> result = new List<string>();
             string[] files = Directory.GetFiles(path);
             foreach (string file in files)
             {
@@ -1163,8 +1163,16 @@ namespace Wizou.FreeXplorer
                     return Environment.GetFolderPath(Environment.SpecialFolder.MyPictures); 
 
                 case "$my video":
-                    return (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
-                        "My Video", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)); 
+                    switch(OSUtils.OSType)
+                    {
+                        case OSType.Windows :
+                            return (string)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders",
+                                "My Video", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)); 
+
+                        case OSType.Unix :
+                        default :
+                            return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    }
 
                 default:
                     throw new Exception("Dossier special inconnu: " + folder);

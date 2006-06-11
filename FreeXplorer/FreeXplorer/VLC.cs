@@ -462,7 +462,7 @@ namespace Wizou.VLC
         }
 
         // jouer plusieurs fichiers
-        public void Play(System.Collections.Specialized.StringCollection playlist)
+        public void Play(IList<string> playlist)
         {
             // compose une playlist puis la joue
             M3UFile m3uFile = new M3UFile();

@@ -65,6 +65,7 @@
     <Compile Include="Freebox.cs" />
     <Compile Include="HTTP.cs" />
     <Compile Include="M3UFile.cs" />
+    <Compile Include="OSUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">
