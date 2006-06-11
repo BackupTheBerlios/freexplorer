@@ -49,11 +49,18 @@ namespace Wizou.FreeXplorer
             int counter = 0;
             while (!reader.EOF)
             {
-                writer.WriteNode(reader, false);
-                if (reader.NodeType == XmlNodeType.Element)
+                if (reader.Value != file)
                 {
-                    counter++;
-                    if (counter == 25) break;
+                    writer.WriteNode(reader, false);
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        counter++;
+                        if (counter == 25) break;
+                    }
+                }
+                else
+                {
+                    reader.Read();
                 }
             }
             writer.Close();
