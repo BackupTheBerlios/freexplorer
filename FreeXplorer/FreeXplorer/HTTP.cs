@@ -356,7 +356,10 @@ namespace Wizou.HTTP
                 ErrorDescription = "Page " + name + " introuvable";
                 return HttpStatusCode.NotFound;
             }
-            return ReplyString(String.Format(File.ReadAllText(path, Encoding.Default), args));
+            using (StreamReader r = new StreamReader(path, Encoding.Default))
+            {
+                return ReplyString(String.Format(r.ReadToEnd(), args));
+            }
         }
         
         // standard handling (usually overriden)
