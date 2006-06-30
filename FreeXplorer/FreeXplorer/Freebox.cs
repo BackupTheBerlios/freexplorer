@@ -976,7 +976,7 @@ namespace Wizou.FreeXplorer
 
     static class Helper
     {
-        public static Boolean LessIconsInExplorer;
+        public static bool LessIconsInExplorer;
 
         internal static List<string> GetPlayableFilesInDir(string path)
         {

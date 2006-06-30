@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Favorites.cs" />
     <Compile Include="FreeXplorer.cs" />
     <Compile Include="MainForm.cs">
@@ -94,7 +95,9 @@
     </Compile>
     <Compile Include="Recents.cs" />
     <Compile Include="SysWin32.cs" />
-    <Compile Include="VLC.cs" />
+    <Compile Include="VLC\Utility.cs" />
+    <Compile Include="VLC\VLCApp.cs" />
+    <Compile Include="VLC\AudioTranscode.cs" />
     <Compile Include="WindowsController.cs" />
   </ItemGroup>
   <ItemGroup>

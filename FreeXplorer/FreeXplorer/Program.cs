@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Wizou.FreeXplorer
 {
@@ -41,6 +42,7 @@ namespace Wizou.FreeXplorer
                 if (String.Compare(arg, "-autostart", true) == 0)
                     autostart = true;
             }
+            
             MainForm mainForm;
             try
             {

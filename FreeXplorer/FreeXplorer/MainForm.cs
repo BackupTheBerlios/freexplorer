@@ -15,6 +15,7 @@
  * temps que ce programme ; si ce n'est pas le cas, écrivez à la Free Software 
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, États-Unis. 
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,38 +34,23 @@ namespace Wizou.FreeXplorer
 {
     public partial class MainForm : Form
     {
-        private VLCApp vlcApp = new VLCApp();
-        private FreeboxServer freeboxServer = new FreeboxServer(Path.Combine(Application.StartupPath, "pages"));
-        private LIRC.LIRCServer lircServer = new LIRC.LIRCServer();
+        const string STARTMENU_LINK_NAME = "FreeXplorer.lnk";
+
+        FreeXplorer m_fxp;
 
         public MainForm()
         {
             InitializeComponent();
+
             TrayIcon.Text = String.Format(TrayIcon.Text, Program.appVersionText); ;
             TrayIcon.BalloonTipTitle = String.Format(TrayIcon.BalloonTipTitle, Program.appVersionText); ;
             Text = String.Format(Text, Program.appVersionText);
 #if DEBUG
             Text = "Debug";
 #endif
+            m_fxp = new FreeXplorer();
 
-            IPHostEntry freeboxIP;
-            try
-            {
-                freeboxIP = Dns.GetHostEntry("freeplayer.freebox.fr");
-            }
-            catch (SocketException)
-            {
-                freeboxIP = new IPHostEntry();
-                MessageBox.Show("Impossible de résoudre l'adresse IP de la Freebox\r\n" +
-                                "Verifiez la configuration", "Initialisation",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            if (freeboxIP.AddressList != null) 
-                freeboxServer.Init(freeboxIP.AddressList[0], vlcApp, lircServer);
-
-            LoadConfig();
-            ApplyConfig(true);
-            if (StartMinimized.Checked)
+            if (m_fxp.Configuration.StartMinimized)
             {
                 WindowState = FormWindowState.Minimized;
                 VLCPath.Select(0,0); // sinon le champ etait sélectionné bizarrement (scrollé)
@@ -73,11 +59,7 @@ namespace Wizou.FreeXplorer
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            SaveConfig();
-            // arrets des serveurs TCP:
-            freeboxServer.Stop();
-            lircServer.Stop();
-            vlcApp.Stop();
+            m_fxp.Dispose();
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -110,92 +92,85 @@ namespace Wizou.FreeXplorer
 
         public void LoadConfig()
         {
-            // préchargement des valeurs par défaut des options
-            SoundExts.Text = VLC.Utility.SoundExts;
-            PictureExts.Text = VLC.Utility.PictureExts;
-            VideoExts.Text = VLC.Utility.VideoExts;
+            Configuration config = m_fxp.Configuration;
+            config.Load();
 
-            // chargement des valeurs des options depuis le fichier Config.xml
-            XmlTextReader reader = new XmlTextReader(Path.Combine(FreeXplorer.ConfigurationFolder, "config.xml"));
-            reader.ReadStartElement("Config");
-            do
-            {
-                if (reader.IsStartElement())
-                {
-                    string value = reader.ReadString();
-                    switch (reader.Name)
-                    {
-                        case "VLCPath": VLCPath.Text = value; break;
-                        case "DVDLetter": DVDLetter.Text = value; break;
-                        case "VlcPort": VlcPort.Text = value; break;
-                        case "SoundExts": SoundExts.Text = value; break;
-                        case "PictureExts": PictureExts.Text = value; break;
-                        case "VideoExts": VideoExts.Text = value; break;
-                        case "AudioLanguage": AudioLanguage.Text = value; break;
-                        case "SubLanguage": SubLanguage.Text = value; break;
-                        case "ShowVLC": ShowVLC.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
-                        case "Transcode":
-                            switch (value.ToUpper())
-                            {
-                                case "MPGA": TranscodeMPGA.Checked = true; break;
-                                case "A52": TranscodeA52.Checked = true; break;
-                                case "PC": TranscodePC.Checked = true; break;
-                                default: TranscodeNone.Checked = true; break;
-                            }
-                            break;
-                        case "StartMinimized": StartMinimized.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
-                        case "MinimizeToTray": MinimizeToTray.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
-                        case "FFMpegInterlace": FFMpegInterlace.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
-                        case "HalfScale": HalfScale.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
-                        case "LIRCActive": LIRCActive.Checked = (value == "1") || (value == System.Boolean.TrueString); break;
-                        case "TranscodeVB": TranscodeVB.Text = value; break;
-                        case "PCControlAllowed": PCControlAllowed.Checked = Convert.ToBoolean(value); break;
-                        case "LessIconsInExplorer": LessIconsInExplorer.Checked = Convert.ToBoolean(value); break;
-                        case "BlackBkgnds": BlackBkgnds.Checked = Convert.ToBoolean(value); break;
-                    }
-                }
-            } while (reader.Read());
-            reader.Close();
+            // chargement des valeurs depuis le Config.xml
+            VLCPath.Text = config.VLCPath;
+            DVDLetter.Text = config.DVDLetter;
+            VlcPort.Text = config.VlcPort;
+            SoundExts.Text = config.SoundExts;
+            PictureExts.Text = config.PictureExts;
+            VideoExts.Text = config.VideoExts;
+            AudioLanguage.Text = config.AudioLanguage;
+            SubLanguage.Text = config.SubLanguage;
+            ShowVLC.Checked = config.ShowVLC;
 
+            TranscodeMPGA.Checked = (config.Transcode == AudioTranscode.MPGA);
+            TranscodeA52.Checked = (config.Transcode == AudioTranscode.A52);
+            TranscodePC.Checked = (config.Transcode == AudioTranscode.PC);
+            TranscodeNone.Checked = (config.Transcode == AudioTranscode.None);
+
+            StartMinimized.Checked = config.StartMinimized;
+            MinimizeToTray.Checked = config.MinimizeToTray;
+            FFMpegInterlace.Checked = config.FFMpegInterlace;
+            HalfScale.Checked = config.HalfScale;
+            LIRCActive.Checked = config.LIRCActive;
+            TranscodeVB.Text = config.TranscodeVB;
+            PCControlAllowed.Checked = config.PCControlAllowed;
+            LessIconsInExplorer.Checked = config.LessIconsInExplorer;
+            BlackBkgnds.Checked = config.BlackBkgnds;
+           
             // chargement des valeurs des options qui ne sont pas issues de Config.xml
             StartAtBoot.Checked = File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "FreeXplorer.lnk"));
         }
 
         public void SaveConfig()
         {
-            XmlTextWriter writer = new XmlTextWriter(Path.Combine(FreeXplorer.ConfigurationFolder, "config.xml"), null);
-            writer.Formatting = Formatting.Indented;
-            writer.WriteStartElement("Config");
-            writer.WriteElementString("VLCPath", VLCPath.Text);
-            writer.WriteElementString("VlcPort", VlcPort.Text);
-            writer.WriteElementString("DVDLetter", DVDLetter.Text);
-            writer.WriteElementString("SoundExts", SoundExts.Text);
-            writer.WriteElementString("PictureExts", PictureExts.Text);
-            writer.WriteElementString("VideoExts", VideoExts.Text);
-            writer.WriteElementString("AudioLanguage", AudioLanguage.Text);
-            writer.WriteElementString("SubLanguage", SubLanguage.Text);
-            writer.WriteElementString("ShowVLC", ShowVLC.Checked.ToString());
-            writer.WriteElementString("Transcode",  TranscodeMPGA.Checked   ? "MPGA" :
-                                                    TranscodeA52.Checked ? "A52" :
-                                                    TranscodePC.Checked ? "PC" : 
-                                                                           "NONE");
-            writer.WriteElementString("StartMinimized", StartMinimized.Checked.ToString());
-            writer.WriteElementString("MinimizeToTray", MinimizeToTray.Checked.ToString());
-            writer.WriteElementString("FFMpegInterlace", FFMpegInterlace.Checked.ToString());
-            writer.WriteElementString("HalfScale", HalfScale.Checked.ToString());
-            writer.WriteElementString("LIRCActive", LIRCActive.Checked.ToString());
-            writer.WriteElementString("TranscodeVB", TranscodeVB.Text);
-            writer.WriteElementString("PCControlAllowed", PCControlAllowed.Checked.ToString());
-            writer.WriteElementString("LessIconsInExplorer", LessIconsInExplorer.Checked.ToString());
-            writer.WriteElementString("BlackBkgnds", BlackBkgnds.Checked.ToString());
-            
-            writer.Close();
+            Configuration config = m_fxp.Configuration;
+
+            config.VLCPath = VLCPath.Text;
+            config.VlcPort = VlcPort.Text;
+            config.DVDLetter = DVDLetter.Text;
+            config.SoundExts = SoundExts.Text;
+            config.PictureExts = PictureExts.Text;
+            config.VideoExts = VideoExts.Text;
+            config.AudioLanguage = AudioLanguage.Text;
+            config.SubLanguage = SubLanguage.Text;
+            config.ShowVLC = ShowVLC.Checked;
+
+            config.Transcode = TranscodeMPGA.Checked ? AudioTranscode.MPGA :
+                               TranscodeA52.Checked ? AudioTranscode.A52 :
+                               TranscodePC.Checked ? AudioTranscode.PC : 
+                               AudioTranscode.None;
+
+            config.StartMinimized = StartMinimized.Checked;
+            config.MinimizeToTray = MinimizeToTray.Checked;
+            config.FFMpegInterlace = FFMpegInterlace.Checked;
+            config.HalfScale = HalfScale.Checked;
+            config.LIRCActive = LIRCActive.Checked;
+            config.TranscodeVB = TranscodeVB.Text;
+            config.PCControlAllowed = PCControlAllowed.Checked;
+            config.LessIconsInExplorer = LessIconsInExplorer.Checked;
+            config.BlackBkgnds = BlackBkgnds.Checked;
+
+            config.Save();
         }
 
         private void ApplyConfig(bool restartVLC)
         {
             SaveConfig();
+            try
+            {
+                m_fxp.ApplyConfig(restartVLC);
+            }
+            catch (VLCLaunchException e)
+            {
+                MessageBox.Show(e.Message, "Initialisation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
+            /*
             // arrets des serveurs TCP
             freeboxServer.Stop();
             lircServer.Stop();
@@ -248,6 +223,7 @@ namespace Wizou.FreeXplorer
                 throw new Exception("Le port 8080 de cette machine est déjà occupé !\r\n" +
                                 "Vérifiez que FreeXplorer, VLC, un autre Freeplayer ou un serveur proxy n'est pas déjà actif");
             }
+            */
         }
 
         private void OkBtn_Click(object sender, EventArgs e)
@@ -270,33 +246,33 @@ namespace Wizou.FreeXplorer
             Show();
             WindowState = FormWindowState.Normal;
         }
-
-        public VLC.AudioTranscode GetAudioTranscode()
+        /*
+        public Wizou.VLC.AudioTranscode GetAudioTranscode()
         {
-            return TranscodeMPGA.Checked ? VLC.AudioTranscode.MPGA :
+            return TranscodeMPGA.Checked ? Wizou.VLC.AudioTranscode.MPGA :
                     TranscodeA52.Checked ? VLC.AudioTranscode.A52 :
                     TranscodePC.Checked ? VLC.AudioTranscode.PC :
                                             VLC.AudioTranscode.None;
-        }
+        }*/
 
         private void ShowVLC_CheckedChanged(object sender, EventArgs e)
         {
-            vlcApp.ShowWindow = ShowVLC.Checked;
+            m_fxp.VLCVisible = ShowVLC.Checked;
         }
 
         private void StartAtBoot_CheckedChanged(object sender, EventArgs e)
         {
             if (!Created) return;
             if (StartAtBoot.Checked)
-                File.Copy(Path.Combine(Application.StartupPath, "FreeXplorer.lnk"),
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "FreeXplorer.lnk"));
+                File.Copy(Path.Combine(Application.StartupPath, STARTMENU_LINK_NAME),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), STARTMENU_LINK_NAME));
             else
-                File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "FreeXplorer.lnk"));
+                File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), STARTMENU_LINK_NAME));
         }
 
         private void PCControlAllowed_CheckedChanged(object sender, EventArgs e)
         {
-            freeboxServer.PCControlAllowed = PCControlAllowed.Checked;
+            m_fxp.FreeboxServer.PCControlAllowed = PCControlAllowed.Checked;
             if (!PCControlAllowed.Checked)
                 LIRCActive.Checked = false;
             LIRCActive.Enabled = PCControlAllowed.Checked;
