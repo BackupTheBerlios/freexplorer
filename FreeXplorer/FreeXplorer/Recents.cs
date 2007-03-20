@@ -37,36 +37,23 @@ namespace Wizou.FreeXplorer
 
         public static void Add(string file)
         {
-            XmlTextReader reader = new XmlTextReader(FilePath);
-            reader.ReadStartElement("Recents");
-            XmlTextWriter writer = new XmlTextWriter(Path.ChangeExtension(FilePath, ".new"), null);
-            writer.Formatting = Formatting.Indented;
-            writer.WriteStartElement("Recents");
-            writer.WriteStartElement("MRL");
-            writer.WriteAttributeString("date", DateTime.Now.ToString());
-            writer.WriteString(file);
-            writer.WriteEndElement();
-            int counter = 0;
-            while (!reader.EOF)
+            XmlDocument doc = new XmlDocument();
+            doc.Load(FilePath);
+            XmlElement root = doc.DocumentElement;
+            XmlElement node;
+            while ((node = root.SelectSingleNode("MRL[.='" + file + "']") as XmlElement) != null)
             {
-                if (reader.Value != file)
-                {
-                    writer.WriteNode(reader, false);
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        counter++;
-                        if (counter == 25) break;
-                    }
-                }
-                else
-                {
-                    reader.Read();
-                }
+                root.RemoveChild(node);
             }
-            writer.Close();
-            reader.Close();
-            File.Delete(FilePath);
-            File.Move(Path.ChangeExtension(FilePath, ".new"), FilePath);
+            node = doc.CreateElement("MRL");
+            node.SetAttribute("date", DateTime.Now.ToString());
+            node.InnerText = file;
+            root.InsertAfter(node, null);
+            while (root.ChildNodes.Count > 25)
+            {
+                root.RemoveChild(root.LastChild);
+            }
+            doc.Save(FilePath);
         }
     }
 }

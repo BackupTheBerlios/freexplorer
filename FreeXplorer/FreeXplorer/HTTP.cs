@@ -200,9 +200,9 @@ namespace Wizou.HTTP
                                     case "connection": Connection = line; break;
                                     case "content-length": RequestContentLength = Convert.ToInt64(line); break;
                                     case "content-type": RequestContentType = new ContentType(line); break;
-                                    case "host": Host = line; Console.WriteLine("HTTP< Host: " + line); break;
+                                    case "host": Host = line; break;
                                     case "if-modified-since": IfModifiedSince = DateTime.Parse(line); break;
-                                    case "referer": Referer = line; break;
+                                    case "referer": Referer = line; Console.WriteLine("HTTP< Referer: " + line); break;
                                     case "user-agent": UserAgent = line; break;
                                     default:
                                         Console.WriteLine("BasicHttpServer: Header inconnu: {0}: {1}", headerName, line);
@@ -263,13 +263,13 @@ namespace Wizou.HTTP
                         if (Content != null)
                         {
                             writer.WriteLine("Content-Type: " + ContentType);
-                            Console.WriteLine("HTTP> Content-Type: " + ContentType);
+                            //Console.WriteLine("HTTP> Content-Type: " + ContentType);
                             if ((ContentLength == -1) && Content.CanSeek) 
                                 ContentLength = Content.Length;
                             if (ContentLength != -1)
                             {
                                 writer.WriteLine("Content-Length: " + ContentLength);
-                                Console.WriteLine("HTTP> Content-Length: " + ContentLength);
+                                //Console.WriteLine("HTTP> Content-Length: " + ContentLength);
                             }
                         }
                         writer.WriteLine(); // termine les headers avec une ligne vide
@@ -413,3 +413,5 @@ namespace Wizou.HTTP
     }
     
 }
+//		http://172.18.2.30:80/html/star.html
+

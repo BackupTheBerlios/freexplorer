@@ -1,15 +1,15 @@
 !define VERSION_MAJOR   1
-!define VERSION_MINOR   5
-!define VERSION         "1.5.6"
+!define VERSION_MINOR   6
+!define VERSION         "1.6"
 !define MAINEXENAME     "FreeXplorer.exe"
-!define TAGNAME         "FreeXplorer-1-5-6"
+!define TAGNAME         "FreeXplorer-1-6"
 
 !define MFG             "Wizou"
 !define FULLMFG         "Olivier Marcoux"
 !define URLUPDATEINFO   "http://wiz0u.free.fr/freexplorer"
 
 !define PRODUCT         "FreeXplorer"
-!define COPYRIGHT       "Copyright © 2005 Olivier Marcoux"
+!define COPYRIGHT       "Copyright © 2007 Olivier Marcoux"
 
 !define APP_GUID		"FreeXplorer-{91279ebe-f9c1-11d9-949c-00e08161165f}"
 !define UNINSTALLKEY    "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APP_GUID}"

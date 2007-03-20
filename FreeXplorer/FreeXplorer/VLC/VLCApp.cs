@@ -43,56 +43,46 @@ namespace Wizou.VLC
         private int rc_host_port;// = 31186;
         private char dvdLetter;// = 'D';
         private AudioTranscode audioTranscode;// = AudioTranscode.MPGA;
-        private enum VlcMode
-        {
-            FreeplayerV1,
-            FreeplayerV2,
-        }
-        private VlcMode vlcMode;
+        private VideoTranscode videoTranscode;// = VideoTranscode.MPG2;
         private Encoding vlcEncoding;
-        private byte vlcNewlineChar1;
-        private byte vlcNewlineChar2;
+        private byte vlcRNewlineChar1;
+        private byte vlcRNewlineChar2;
+        private byte[] vlcSNewlineChar;
         
         private static string AudioTranscode2Options(AudioTranscode audioTranscode)
         {
             switch (audioTranscode)
             {
-                case AudioTranscode.MPGA: return " --sout-transcode-acodec=mpga --sout-transcode-ab=192 --sout-transcode-channels=2";
-                case AudioTranscode.A52: return " --sout-transcode-acodec=a52 --sout-transcode-ab=448 --sout-transcode-channels=6";
-                case AudioTranscode.PC: return " --sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio} --audio-desync=850";
-                default: return " --sout-transcode-acodec= --sout-transcode-ab= --sout-transcode-channels=";
+                case AudioTranscode.MPGA: // 192 sinon les videos en mono ne passent pas
+                    return " --sout-transcode-acodec=mpga --sout-transcode-ab=192 --sout-transcode-channels=2";
+                case AudioTranscode.A52: 
+                    return " --sout-transcode-acodec=a52 --sout-transcode-ab=448 --sout-transcode-channels=6";
+                case AudioTranscode.PC: 
+                    return " --sout=#duplicate{dst=transcode:std,select=video,dst=display,select=audio} --audio-desync=850";
+                default: 
+                    return " --sout-transcode-acodec= --sout-transcode-ab= --sout-transcode-channels=";
+            }
+        }
+
+        private static string VideoTranscode2Options(VideoTranscode videoTranscode)
+        {
+            switch (videoTranscode)
+            {
+                case VideoTranscode.MPG2: 
+                    return " --sout-transcode-vcodec=mp2v";
+                default:
+                    return " --sout-transcode-vcodec=";
             }
         }
 
         public void SetConfig(string exeFilename, string audioLanguage, string subLanguage, bool ffmpeg_interlace, double transform_scale, int transcode_vb)
         {
-            switch (FileVersionInfo.GetVersionInfo(exeFilename).FileVersion)
-            {
-                case "0.8.4-svn": vlcMode = VlcMode.FreeplayerV1; break;
-                case "0.8.4-fbx-2": vlcMode = VlcMode.FreeplayerV2; break;
-                default:
-                    MessageBox.Show("FreeXplorer "+Wizou.FreeXplorer.Program.appVersionText+"n'est peut-être pas compatible avec cette version de vlc.exe\r\n\r\n" +
-                                "Cliquez sur Oui pour activer le mode de compatibilité Freeplayer V1\r\n"+
-                                "Cliquez sur Non pour activer le mode de compatibilité Freeplayer V2",
-                                "Compatibilité VLC",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    break;
-            }
-            switch (vlcMode)
-            {
-                case VlcMode.FreeplayerV1:
-                    vlcEncoding = Encoding.Default;
-                    vlcNewlineChar1 = 0x0A;
-                    vlcNewlineChar2 = 0x0D;
-                    break;
-                case VlcMode.FreeplayerV2:
-                    vlcEncoding = Encoding.UTF8;
-                    vlcNewlineChar1 = 0x0D;
-                    vlcNewlineChar2 = 0x0A;
-                    break;
-            }
+            vlcEncoding = Encoding.UTF8;
+            vlcRNewlineChar1 = 0x0D;
+            vlcRNewlineChar2 = 0x0A;
+            vlcSNewlineChar = new byte[] { 0x0D, 0x0A };
             startInfo = new ProcessStartInfo(exeFilename,
-                " --config ." + Path.DirectorySeparatorChar + (vlcMode == VlcMode.FreeplayerV1 ? "vlcrcV1" : "vlcrcV2") +
+                " --config ." + Path.DirectorySeparatorChar + "vlcrc" +
                 " --rc-host 127.0.0.1:" + rc_host_port +
                 " --audio-language=" + audioLanguage +
                 " --sub-language=" + subLanguage +
@@ -100,6 +90,7 @@ namespace Wizou.VLC
                 " --" + (ffmpeg_interlace ? "sout-ffmpeg-interlace" : "no-sout-ffmpeg-interlace") +
                 " --sout-transcode-scale=" + transform_scale.ToString(System.Globalization.NumberFormatInfo.InvariantInfo) +
                 AudioTranscode2Options(audioTranscode)+
+                VideoTranscode2Options(videoTranscode) +
                 " --sout-transcode-vb=" + transcode_vb.ToString() +
                 " --wxwin-config-last=(-1,0,0,1280,1024)(0,650,21,363,141)");
             startInfo.UseShellExecute = true;
@@ -143,6 +134,8 @@ namespace Wizou.VLC
             /*WriteLine("get_length");
             Thread.Sleep(200);
             networkStream.Read(RC_buffer, 0, 1024);*/
+            //networkStream.Write(vlcEncoding.GetBytes("stop\x0D\x0A"),0,5);
+            //networkStream.ReadByte();
             RC_buffer_count = 0;
             itemAddedCounter = 0;
             active = true;
@@ -220,7 +213,7 @@ namespace Wizou.VLC
             networkStream.Write(buffer, 0, buffer.Length);
             try
             {
-                networkStream.WriteByte(0x0A);
+                networkStream.Write(vlcSNewlineChar, 0, vlcSNewlineChar.Length);
             }
             catch (IOException)
             {
@@ -238,8 +231,8 @@ namespace Wizou.VLC
             int index = 0;
             while (index+1 < RC_buffer_count)
             {
-                if (RC_buffer[index] == vlcNewlineChar1)
-                    if (RC_buffer[index + 1] == vlcNewlineChar2)
+                if (RC_buffer[index] == vlcRNewlineChar1)
+                    if (RC_buffer[index + 1] == vlcRNewlineChar2)
                     {
                         string result = vlcEncoding.GetString(RC_buffer, 0, index);
                         RC_buffer_count -= index + 2;
@@ -267,8 +260,8 @@ namespace Wizou.VLC
                 }
                 while (index+1 < RC_buffer_count)
                 {
-                    if (RC_buffer[index] == vlcNewlineChar1) 
-                        if (RC_buffer[index + 1] == vlcNewlineChar2)
+                    if (RC_buffer[index] == vlcRNewlineChar1) 
+                        if (RC_buffer[index + 1] == vlcRNewlineChar2)
                         {
                             string result = vlcEncoding.GetString(RC_buffer, 0, index);
                             RC_buffer_count -= index + 2;
@@ -349,9 +342,10 @@ namespace Wizou.VLC
             MustBeActive();
             MakeSureReadEmpty();
             WriteLine("chapter");
-            string line = ReadLine();
-            if (line == "press menu select or pause to continue")
+            string line;
+            do
                 line = ReadLine();
+            while (line.StartsWith("status change: ") || (line=="press menu select or pause to continue"));
             if (line == "chapter: returned 0 (no error)")
             {
                 max = 0;
@@ -455,7 +449,7 @@ namespace Wizou.VLC
             do
                 line = ReadLine();
             while (line.StartsWith("status change: "));
-            if (!line.StartsWith("trying to add "))
+            if (!line.StartsWith("trying to add ") && !line.StartsWith("Trying to add ") && (line != "press menu select or pause to continue"))
                 throw new VLCException("Réponse inattendue pour 'add'");
             ReadCheckNoError("add");
             itemAddedCounter += playlistSize;
@@ -525,6 +519,18 @@ namespace Wizou.VLC
             {
                 MustBeStopped();
                 audioTranscode = value;
+            }
+        }
+        public VideoTranscode VideoTranscode
+        {
+            get
+            {
+                return videoTranscode;
+            }
+            set
+            {
+                MustBeStopped();
+                videoTranscode = value;
             }
         }
 

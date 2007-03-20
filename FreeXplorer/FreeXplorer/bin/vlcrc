@@ -1,28 +1,34 @@
+﻿###
+###  VLC media player - version 0.8.6 Janus - (c) 1996-2006 the VideoLAN team
 ###
-###  VLC media player - version 0.8.4-fbx-2 freeplayer - (c) 1996-2005 the VideoLAN team
+
+###
+### lines begining with a '#' character are comments
 ###
 
 [main] # main program
 
 # Activer l’audio (Booléen)
 #audio=1
-# Volume de la sortie audio (Entier)
+# Volume audio par défaut (Entier)
 #volume=256
-# Audio output volume step (Entier)
+# Pas de réglage du volume (Entier)
 #volume-step=32
 # Fréquence de la sortie audio (Hz) (Entier)
 #aout-rate=-1
 # Rééchantillonnage audio haute-qualité (Booléen)
 #hq-resampling=1
-# Utiliser la sortie audio S/PDIF lorsqu’elle est disponible (Booléen)
+# Utiliser S/PDIF si possible (Booléen)
 #spdif=0
-# Compenser la désynchronisation de l’audio (Entier)
+# Forcer la détection Dolby Surround (Entier)
+#force-dolby-surround=0
+# Compensation de la désynchronisation audio (Entier)
 audio-desync=850
 # Module de sortie audio (Chaîne)
 #aout=
 # Filtres audio (Chaîne)
 #audio-filter=
-# Visualisations audio (Chaîne)
+# Visualisations audio  (Chaîne)
 #audio-visual=
 # Activer la vidéo (Booléen)
 #video=1
@@ -30,6 +36,8 @@ audio-desync=850
 #grayscale=0
 # Sortie vidéo en plein écran (Booléen)
 #fullscreen=0
+# Suppression d'images (Booléen)
+#drop-late-frames=1
 # Sauter des images (Booléen)
 #skip-frames=1
 # Synchronisation silencieuse (Booléen)
@@ -38,36 +46,56 @@ audio-desync=850
 #overlay=1
 # Toujours au-dessus (Booléen)
 #video-on-top=0
+# Désactiver l'économiseur d'écran (Booléen)
+disable-screensaver=0
 # Répertoire des captures (Chaîne)
 #snapshot-path=
+# Préfix des captures d’écran (Chaîne)
+#snapshot-prefix=vlcsnap-
 # Format des captures d’écran (Chaîne)
 #snapshot-format=png
+# Prévisualisation de la capture (Booléen)
+#snapshot-preview=1
+# Utiliser une numérotation séquentielle au lieu de la date et l'heure (Booléen)
+#snapshot-sequential=0
 # Largeur de la vidéo (Entier)
 #width=-1
 # Hauteur de la vidéo (Entier)
 #height=-1
-# Position x de la vidéo (Entier)
+# Position Y de la vidéo (Entier)
 #video-x=-1
-# Position y de la vidéo (Entier)
+# Position Y de la vidéo (Entier)
 #video-y=-1
+# Rognage (Chaîne)
+#crop=
+# Custom crop ratios list (Chaîne)
+#custom-crop-ratios=
 # Format d’écran de la source (Chaîne)
 #aspect-ratio=
-# Monitor aspect ratio (Chaîne)
-#monitor-aspect-ratio=4:3
+# Format des pixels de l'écran (Chaîne)
+#monitor-par=
+# Custom aspect ratios list (Chaîne)
+#custom-aspect-ratios=
+# Corrige la hauteur HDTV (Booléen)
+#hdtv-fix=1
 # Décorations de fenêtres (Booléen)
 #video-deco=1
 # Titre de la vidéo (Chaîne)
 #video-title=
 # Alignement vidéo (Entier)
 #align=0
-# Agrandir l’image (Flottant)
-#zoom=1,000000
+# Zoom (Flottant)
+#zoom=1.000000
 # Module de sortie vidéo (Chaîne)
 #vout=
 # Module de filtre vidéo (Chaîne)
 #vout-filter=
-# Affichage à l’écran (Booléen)
+# Incrustations (Booléen)
+#spu=1
+# Affichage à l’écran (OSD) (Booléen)
 #osd=1
+# Module de rendu du texte (Chaîne)
+#text-renderer=
 # Utiliser un fichier de sous-titres (Chaîne)
 #sub-file=
 # Autodétecte le fichier de sous-titres (Booléen)
@@ -77,32 +105,30 @@ audio-desync=850
 # Répertoires des sous-titres (Chaîne)
 #sub-autodetect-path=.\subtitles
 # Forcer la position des sous-titres (Entier)
-#sub-margin=-1
-# Module de filtre d’imagette (Chaîne)
+#sub-margin=0
+# Module d'incrustations (Chaîne)
 #sub-filter=
-# Module d’accès (Chaîne)
-#access=
-# Module de filtre d’accès (Chaîne)
-#access-filter=
-# Module de démultiplexage (Chaîne)
-#demux=
-# Choisir le programme (SID) (Entier)
+# Programme (Entier)
 #program=0
-# Choisir les programmes (Chaîne)
+# Programmes (Chaîne)
 #programs=
-# Choisir une piste audio (Entier)
+# Piste audio (Entier)
 #audio-track=-1
-# Choisir la piste de sous-titres (Entier)
+# Piste de sous-titres (Entier)
 #sub-track=-1
-# Choisir la langue de l’audio (Chaîne)
-#audio-language=
-# Choisir la langue des sous-titres (Chaîne)
-#sub-language=
+# Langue audio (Chaîne)
+audio-language=fr,en
+# Langue des sous-titres (Chaîne)
+sub-language=fr,en
+# ID de la piste audio (Entier)
+#audio-track-id=-1
+# ID de la piste de sous-titres (Entier)
+#sub-track-id=-1
 # Répétitions de l’entrée (Entier)
 #input-repeat=0
-# Date de début (secondes) (Entier)
+# Temps de début (Entier)
 #start-time=0
-# Date de fin (en secondes) (Entier)
+# Temps d'arrêt (Entier)
 #stop-time=0
 # Liste des entrées (Chaîne)
 #input-list=
@@ -111,7 +137,7 @@ audio-desync=850
 # Liste des signets pour un flux (Chaîne)
 #bookmarks=
 # Périphérique DVD (Chaîne)
-#dvd=
+dvd=D:
 # Périphérique VCD (Chaîne)
 #vcd=D:
 # Lecteur de CD audio (Chaîne)
@@ -120,13 +146,11 @@ audio-desync=850
 #server-port=1234
 # MTU de l’interface réseau (Entier)
 #mtu=1500
-# Adresse de l’interface réseau (Chaîne)
-#iface-addr=
 # Forcer l’utilisation d’IPv6 (Booléen)
 #ipv6=0
 # Forcer l’utilisation d’IPv4 (Booléen)
 #ipv4=0
-# Temps d’expiration de la connection TCP en ms (Entier)
+# Temps d’expiration TCP (Entier)
 #ipv4-timeout=5000
 # serveur SOCKS (Chaîne)
 #socks=
@@ -154,10 +178,18 @@ audio-desync=850
 #cr-average=40
 # Synchronisation de l’horloge (Entier)
 #clock-synchro=-1
-# Liste de codecs préférés (Chaîne)
+# Synchronisation réseau (Booléen)
+#network-synchronisation=0
+# Liste de décodeurs préférés. (Chaîne)
 #codec=
 # Liste d’encodeurs préférés (Chaîne)
 #encoder=
+# Module d’accès (Chaîne)
+#access=
+# Module de filtre d’accès (Chaîne)
+#access-filter=
+# Module de démultiplexage (Chaîne)
+#demux=
 # Chaine de sortie de flux par défaut (Chaîne)
 sout=#transcode:std
 # Afficher pendant la diffusion (Booléen)
@@ -170,12 +202,20 @@ sout=#transcode:std
 #sout-audio=1
 # Activer le flux de sortie vidéo (Booléen)
 #sout-video=1
-# TTL (Entier)
-#ttl=1
+# Diffuser les sous-titres (Booléen)
+#sout-spu=1
+# Fichier de configuration VLM (Chaîne)
+#vlm-conf=
 # Module de multiplexage (Chaîne)
 #mux=
 # Module de sortie (Chaîne)
 #access_output=
+# Temps de vie (TTL) (Entier)
+#ttl=0
+# Interface de sortie multicast IPv6 (Chaîne)
+#miface=
+# Adresse IPv4 de l'interface de sortie multicast (Chaîne)
+#miface-addr=
 # Liste des empaqueteurs préférés (Chaîne)
 #packetizer=
 # Réguler le débit SAP (Booléen)
@@ -196,27 +236,27 @@ sout=#transcode:std
 #sse2=1
 # Module de copie mémoire (Chaîne)
 #memcpy=
-# Mélangeur de canaux (Chaîne)
-#audio-channel-mixer=
 # Utiliser le cache de modules (Booléen)
 #plugins-cache=1
 # Chemin de recherche des modules (Chaîne)
 #plugin-path=
-# Minimiser le nombre de threads nécessaires à VLC (Booléen)
+# Minimiser le nombre de threads (Booléen)
 #minimize-threads=0
-# N’autorise qu’une seule instance de VLC (Booléen)
+# N’autorise qu’une seule instance (Booléen)
 #one-instance=0
-# Enqueue items to playlist when in one instance mode (Booléen)
+# VLC a été demarré par l'ouverture d'un fichier associé (Booléen)
+#started-from-file=0
+# Une seule instance lorsque démarrer depuis un fichier (Booléen)
+#one-instance-when-started-from-file=1
+# Mettre en queue en mode instance unique (Booléen)
 #playlist-enqueue=0
-# Augmente la priorité du processus (Booléen)
+# Augmenter la priorité du processus (Booléen)
 #high-priority=0
 # Mutex rapide pour NT/2K/XP (développeurs uniquement) (Booléen)
 #fast-mutex=0
-# Implémentation des variables conditionnelles pour Win9X (développeurs uniquement) (Entier)
+# Implémentation des variables conditionnelles pour Win9x (développeurs uniquement) (Entier)
 #win9x-cv-method=1
-# Fichier de configuratoin VLM (Chaîne)
-#vlm-conf=
-# Jouer les fichiers dans un ordre aléatoire (Booléen)
+# Aléatoire (Booléen)
 #random=0
 # Tout répéter (Booléen)
 #loop=0
@@ -224,25 +264,35 @@ sout=#transcode:std
 #repeat=0
 # Lire un seul élément (Booléen)
 #play-and-stop=0
-# Open MRL (Chaîne)
+# Flux par défaut (Chaîne)
 #open=
+# Recherche des métadonnées (Booléen)
+#auto-preparse=1
 # Modules de découverte de services (Chaîne)
 #services-discovery=
-# Module d’interface (Chaîne)
-#intf=
-# Modules d’interface supplémentaires (Chaîne)
-extraintf=rc
 # Niveau de verbosité (0,1,2) (Entier)
 #verbose=0
-# Moins de messages (Booléen)
+# Ne rien afficher (Booléen)
 #quiet=0
+# Logguer dans un fichier (Booléen)
+#file-logging=0
 # Langue (Chaîne)
 #language=auto
 # Messages en couleur (Booléen)
 #color=0
 # Afficher les options avancées (Booléen)
 advanced=1
-# Interfaces de controle (Chaîne)
+# Interaction avec l'utilisateur (Booléen)
+#interact=0
+# Afficher l’interface avec la souris (Booléen)
+#show-intf=0
+# Collecter des statistiques (Booléen)
+#stats=1
+# Module d’interface (Chaîne)
+#intf=
+# Modules d’interface supplémentaires (Chaîne)
+extraintf=rc
+# Interfaces de contrôle (Chaîne)
 #control=
 # Plein écran (Touche)
 #key-fullscreen=f
@@ -252,9 +302,9 @@ advanced=1
 #key-pause=Unset
 # Jouer seulement (Touche)
 #key-play=Unset
-# Accélérer (Touche)
+# Avance rapide (Touche)
 #key-faster=+
-# Ralentir (Touche)
+# Ralenti (Touche)
 #key-slower=-
 # Suivant (Touche)
 #key-next=n
@@ -264,22 +314,22 @@ advanced=1
 #key-stop=s
 # Position (Touche)
 #key-position=t
-# Jump 3 seconds backwards (Touche)
-#key-jump-3sec=Shift-Left
-# Jump 3 seconds forward (Touche)
-#key-jump+3sec=Shift-Right
-# Saut de 10 secondes en arrière (Touche)
-#key-jump-10sec=Alt-Left
-# Saut de 10 secondes en avant (Touche)
-#key-jump+10sec=Alt-Right
-# Saut de 1 minute en arrière (Touche)
-#key-jump-1min=Ctrl-Left
-# Saut de 1 minute en avant (Touche)
-#key-jump+1min=Ctrl-Right
-# Saut de 5 minutes en arrière (Touche)
-#key-jump-5min=Alt-Ctrl-Left
-# Saut de 5 minutes en avant (Touche)
-#key-jump+5min=Alt-Ctrl-Right
+# Très court saut arrière (Touche)
+#key-jump-extrashort=Shift-Left
+# Saut avant très court (Touche)
+#key-jump+extrashort=Shift-Right
+# Saut arrière court (Touche)
+#key-jump-short=Alt-Left
+# Saut avant court (Touche)
+#key-jump+short=Alt-Right
+# Saut arrière (Touche)
+#key-jump-medium=Ctrl-Left
+# Saut avant (Touche)
+#key-jump+medium=Ctrl-Right
+# Saut arrière long (Touche)
+#key-jump-long=Alt-Ctrl-Left
+# Saut avant long (Touche)
+#key-jump+long=Alt-Ctrl-Right
 # Activer (Touche)
 #key-nav-activate=Enter
 # Aller vers le haut (Touche)
@@ -290,13 +340,15 @@ advanced=1
 #key-nav-left=Left
 # Aller vers la droite (Touche)
 #key-nav-right=Right
-# Select previous DVD title (Touche)
+# Aller au menu DVD (Touche)
+#key-disc-menu=Ctrl-m
+# Titre DVD précédent (Touche)
 #key-title-prev=Ctrl-p
-# Select next DVD title (Touche)
-#key-title-next=Ctrl-n
-# Select prev DVD chapter (Touche)
+# Titre DVD suivant (Touche)
+#key-title-next=Ctrl-f
+# Chapitre DVD précédent (Touche)
 #key-chapter-prev=Ctrl-u
-# Select prev DVD chapter (Touche)
+# Sélectionner le chapitre DVD suivant (Touche)
 #key-chapter-next=Ctrl-d
 # Quitter (Touche)
 #key-quit=Ctrl-q
@@ -318,12 +370,50 @@ advanced=1
 #key-audio-track=l
 # Défiler les pistes de sous-titres (Touche)
 #key-subtitle-track=k
+# Boucler entre les aspects (Touche)
+#key-aspect-ratio=a
+# Boucler entre les rognages (Touche)
+#key-crop=c
+# Boucler le désentrelacement (Touche)
+#key-deinterlace=d
 # Afficher l’interface (Touche)
 #key-intf-show=i
-# Hide interface (Touche)
+# Masquer l’interface (Touche)
 #key-intf-hide=
 # Prendre une capture d’écran (Touche)
 #key-snapshot=Alt-Ctrl-s
+# Précédent (historique) (Touche)
+#key-history-back=Ctrl-v
+# Suivant (historique) (Touche)
+#key-history-forward=Ctrl-b
+# Enregistrer (Touche)
+#key-record=Ctrl-r
+# Dump (Touche)
+#key-dump=Shift-Ctrl-d
+# Rogner un pixel en haut de la vidéo. (Touche)
+#key-crop-top=Alt-i
+# Uncrop one pixel from the top of the video (Touche)
+#key-uncrop-top=Alt-Shift-i
+# Crop one pixel from the left of the video (Touche)
+#key-crop-left=Alt-j
+# Uncrop one pixel from the left of the video (Touche)
+#key-uncrop-left=Alt-Shift-j
+# Crop one pixel from the bottom of the video (Touche)
+#key-crop-bottom=Alt-k
+# Uncrop one pixel from the bottom of the video (Touche)
+#key-uncrop-bottom=Alt-Shift-k
+# Crop one pixel from the right of the video (Touche)
+#key-crop-right=Alt-l
+# Uncrop one pixel from the right of the video (Touche)
+#key-uncrop-right=Alt-Shift-l
+# Longueur du très court saut (Entier)
+#extrashort-jump-size=3
+# Longueur du court saut (Entier)
+#short-jump-size=10
+# Longueur du saut (Entier)
+#medium-jump-size=60
+# Taille du saut avant long (Entier)
+#long-jump-size=300
 # Régler le favori n°1 (Touche)
 #key-set-bookmark1=Ctrl-F1
 # Régler le favori n°2 (Touche)
@@ -364,487 +454,6 @@ advanced=1
 #key-play-bookmark9=F9
 # Lire le favori n°10 (Touche)
 #key-play-bookmark10=F10
-# Précédent (historique) (Touche)
-#key-history-back=Ctrl-v
-# Suivant (historique) (Touche)
-#key-history-forward=Ctrl-b
-# Enregistrer (Touche)
-#key-record=Ctrl-r
-
-[livedotcom] # démultiplexeur live.com (RTSP/RTP/SDP)
-
-# Utilise le RTP sur RTSP (TCP) (Booléen)
-#rtsp-tcp=0
-# Taille du cache en ms (Entier)
-#rtsp-caching=1200
-# Dialetcte RTSP Kasenna (Booléen)
-#rtsp-kasenna=0
-
-[mux_ts] # Multiplexeur TS (libdvbpsi)
-
-# Vidéo PID (Entier)
-sout-ts-pid-video=68
-# PID audio (Entier)
-sout-ts-pid-audio=69
-# PID SPU (Entier)
-sout-ts-pid-spu=70
-# PID de la PMT (Entier)
-#sout-ts-pid-pmt=0
-# ID TS (Entier)
-#sout-ts-tsid=0
-# Numéro du programme PMT (Entier)
-#sout-ts-program-pmt=1
-# Régler l’id du PID comme celui de l’ES (Booléen)
-#sout-ts-es-id-pid=0
-# Tampon du multiplexeur (ms) (Entier)
-#sout-ts-shaping=200
-# Utiliser les images clés (Booléen)
-#sout-ts-use-key-frames=0
-# Intervalle PCR (ms) (Entier)
-sout-ts-pcr=80
-# B minimal (inutilisé) (Entier)
-#sout-ts-bmin=0
-# B maximal (inutilisé) (Entier)
-#sout-ts-bmax=0
-# Retard DTS (ms) (Entier)
-#sout-ts-dts-delay=400
-# Cryptage audio (Booléen)
-sout-ts-crypt-audio=0
-# Crypt video (Booléen)
-sout-ts-crypt-video=0
-# Clé CSA (Chaîne)
-#sout-ts-csa-ck=
-# Packet size in bytes to encrypt (Entier)
-#sout-ts-csa-pkt=188
-
-[mkv] # Démultiplexeur de flux Matroska
-
-# Chapitres ordonés (Booléen)
-#mkv-use-ordered-chapters=1
-# Codecs des chapitres (Booléen)
-#mkv-use-chapter-codec=1
-# Déplacements basés sur le pourcentage et non le temps (Booléen)
-#mkv-seek-percent=0
-# Eléments inconnus (Booléen)
-#mkv-use-dummy=0
-
-[ffmpeg] # Décodeur/encodeur audio/vidéo ffmpeg ((MS)MPEG4,SVQ1,H263,WMV,WMA)
-
-# Rendu direct (Booléen)
-#ffmpeg-dr=1
-# Résilience d’erreur (Entier)
-#ffmpeg-error-resilience=1
-# Contournement de bugs (Entier)
-#ffmpeg-workaround-bugs=1
-# Hâter (Booléen)
-#ffmpeg-hurry-up=0
-# Afficher les vecteurs de déplacement (Entier)
-#ffmpeg-vismv=0
-# Décodage à faible résolution (Entier)
-#ffmpeg-lowres=0
-# Qualité de post-traitement (Entier)
-#ffmpeg-pp-q=0
-# Chaînes de filtres de post-traitement de ffmpeg (Chaîne)
-#ffmpeg-pp-name=default
-# Masque de déboggage (Entier)
-#ffmpeg-debug=0
-# Niveau de qualité (Chaîne)
-#sout-ffmpeg-hq=simple
-# Ratio d’images clés (Entier)
-sout-ffmpeg-keyint=24
-# Ratio d’images B (Entier)
-#sout-ffmpeg-bframes=0
-# Hâter (Booléen)
-#sout-ffmpeg-hurry-up=0
-# Active l’encodage entrelacé (Booléen)
-#sout-ffmpeg-interlace=0
-# Enable interlaced motion estimation (Booléen)
-sout-ffmpeg-interlace-me=0
-# Tolérance du débit de la vidéo (Entier)
-#sout-ffmpeg-vt=0
-# Activer la prédiction de mouvement (Booléen)
-#sout-ffmpeg-pre-me=0
-# Active le contrôle strict du débit (Booléen)
-sout-ffmpeg-strict-rc=1
-# Taille du buffer de contrôle de débit (Entier)
-#sout-ffmpeg-rc-buffer-size=1835008
-# Efficacité du contrôle de débit (Flottant)
-#sout-ffmpeg-rc-buffer-aggressivity=1,000000
-# Facteur de quantization I (Flottant)
-#sout-ffmpeg-i-quant-factor=0,000000
-# Résolution de bruit (Entier)
-#sout-ffmpeg-noise-reduction=0
-# Active la matrice de quantization MPEG4 (Booléen)
-#sout-ffmpeg-mpeg4-matrix=0
-# Minimum de l’échelle de quantization vidéo (Entier)
-#sout-ffmpeg-qmin=0
-# Maximum de l’échelle de quantization vidéo (Entier)
-#sout-ffmpeg-qmax=0
-# Active la quantization treillis (Booléen)
-#sout-ffmpeg-trellis=0
-# Utiliser une échelle de quantisation vidéo fixée (Flottant)
-#sout-ffmpeg-qscale=0,000000
-# Respect strict des standards (Entier)
-#sout-ffmpeg-strict=0
-# Luminance masking (Flottant)
-#sout-ffmpeg-lumi-masking=0,000000
-# Darkness masking (Flottant)
-#sout-ffmpeg-dark-masking=0,000000
-# Motion masking (Flottant)
-#sout-ffmpeg-p-masking=0,000000
-# Border masking (Flottant)
-#sout-ffmpeg-border-masking=0,000000
-# Luminance elimination (Entier)
-#sout-ffmpeg-luma-elim-threshold=0
-# Chrominance elimination (Entier)
-#sout-ffmpeg-chroma-elim-threshold=0
-
-[stream_out_switcher] # Flux de sortie de vidéo MPEG2
-
-# Fichiers (Chaîne)
-#sout-switcher-files=
-# Tailles (Chaîne)
-#sout-switcher-sizes=
-# Format d’écran (Chaîne)
-#sout-switcher-aspect-ratio=4:3
-# Port UDP de commande (Entier)
-#sout-switcher-port=5001
-# Commande (Entier)
-#sout-switcher-command=0
-# Taille du GOP (Entier)
-#sout-switcher-gop=8
-# Echelle de quantisateur (Entier)
-#sout-switcher-qscale=5
-# Mute audio (Booléen)
-#sout-switcher-mute-audio=1
-
-[a52tofloat32] # Décodeur audio ATSC A/52 (ou AC-3)
-
-# Compression dynamique A/52 (Booléen)
-#a52-dynrng=1
-
-[access_directory] # Lecture standard d’un répertoire
-
-# Comportement des sous-répertoires (Chaîne)
-#recursive=expand
-
-[access_fake] # Entrée factice
-
-# Taille du cache en ms (Entier)
-#fake-caching=300
-# Débit d’images (Flottant)
-#fake-fps=25,000000
-# ID (Entier)
-#fake-id=0
-# Duration in ms (Entier)
-#fake-duration=0
-
-[access_file] # Lecture standard d’un fichier
-
-# Taille du cache en ms (Entier)
-file-caching=1000
-# Concaténer plusieurs fichiers (Chaîne)
-#file-cat=
-
-[access_filter_record] # Enregistrer
-
-# Répertoire d’enregistrement (Chaîne)
-#record-path=
-
-[access_ftp] # Entrée FTP
-
-# Taille du cache en ms (Entier)
-#ftp-caching=600
-# Nom d’utilisateur FTP (Chaîne)
-#ftp-user=anonymous
-# Mot de passe FTP (Chaîne)
-#ftp-pwd=anonymous@dummy.org
-# Compte FTP (Chaîne)
-#ftp-account=anonymous
-
-[access_http] # Entrée HTTP
-
-# Serveur proxy HTTP (Chaîne)
-#http-proxy=
-# Taille du cache en ms (Entier)
-#http-caching=1200
-# Agent Utilisateur HTTP (Chaîne)
-#http-user-agent=VLC media player - version 0.8.4-fbx-2 freeplayer - (c) 1996-2005 the VideoLAN team
-# Reconnexion automatique (Booléen)
-#http-reconnect=0
-# Flux continu (Booléen)
-#http-continuous=0
-
-[access_mms] # Lecture Microsoft Media Server (MMS)
-
-# Taille du cache en ms (Entier)
-#mms-caching=3600
-# Forcer la sélection de tous les flux (Booléen)
-#mms-all=0
-# Sélectionner le flux dont le débit est le plus élevé (Entier)
-#mms-maxbitrate=0
-
-[access_output_file] # Sortie vers un fichier
-
-# Ajouter au fichier (Booléen)
-#sout-file-append=0
-
-[access_output_http] # Flux de sortie HTTP
-
-# Nom d’utilisateur (Chaîne)
-#sout-http-user=
-# Mot de passe (Chaîne)
-#sout-http-pwd=
-# Mime (Chaîne)
-#sout-http-mime=
-# Fichier certificat (Chaîne)
-#sout-http-cert=vlc.pem
-# Fichier de clé privée (Chaîne)
-#sout-http-key=
-# Fichier CA (Chaîne)
-#sout-http-ca=
-# Fichier CRL (Chaîne)
-#sout-http-crl=
-
-[access_output_udp] # Flux de sortie UDP
-
-# Taille du cache en ms (Entier)
-#sout-udp-caching=300
-# TTL (Entier)
-#sout-udp-ttl=0
-# Groupe les paquets (Entier)
-#sout-udp-group=1
-# Réécriture brute (Booléen)
-#sout-udp-raw=0
-
-[access_smb] # Entrée SMB
-
-# Taille du cache en ms (Entier)
-#smb-caching=600
-# Nom d’utilisateur SMB (Chaîne)
-#smb-user=
-# Mot de passe SMB (Chaîne)
-#smb-pwd=
-# Domaine SMB (Chaîne)
-#smb-domain=
-
-[access_tcp] # Entrée TCP
-
-# Taille du cache en ms (Entier)
-#tcp-caching=300
-
-[access_udp] # Entrée UDP/RTP
-
-# Taille du cache en ms (Entier)
-#udp-caching=300
-# Détection automatique du MTU (Booléen)
-#udp-auto-mtu=1
-
-[adjust] # Filtre vidéo d’ajustement d’image
-
-# Contraste (0-2) (Flottant)
-#contrast=1,000000
-# Brillance (0-2) (Flottant)
-#brightness=1,000000
-# Teinte (0-360) (Entier)
-#hue=0
-# Saturation (0-3) (Flottant)
-#saturation=1,000000
-# Gamma (0-10) (Flottant)
-#gamma=1,000000
-
-[aout_directx] # Sortie audio DirectX
-
-# P�iph�ique de sortie (Entier)
-#directx-audio-device=0
-# Utiliser une sortie en virgule flottante (Booléen)
-#directx-audio-float32=1
-
-[aout_file] # File audio output
-
-# Format de sortie (Chaîne)
-#audiofile-format=s16
-# Nombre de canaux en sortie (Entier)
-#audiofile-channels=0
-# Fichier de sortie (Chaîne)
-#audiofile-file=audiofile.wav
-# Ajouter un en-tête WAV (Booléen)
-#audiofile-wav=1
-
-[avi] # Démultiplexeur AVI
-
-# Forcer la méthode entrelacée (Booléen)
-#avi-interleaved=0
-# Forcer la création d’index (Booléen)
-#avi-index=0
-
-[cdda] # Lecture CD audio
-
-# Taille du cache en ms (Entier)
-#cdda-caching=300
-
-[clone] # Filtre vidéo de duplication d’image
-
-# Nombre de clones (Entier)
-#clone-count=2
-# Liste des modules de sortie vidéo (Chaîne)
-#clone-vout-list=
-
-[crop] # Filtre vidéo de réduction d’image
-
-# Zone à réduire (Chaîne)
-#crop-geometry=
-# Réduction automatique (Booléen)
-#autocrop=0
-
-[deinterlace] # Filtre de désentrelacement vidéo
-
-# Mode de désentrelacement (Chaîne)
-#deinterlace-mode=discard
-# Mode de désentrelacement (Chaîne)
-#sout-deinterlace-mode=blend
-
-[demuxdump] # Enregistreur fichier
-
-# Nom de fichier du dump (Chaîne)
-#demuxdump-file=stream-demux.dump
-# Ajouter (Booléen)
-#demuxdump-append=0
-
-[distort] # Filtre de distorsion vidéo
-
-# Mode de distorsion (Chaîne)
-#distort-mode=wave
-
-[dtstofloat32] # Décodeur audio DTS Coherent Acoustics
-
-# Compression dynamique DTS (Booléen)
-#dts-dynrng=1
-
-[dummy] # Fonctions d’interface factices
-
-# Ne pas ouvrir une interface de commande DOS (Booléen)
-#dummy-quiet=0
-# Enregistrer les données brutes (Booléen)
-#dummy-save-es=0
-# Format chroma d’image muette (Chaîne)
-#dummy-chroma=
-
-[dvbsub] # Décodeur de sous-titres DVB
-
-# Subpicture position (Entier)
-#dvbsub-position=8
-# X coordinate of the subpicture (Entier)
-#dvbsub-x=-1
-# Y coordinate of the subpicture (Entier)
-#dvbsub-y=-1
-# X coordinate of the encoded subpicture (Entier)
-#sout-dvbsub-x=-1
-# Y coordinate of encoded the subpicture (Entier)
-#sout-dvbsub-y=-1
-# Timeout of subpictures (Entier)
-#sout-dvbsub-timeout=15
-
-[dvdnav] # Entrée DVDnav
-
-# Angle DVD (Entier)
-#dvdnav-angle=1
-# Taille du cache en ms (Entier)
-#dvdnav-caching=300
-# Commencer directement au menu (Booléen)
-#dvdnav-menu=1
-
-[dvdread] # Entrée DVDRead (DVD sans support des menus)
-
-# Angle DVD (Entier)
-#dvdread-angle=1
-# Taille du cache en ms (Entier)
-#dvdread-caching=300
-# Méthode utilisée par libdvdcss pour le déchiffrement (Chaîne)
-#dvdread-css-method=
-
-[equalizer] # Égaliseur 10 bandes
-
-# Préréglage de l’égaliseur (Chaîne)
-#equalizer-preset=flat
-# Gain des différentes bandes (Chaîne)
-#equalizer-bands=
-# Deux passes (Booléen)
-#equalizer-2pass=0
-# Gain global (Flottant)
-#equalizer-preamp=12,000000
-
-[fake] # Fake video decoder
-
-# Fichier d’image (Chaîne)
-#fake-file=
-# Largeur de la vidéo (Entier)
-fake-width=720
-# Hauteur de la vidéo (Entier)
-fake-height=576
-# Keep aspect ratio (Booléen)
-fake-keep-ar=1
-# Étirement du fond d’écran (Chaîne)
-fake-aspect-ratio=4:3
-# Désentrelacer la vidéo (Booléen)
-fake-deinterlace=1
-# Module de désentrelacement (Chaîne)
-#fake-deinterlace-module=deinterlace
-
-[freetype] # Moteur de rendu freetype2
-
-# Police (Chaîne)
-#freetype-font=
-# Taille de la police en pixels (Entier)
-freetype-fontsize=22
-# Opacité, 0 à 255 (Entier)
-#freetype-opacity=255
-# Couleur par défaut du texte (Entier)
-freetype-color=8421376
-# Taille (Entier)
-#freetype-rel-fontsize=16
-
-[gestures] # Interface de contrôle par mouvements de souris
-
-# Seuil de mouvement (10-100) (Entier)
-#gestures-threshold=30
-# Bouton de souris (Chaîne)
-#gestures-button=right
-
-[gnutls] # Couche de chiffrement TLS utilisant GnuTLS
-
-# Vérifier la validité des certificats TLS/SSL du serveur (Booléen)
-#tls-check-cert=0
-# Vérifier le nom d’hôte du serveur TLS/SSL ? (Booléen)
-#tls-check-hostname=0
-# Nombre de bits Diffie-Hellman (Entier)
-#dh-bits=1024
-# Délai d’expiration pour les sessions TLS reprises (Entier)
-#tls-cache-expiration=3600
-# Nombre de sessions TLS (Entier)
-#tls-cache-size=64
-
-[goom] # Effet goom
-
-# Largeur de la fenêtre Goom (Entier)
-#goom-width=320
-# Hauteur de la fenêtre Goom (Entier)
-#goom-height=240
-# Vitesse de l’animation Goom (Entier)
-#goom-speed=6
-
-[h264] # Démultiplexeur vidéo H264
-
-# Images par seconde (Flottant)
-#h264-fps=25,000000
-
-[headphone_channel_mixer] # Headphone channel mixer with virtual spatialization effect
-
-# Dimension caractéristique (Entier)
-#headphone-dim=10
-
-[hotkeys] # Interface de combinaisons de touches
-
 # Favori n°1 (Chaîne)
 #bookmark1=
 # Favori n°2 (Chaîne)
@@ -866,15 +475,542 @@ freetype-color=8421376
 # Favori n°10 (Chaîne)
 #bookmark10=
 
+[live555] # RTP/RTSP/SDP demuxer (using Live555)
+
+# Utilise le RTP sur RTSP (TCP) (Booléen)
+#rtsp-tcp=0
+# Port client (Entier)
+#rtp-client-port=-1
+# Faire passer le RTSP et le RTP par HTTP (Booléen)
+#rtsp-http=0
+# Port du tunnel HTTP (Entier)
+#rtsp-http-port=80
+# Taille du cache en ms (Entier)
+#rtsp-caching=1200
+# Dialecte RTSP Kasenna (Booléen)
+#rtsp-kasenna=0
+# RTSP user name (Chaîne)
+#rtsp-user=
+# RTSP password (Chaîne)
+#rtsp-pwd=
+
+[mux_ts] # Multiplexeur TS (libdvbpsi)
+
+# Vidéo PID (Entier)
+sout-ts-pid-video=68
+# PID audio (Entier)
+sout-ts-pid-audio=69
+# PID SPU (Entier)
+sout-ts-pid-spu=70
+# PID de la PMT (Entier)
+#sout-ts-pid-pmt=0
+# ID TS (Entier)
+#sout-ts-tsid=0
+# ID NET (Entier)
+#sout-ts-netid=0
+# Numéro du programme PMT (Chaîne)
+#sout-ts-program-pmt=
+# Régler l’id du PID comme celui de l’ES (Booléen)
+#sout-ts-es-id-pid=0
+# Multiplexage PMT (nécessite l'option sout-ts-es-id-pid) (Chaîne)
+#sout-ts-muxpmt=
+# Descripteurs SDT (nécessite l''option sout-ts-es-id-pid) (Chaîne)
+#sout-ts-sdtdesc=
+# Alignement des données (Booléen)
+#sout-ts-alignment=1
+# Tampon du multiplexeur (ms) (Entier)
+#sout-ts-shaping=200
+# Utiliser les images clés (Booléen)
+#sout-ts-use-key-frames=0
+# Intervalle PCR (ms) (Entier)
+sout-ts-pcr=80
+# B minimal (inutilisé) (Entier)
+#sout-ts-bmin=0
+# B maximal (inutilisé) (Entier)
+#sout-ts-bmax=0
+# Retard DTS (ms) (Entier)
+#sout-ts-dts-delay=400
+# Cryptage audio (Booléen)
+sout-ts-crypt-audio=0
+# Cryptage vidéo (Booléen)
+sout-ts-crypt-video=0
+# Clé CSA (Chaîne)
+#sout-ts-csa-ck=
+# Taille en octets du paquet à chiffrer (Entier)
+#sout-ts-csa-pkt=188
+
+[a52tofloat32] # Décodeur audio ATSC A/52 (ou AC-3)
+
+# Compression dynamique A/52 (Booléen)
+#a52-dynrng=1
+# Enable internal upmixing (Booléen)
+#a52-upmix=0
+
+[access_directory] # Lecture d’un répertoire
+
+# Comportement des sous-répertoires (Chaîne)
+#recursive=expand
+# Extensions ignorées (Chaîne)
+#ignore-filetypes=m3u,db,nfo,jpg,gif,sfv,txt,sub,idx,srt,cue
+
+[access_fake] # Entrée factice
+
+# Taille du cache en ms (Entier)
+#fake-caching=300
+# Débit d’images (Flottant)
+#fake-fps=25.000000
+# ID (Entier)
+#fake-id=0
+# Durée (ms) (Entier)
+#fake-duration=0
+
+[access_file] # Lecture de fichiers
+
+# Taille du cache en ms (Entier)
+file-caching=1000
+# Concaténer plusieurs fichiers (Chaîne)
+#file-cat=
+
+[access_filter_dump] # Dump
+
+# Force use of dump module (Booléen)
+#dump-force=0
+# Taille maximum d'un fichier temporaire (Mo) (Entier)
+#dump-margin=32
+
+[access_filter_record] # Enregistrer
+
+# Répertoire d’enregistrement (Chaîne)
+#record-path=
+
+[access_filter_timeshift] # Différé
+
+# Granularité en différé (Entier)
+#timeshift-granularity=50
+# Répertoire temporaire pour le différé (Chaîne)
+#timeshift-dir=
+# Imposer l'utilisation de module «timeshift» (Booléen)
+#timeshift-force=0
+
+[access_ftp] # Entrée FTP
+
+# Taille du cache en ms (Entier)
+#ftp-caching=600
+# Nom d’utilisateur FTP (Chaîne)
+#ftp-user=anonymous
+# Mot de passe FTP (Chaîne)
+#ftp-pwd=anonymous@example.com
+# Compte FTP (Chaîne)
+#ftp-account=anonymous
+
+[access_http] # Entrée HTTP
+
+# Serveur proxy HTTP (Chaîne)
+#http-proxy=
+# Taille du cache en ms (Entier)
+#http-caching=1200
+# Agent Utilisateur HTTP (Chaîne)
+#http-user-agent=VLC media player - version 0.8.6 Janus - (c) 1996-2006 the VideoLAN team
+# Reconnexion automatique (Booléen)
+#http-reconnect=0
+# Flux continu (Booléen)
+#http-continuous=0
+
+[access_mms] # Microsoft Media Server (MMS)
+
+# Taille du cache en ms (Entier)
+#mms-caching=5700
+# Forcer la sélection de tous les flux (Booléen)
+#mms-all=0
+# Débit maximum (Entier)
+#mms-maxbitrate=0
+
+[access_output_file] # Sortie vers un fichier
+
+# Ajouter au fichier (Booléen)
+#sout-file-append=0
+
+[access_output_http] # Flux de sortie HTTP
+
+# Nom d’utilisateur (Chaîne)
+#sout-http-user=
+# Mot de passe (Chaîne)
+#sout-http-pwd=
+# MIME (Chaîne)
+#sout-http-mime=
+# Fichier certificat (Chaîne)
+#sout-http-cert=vlc.pem
+# Fichier de clé privée (Chaîne)
+#sout-http-key=
+# Fichier CA (Chaîne)
+#sout-http-ca=
+# Fichier CRL (Chaîne)
+#sout-http-crl=
+# Annoncer avec Bonjour (Booléen)
+#sout-http-bonjour=0
+
+[access_output_shout] # Sortie IceCAST
+
+# Nom (Chaîne)
+#sout-shout-name=VLC media player - Live stream
+# Description du flux (Chaîne)
+#sout-shout-description=Live stream from VLC media player. http://www.videolan.org/vlc
+# Diffuser en MP3 (Booléen)
+#sout-shout-mp3=0
+
+[access_output_udp] # Flux de sortie UDP
+
+# Taille du cache en ms (Entier)
+#sout-udp-caching=300
+# Temps de vie (TTL) (Entier)
+#sout-udp-ttl=0
+# Groupe les paquets (Entier)
+#sout-udp-group=1
+# Réécriture brute (Booléen)
+#sout-udp-raw=0
+
+[access_realrtsp] # Real RTSP
+
+# Taille du cache en ms (Entier)
+#realrtsp-caching=3000
+
+[access_smb] # Entrée SMB
+
+# Taille du cache en ms (Entier)
+#smb-caching=600
+# Nom d’utilisateur SMB (Chaîne)
+#smb-user=
+# Mot de passe SMB (Chaîne)
+#smb-pwd=
+# Domaine SMB (Chaîne)
+#smb-domain=
+
+[access_tcp] # Entrée TCP
+
+# Taille du cache en ms (Entier)
+#tcp-caching=300
+
+[access_udp] # Entrée UDP/RTP
+
+# Taille du cache en ms (Entier)
+#udp-caching=300
+# Délai d'expiration du réordonnement RTP (ms) (Entier)
+#rtp-late=100
+# Détection automatique du MTU (Booléen)
+#udp-auto-mtu=1
+
+[adjust] # Filtre vidéo d’ajustement d’image
+
+# Contraste (0-2) (Flottant)
+#contrast=1.000000
+# Brillance (0-2) (Flottant)
+#brightness=1.000000
+# Teinte (0-360) (Entier)
+#hue=0
+# Saturation (0-3) (Flottant)
+#saturation=1.000000
+# Gamma (0-10) (Flottant)
+#gamma=1.000000
+# Seuil de luminosité (Booléen)
+#brightness-threshold=0
+
+[aout_directx] # Sortie audio DirectX
+
+# Périphérique de sortie (Entier)
+#directx-audio-device=0
+# Utiliser une sortie en virgule flottante (Booléen)
+#directx-audio-float32=0
+
+[aout_file] # Sortie audio vers un fichier
+
+# Format de sortie (Chaîne)
+#audiofile-format=s16
+# Nombre de canaux de sortie (Entier)
+#audiofile-channels=0
+# Fichier de sortie (Chaîne)
+#audiofile-file=audiofile.wav
+# Ajouter un en-tête WAV (Booléen)
+#audiofile-wav=1
+
+[avi] # Démultiplexeur AVI
+
+# Forcer la méthode entrelacée (Booléen)
+#avi-interleaved=0
+# Forcer la création d’index (Entier)
+#avi-index=0
+
+[cdda] # CD audio
+
+# Taille du cache en ms (Entier)
+#cdda-caching=300
+#cdda-separate-tracks=1
+#cdda-track=-1
+# Serveur CDDB (Chaîne)
+#cddb-server=freedb.freedb.org
+# Port CDDB (Entier)
+#cddb-port=8880
+
+[clone] # Filtre vidéo de duplication d’image
+
+# Nombre de clones (Entier)
+#clone-count=2
+# Modules de sortie vidéo (Chaîne)
+#clone-vout-list=
+
+[crop] # Filtre vidéo de réduction d’image
+
+# Zone à réduire (Chaîne)
+#crop-geometry=
+# Réduction automatique (Booléen)
+#autocrop=0
+
+[deinterlace] # Filtre de désentrelacement vidéo
+
+# Mode de désentrelacement (Chaîne)
+#deinterlace-mode=discard
+# Mode de désentrelacement en diffusion (Chaîne)
+#sout-deinterlace-mode=blend
+
+[demuxdump] # Enregistreur fichier
+
+# Nom du fichier (Chaîne)
+#demuxdump-file=stream-demux.dump
+# Ajouter au fichier (Booléen)
+#demuxdump-append=0
+
+[distort] # Filtre de distorsion vidéo
+
+# Mode de distorsion (Chaîne)
+#distort-mode=wave
+# Type de gradient (Entier)
+#distort-gradient-type=0
+# Effet dessin animé (Booléen)
+#distort-cartoon=1
+
+[dtstofloat32] # Décodeur DTS Coherent Acoustics
+
+# Compression dynamique DTS (Booléen)
+#dts-dynrng=1
+
+[dummy] # Pseudo-interface
+
+# Ne pas ouvrir une interface de commande DOS (Booléen)
+#dummy-quiet=0
+# Enregistrer les données brutes (Booléen)
+#dummy-save-es=0
+# Format chroma d’image muette (Chaîne)
+#dummy-chroma=
+
+[dvbsub] # Décodeur de sous-titres DVB
+
+# Position du sous-titre (Entier)
+#dvbsub-position=8
+# Position X au décodage (Entier)
+#dvbsub-x=-1
+# Position Y au décodage (Entier)
+#dvbsub-y=-1
+# Position X à l'encodage (Entier)
+#sout-dvbsub-x=-1
+# Position Y à l'encodage (Entier)
+#sout-dvbsub-y=-1
+
+[dvdnav] # Entrée DVDnav
+
+# Angle DVD (Entier)
+#dvdnav-angle=1
+# Taille du cache en ms (Entier)
+#dvdnav-caching=300
+# Commencer directement au menu (Booléen)
+#dvdnav-menu=1
+
+[dvdread] # Entrée DVDRead (DVD sans menus)
+
+# Angle DVD (Entier)
+#dvdread-angle=1
+# Taille du cache en ms (Entier)
+#dvdread-caching=300
+# Méthode utilisée par libdvdcss pour le déchiffrement (Chaîne)
+#dvdread-css-method=
+
+[equalizer] # Égaliseur 10 bandes
+
+# Préréglage de l’égaliseur (Chaîne)
+#equalizer-preset=flat
+# Gain des différentes bandes (Chaîne)
+#equalizer-bands=
+# Deux passes (Booléen)
+#equalizer-2pass=0
+# Gain global (Flottant)
+#equalizer-preamp=12.000000
+
+[fake] # Décodeur vidéo factice
+
+# Fichier d’image (Chaîne)
+#fake-file=
+# Largeur de la vidéo (Entier)
+fake-width=720
+# Hauteur de la vidéo (Entier)
+fake-height=576
+# Conserver les proportions (Booléen)
+fake-keep-ar=1
+# Étirement du fond d’écran (Chaîne)
+fake-aspect-ratio=4:3
+# Désentrelacer la vidéo (Booléen)
+fake-deinterlace=1
+# Module de désentrelacement (Chaîne)
+#fake-deinterlace-module=deinterlace
+
+[ffmpeg] # Décodeur/encodeur audio/vidéo ffmpeg ((MS)MPEG4,SVQ1,H263,WMV,WMA)
+
+# Rendu direct (Booléen)
+#ffmpeg-dr=1
+# Résilience d’erreur (Entier)
+#ffmpeg-error-resilience=1
+# Contournement de bugs (Entier)
+#ffmpeg-workaround-bugs=1
+# Hâter (Booléen)
+#ffmpeg-hurry-up=0
+# Afficher les vecteurs de déplacement (Entier)
+#ffmpeg-vismv=0
+# Décodage à faible résolution (Entier)
+#ffmpeg-lowres=0
+# Pas de filtre de boucle pour H264 (Entier)
+#ffmpeg-skiploopfilter=0
+# Qualité de post-traitement (Entier)
+#ffmpeg-pp-q=0
+# Chaînes de filtres de post-traitement de ffmpeg (Chaîne)
+#ffmpeg-pp-name=default
+# Masque de déboggage (Entier)
+#ffmpeg-debug=0
+# Niveau de qualité (Chaîne)
+#sout-ffmpeg-hq=simple
+# Ratio d’images clés (Entier)
+sout-ffmpeg-keyint=24
+# Ratio d’images B (Entier)
+#sout-ffmpeg-bframes=0
+# Hâter (Booléen)
+#sout-ffmpeg-hurry-up=0
+# Encodage entrelacé (Booléen)
+#sout-ffmpeg-interlace=0
+# Prédiction de mouvement entrelacé (Booléen)
+sout-ffmpeg-interlace-me=0
+# Tolérance du débit de la vidéo (Entier)
+#sout-ffmpeg-vt=0
+# Pré-prédiction de mouvement (Booléen)
+#sout-ffmpeg-pre-me=0
+# Contrôle strict du débit (Booléen)
+sout-ffmpeg-strict-rc=1
+# Taille du tampon de contrôle du débit (Entier)
+#sout-ffmpeg-rc-buffer-size=1835008
+# Efficacité du contrôle de débit (Flottant)
+#sout-ffmpeg-rc-buffer-aggressivity=1.000000
+# Facteur de quantization I (Flottant)
+#sout-ffmpeg-i-quant-factor=0.000000
+# Résolution de bruit (Entier)
+#sout-ffmpeg-noise-reduction=0
+# Matrice de quantisation MPEG4 (Booléen)
+#sout-ffmpeg-mpeg4-matrix=0
+# Minimum de l’échelle de quantization vidéo (Entier)
+#sout-ffmpeg-qmin=0
+# Maximum de l’échelle de quantization vidéo (Entier)
+#sout-ffmpeg-qmax=0
+# Quantisation treillis (Booléen)
+#sout-ffmpeg-trellis=0
+# Echelle de quantisation fixe (Flottant)
+#sout-ffmpeg-qscale=0.000000
+# Respect strict des standards (Entier)
+#sout-ffmpeg-strict=0
+# Masquage de luminance (Flottant)
+#sout-ffmpeg-lumi-masking=0.000000
+# Masquage d'obscurité (Flottant)
+#sout-ffmpeg-dark-masking=0.000000
+# Masquage de mouvement (Flottant)
+#sout-ffmpeg-p-masking=0.000000
+# Masquage de bordure (Flottant)
+#sout-ffmpeg-border-masking=0.000000
+# Elimination de luminance (Entier)
+#sout-ffmpeg-luma-elim-threshold=0
+# Elimination de chrominance (Entier)
+#sout-ffmpeg-chroma-elim-threshold=0
+
+[freetype] # Moteur de rendu freetype2
+
+# Police (Chaîne)
+#freetype-font=
+# Taille de la police en pixels (Entier)
+freetype-fontsize=22
+# Opacité (Entier)
+#freetype-opacity=255
+# Couleur par défaut du texte (Entier)
+freetype-color=8421376
+# Taille relative (Entier)
+#freetype-rel-fontsize=16
+# Effet de police (Entier)
+#freetype-effect=2
+# Rendu YUVP (Booléen)
+#freetype-yuvp=0
+
+[gestures] # Interface de contrôle par mouvements de souris
+
+# Seuil de mouvement (10-100) (Entier)
+#gestures-threshold=30
+# Bouton de souris (Chaîne)
+#gestures-button=right
+
+[gnutls] # Couche de chiffrement TLS utilisant GnuTLS
+
+# Vérifier la validité des certificats TLS/SSL du serveur (Booléen)
+#tls-check-cert=1
+# Vérifier le nom d’hôte du serveur TLS/SSL ? (Booléen)
+#tls-check-hostname=1
+# Nombre de bits Diffie-Hellman (Entier)
+#gnutls-dh-bits=1024
+# Délai d’expiration pour les sessions TLS reprises (Entier)
+#gnutls-cache-expiration=3600
+# Nombre de sessions TLS (Entier)
+#gnutls-cache-size=64
+
+[goom] # Effet goom
+
+# Largeur de la fenêtre Goom (Entier)
+#goom-width=320
+# Hauteur de la fenêtre Goom (Entier)
+#goom-height=240
+# Vitesse de l’animation Goom (Entier)
+#goom-speed=6
+
+[growl] # Plugin d'annonce Growl
+
+# Serveur Growl (Chaîne)
+#growl-server=127.0.0.1
+# Mot de passe (Chaîne)
+#growl-password=
+# Port UDP (Entier)
+#growl-port=9887
+
+[h264] # Démultiplexeur vidéo H264
+
+# Images par seconde (Flottant)
+#h264-fps=25.000000
+
+[headphone_channel_mixer] # Effet de spatialisation virtuelle pour casque stéréo
+
+# Dimension caractéristique (Entier)
+#headphone-dim=10
+# Compenser le délai (Booléen)
+#headphone-compensate=0
+# Pas de décodage Dolby Surround (Booléen)
+#headphone-dolby=0
+
 [http] # Interface de commande à distance HTTP
 
 # Adresse de l’hôte (Chaîne)
 http-host=:8081
 # Répertoire source (Chaîne)
 http-src=./http-fbx
-# Charset (Chaîne)
+# Encodage (Chaîne)
 http-charset=ISO-8859-1
-# Handlers (Chaîne)
+# Prise en charge d'extensions (Chaîne)
 #http-handlers=
 # Fichier certificat (Chaîne)
 #http-intf-cert=
@@ -889,40 +1025,47 @@ http-charset=ISO-8859-1
 
 # Format de l’image (Chaîne)
 #image-out-format=png
+# Image width (Entier)
+#image-width=-1
+# Image height (Entier)
+#image-height=-1
 # Ratio d’enregistrement (Entier)
 #image-out-ratio=3
 # Préfixe du nom de fichier (Chaîne)
 #image-out-prefix=img
-
-[ipv4] # UDP/IPv4 network abstraction layer
-
-# Interface de sortie multicast (Chaîne)
-#miface-addr=
+# Toujours écrire dans le même fichier (Booléen)
+#image-out-replace=0
 
 [logger] # Module de journalisation dans un fichier
 
-# Nom du fichier de log (Chaîne)
+# Nom du fichier de journal (Chaîne)
 #logfile=
 # Format d’enregistrement (Chaîne)
 #logmode=text
+# Fichier de sortie RRD (Chaîne)
+#rrd-file=
 
 [logo] # Filtre vidéo d’insertion de logo
 
-# Nom du fichier de logo (Chaîne)
+# Nom des fichiers de logo (Chaîne)
 #logo-file=
-# Position X du logo (Entier)
+# Position X (Entier)
 #logo-x=-1
-# Position Y du logo (Entier)
+# Position Y (Entier)
 #logo-y=0
+# Temps de chaque image en ms (Entier)
+#logo-delay=1000
+# Nombre de boucles (Entier)
+#logo-repeat=-1
 # Transparence du logo (Entier)
 #logo-transparency=255
 # Position du logo (Entier)
 #logo-position=6
 
-[marq] # Filtre d’imagette d’affichage de texte
+[marq] # Texte
 
 # Texte (Chaîne)
-#marq-marquee=Marquee
+#marq-marquee=VLC
 # Décalage horizontal (Entier)
 #marq-x=-1
 # Décalage vertical (Entier)
@@ -931,17 +1074,30 @@ http-charset=ISO-8859-1
 #marq-position=5
 # Opacité (Entier)
 #marq-opacity=255
-# Couleur par défaut du texte (Entier)
+# Couleur (Entier)
 #marq-color=16777215
 # Taille de la police en pixels (Entier)
 #marq-size=-1
-# Disparition du texte (Entier)
+# Délai d'expiration (Entier)
 #marq-timeout=0
 
-[mjpeg] # Démultiplexeur de flux vidéo de caméra JPEG
+[mjpeg] # Démultiplexeur MJPEG
 
 # Images par seconde (Flottant)
-#mjpeg-fps=0,000000
+#mjpeg-fps=0.000000
+
+[mkv] # Démultiplexeur de flux Matroska
+
+# Chapitres ordonnés (Booléen)
+#mkv-use-ordered-chapters=1
+# Codecs des chapitres (Booléen)
+#mkv-use-chapter-codec=1
+# Répertoire de préchargement (Booléen)
+#mkv-preload-local-dir=1
+# Déplacements basés sur le pourcentage et non le temps (Booléen)
+#mkv-seek-percent=0
+# Eléments inconnus (Booléen)
+#mkv-use-dummy=0
 
 [mod] # Démultiplexeur MOD (libmodplug)
 
@@ -957,7 +1113,7 @@ http-charset=ISO-8859-1
 #mod-megabass=0
 # Niveau de Méga Bass (Entier)
 #mod-megabass-level=0
-# Fréquence de coupure de Méga Bass (Hz) (Entier)
+# Fréquence de coupure de Méga Bass (Entier)
 #mod-megabass-range=10
 # Effet Surround (Booléen)
 #mod-surround=0
@@ -966,13 +1122,13 @@ http-charset=ISO-8859-1
 # Délai de Surround (ms) (Entier)
 #mod-surround-delay=5
 
-[mosaic] # Mosaic video sub filter
+[mosaic] # Filtre vidéo mosaique
 
-# Niveau alpha (Entier)
+# Transparence (Entier)
 #mosaic-alpha=255
-# Hauteur en pixels (Entier)
+# Hauteur (Entier)
 #mosaic-height=100
-# Largeur en pixels (Entier)
+# Largeur (Entier)
 #mosaic-width=100
 # Alignement de la mosaique (Entier)
 #mosaic-align=5
@@ -980,36 +1136,56 @@ http-charset=ISO-8859-1
 #mosaic-xoffset=0
 # Ordonnée du coin en haut à gauche (Entier)
 #mosaic-yoffset=0
-# Largeur de la frontière verticale en pixels (Entier)
-#mosaic-vborder=0
-# Largeur de la frontière horizontale en pixels (Entier)
-#mosaic-hborder=0
+# Border width (Entier)
+#mosaic-borderw=0
+# Border height (Entier)
+#mosaic-borderh=0
 # Méthode de positionement (Entier)
 #mosaic-position=0
 # Nombre de lignes (Entier)
 #mosaic-rows=2
 # Nombre de colonnes (Entier)
 #mosaic-cols=2
-# Conserver le format d’écran lors d’un redimensionnement (Booléen)
+# Conserver les proportions (Booléen)
 #mosaic-keep-aspect-ratio=0
 # Conserver la taille originale (Booléen)
 #mosaic-keep-picture=0
-# Ordonner comme une liste d'identifiant(s) d'image séparés par des virgules (Chaîne)
+# Ordre des éléments (Chaîne)
 #mosaic-order=
 # Retard (Entier)
 #mosaic-delay=0
+# Ecran bleu (Booléen)
+#mosaic-bs=0
+# Valeur U de la couleur (Entier)
+#mosaic-bsu=120
+# Valeur V de la couleur (Entier)
+#mosaic-bsv=90
+# Tolérance U (Entier)
+#mosaic-bsut=17
+# Tolérance V (Entier)
+#mosaic-bsvt=17
 
 [motionblur] # Filtre de brouillage de mouvement
 
 # Facteur de brouillage (1-127) (Entier)
 #blur-factor=80
 
-[motiondetect] # Filtre vidéo de détection de mouvement
+[motiondetect] # Filtre de détection de mouvement
 
 # Paramètre d’historique (Entier)
 #motiondetect-history=1
 # Fichier de description (Chaîne)
 #motiondetect-description=motiondetect
+
+[mpc] # Démultiplexeur MPC
+
+# Type de gain (Entier)
+#mpc-replaygain-type=2
+
+[msn] # MSN En cours de lecture
+
+# Format de titre (Chaîne)
+#msn-format={0} - {1}
 
 [mux_asf] # Multiplexeur ASF
 
@@ -1021,14 +1197,14 @@ http-charset=ISO-8859-1
 #sout-asf-copyright=
 # Commentaire (Chaîne)
 #sout-asf-comment=
-# Rang (Chaîne)
+# Note (Chaîne)
 #sout-asf-rating=
 # Taille du paquet (Entier)
 #sout-asf-packet-size=4096
 
 [mux_mp4] # Démultiplexeur MP4/MOV
 
-# Créer des fichiers « Fast start » (Booléen)
+# Créer des fichiers « Fast start » (Booléen)
 #sout-mp4-faststart=1
 
 [mux_mpjpeg] # Multiplexeur M-JPEG
@@ -1045,7 +1221,7 @@ http-charset=ISO-8859-1
 
 [netsync] # Synchronisation réseau
 
-# Agir en tant que maître pour la synchronisation réseau (Booléen)
+# Maître (Booléen)
 #netsync-master=0
 # Adresse IP du client maître (Chaîne)
 #netsync-master-ip=
@@ -1055,7 +1231,7 @@ http-charset=ISO-8859-1
 # Nombre de tampons audio (Entier)
 #norm-buff-size=20
 # Niveau maximal (Flottant)
-#norm-max-level=2,000000
+#norm-max-level=2.000000
 
 [ntservice] # Interface de service Windows NT/2K/XP
 
@@ -1073,41 +1249,82 @@ http-charset=ISO-8859-1
 [opengl] # Sortie vidéo OpenGL
 
 # Vitesse de rotation du cube OpenGL (Flottant)
-#opengl-cube-speed=2,000000
-# Choisir un effet (Chaîne)
+#opengl-cube-speed=2.000000
+# Effet (Chaîne)
 #opengl-effect=none
 
-[osdmenu] # On Screen Display menu subfilter
+[osdmenu] # Menu à l’écran (OSD)
 
-# X coordinate of the OSD menu (Entier)
+# Position X (Entier)
 #osdmenu-x=-1
-# Y coordinate of the OSD menu (Entier)
+# Position Y (Entier)
 #osdmenu-y=-1
-# OSD menu position (Entier)
+# Position du menu (Entier)
 #osdmenu-position=8
-# OSD menu configuration file (Chaîne)
+# Fichier de configuration (Chaîne)
 #osdmenu-file=osdmenu/default.cfg
-# Path to OSD menu images (Chaîne)
+# Chemin des images du menu OSD (Chaîne)
 #osdmenu-file-path=
-# Timeout of OSD menu (Entier)
+# Disparition du menu (Entier)
 #osdmenu-timeout=15
-# Update speed of OSD menu (Entier)
+# Intervalle de mise à jour du menu (Entier)
 #osdmenu-update=0
 
 [packetizer_mpegvideo] # Empaqueteur vidéo MPEG-I/II
 
-# Sync on intraframe (Booléen)
+# Synchroniser sur une image interne (Booléen)
 #packetizer-mpegvideo-sync-iframe=0
 
-[playlist] # Ouvrir une ancienne liste de lecture
+[param_eq] # Égaliseur paramétrique
 
-# Auto start (Booléen)
+# Fréquence basse (Hz) (Flottant)
+#param-eq-lowf=100.000000
+# Gain de la fréquence basse (dB) (Flottant)
+#param-eq-lowgain=0.000000
+# Fréquence haute (Hz) (Flottant)
+#param-eq-highf=10000.000000
+# Gain de la fréquence haute (dB) (Flottant)
+#param-eq-highgain=0.000000
+# Fréquence 1 (Hz) (Flottant)
+#param-eq-f1=300.000000
+# Gain de la fréquence 1 (dB) (Flottant)
+#param-eq-gain1=0.000000
+# Q de la fréquence 1 (Flottant)
+#param-eq-q1=3.000000
+# Fréquence 2 (Hz) (Flottant)
+#param-eq-f2=1000.000000
+# Gain de la fréquence 2 (dB) (Flottant)
+#param-eq-gain2=0.000000
+# Q de la fréquence 2 (Flottant)
+#param-eq-q2=3.000000
+# Fréquence 3 (Hz) (Flottant)
+#param-eq-f3=3000.000000
+# Gain de la fréquence 3 (dB) (Flottant)
+#param-eq-gain3=0.000000
+# Q de la fréquence 3 (Flottant)
+#param-eq-q3=3.000000
+
+[playlist] # Liste de lecture
+
+# Lecture automatique (Booléen)
 #playlist-autostart=1
+# Afficher le contenu pour adultes sur shoutcast (Booléen)
+#shoutcast-show-adult=0
 
-[portaudio] # PORTAUDIO audio output
+[podcast] # Podcasts
 
-# P�iph�ique de sortie (Entier)
+# Liste des URLs de podcast (Chaîne)
+#podcast-urls=
+
+[portaudio] # Sortie audio Portaudio
+
+# Périphérique de sortie (Entier)
 #portaudio-device=0
+
+[ps] # Démultiplexeur MPEG-PS
+
+# Trust MPEG timestamps (Booléen)
+#ps-trust-timestamps=1
 
 [rc] # Interface de commande à distance
 
@@ -1122,9 +1339,9 @@ rc-host=127.0.0.1:31186
 # Ne pas ouvrir une interface de commande DOS (Booléen)
 rc-quiet=1
 
-[rss] # RSS feed display sub filter
+[rss] # Incrustation de flux RSS
 
-# RSS feed URLs (Chaîne)
+# URLs des flux (Chaîne)
 #rss-urls=rss
 # Décalage horizontal (Entier)
 #rss-x=-1
@@ -1134,24 +1351,26 @@ rc-quiet=1
 #rss-position=5
 # Opacité (Entier)
 #rss-opacity=255
-# Couleur par défaut du texte (Entier)
+# Couleur (Entier)
 #rss-color=16777215
 # Taille de la police en pixels (Entier)
 #rss-size=-1
-# RSS feed speed (Entier)
+# Vtesse des flux (Entier)
 #rss-speed=100000
-# RSS feed max number of chars displayed (Entier)
+# Longueur maximale (Entier)
 #rss-length=60
-# Number of seconds between each forced refresh of the feeds (Entier)
-#rss-ttl=900
+# Délai de rafraichissement (Entier)
+#rss-ttl=1800
+# Flux d'images (Booléen)
+#rss-images=1
 
 [sap] # Annonces SAP
 
 # Adresse de multicast SAP (Chaîne)
 #sap-addr=
-# Écoute les annonces SAP IPv4 (Booléen)
+# SAP IPv4 (Booléen)
 #sap-ipv4=1
-# Écoute les annonces SAP IPv6 (Booléen)
+# SAP IPv6 (Booléen)
 #sap-ipv6=1
 # Temps d’expiration SAP (en secondes) (Entier)
 #sap-timeout=1800
@@ -1159,36 +1378,25 @@ rc-quiet=1
 #sap-parse=1
 # SAP mode strict (Booléen)
 #sap-strict=0
-# Utiliser le cache SAP (Booléen)
-#sap-cache=0
+# Permettre le décalage temporel ? (Booléen)
+#sap-timeshift=0
 
 [screen] # Module de capture d’écran
 
 # Taille du cache en ms (Entier)
 #screen-caching=300
 # Débit d’images (Flottant)
-#screen-fps=1,000000
+#screen-fps=1.000000
 # Taille des fragments capturés (Entier)
 #screen-fragment-size=0
 
 [shout] # Shoutcast
 
-# Nombre maximal de serveurs shoutcast à lister (Entier)
-#shoutcast-limit=1000
 
-[showintf] # Interface permettant d’afficher la GUI
+[showintf] # Afficher l’interface avec la souris
 
 # Seuil (Entier)
 #showintf-threshold=10
-
-[skins2] # Interface skinnable
-
-# Dernière skin utilisée (Chaîne)
-#skins2-last=
-# Configuration de la dernière skin utilisée (Chaîne)
-#skins2-config=
-# Active les effets de transparence (Booléen)
-#skins2-transparency=0
 
 [stream_out_bridge] # Flux de sortie de pont
 
@@ -1237,7 +1445,7 @@ rc-quiet=1
 #sout-mosaic-bridge-width=0
 # Hauteur de la vidéo (Entier)
 #sout-mosaic-bridge-height=0
-# Sample aspect ratio (Chaîne)
+# Format d’écran de la source (Chaîne)
 #sout-mosaic-bridge-sar=1:1
 
 [stream_out_rtp] # Flux de sortie RTP
@@ -1246,7 +1454,7 @@ rc-quiet=1
 #sout-rtp-dst=
 # SDP (Chaîne)
 #sout-rtp-sdp=
-# Multiplexeur : (Chaîne)
+# Multiplexeur : (Chaîne)
 #sout-rtp-mux=
 # Nom de session (Chaîne)
 #sout-rtp-name=NONE
@@ -1256,14 +1464,16 @@ rc-quiet=1
 #sout-rtp-url=
 # Courriel de session (Chaîne)
 #sout-rtp-email=
-# Port audio (Entier)
-#sout-rtp-port-audio=1234
-# Port vidéo (Entier)
-#sout-rtp-port-video=1236
 # Port (Entier)
-#sout-rtp-port=1238
-# TTL (Entier)
+#sout-rtp-port=1234
+# Port audio (Entier)
+#sout-rtp-port-audio=1230
+# Port vidéo (Entier)
+#sout-rtp-port-video=1232
+# Temps de vie (TTL) (Entier)
 #sout-rtp-ttl=0
+# MP4A LATM (Booléen)
+#sout-rtp-mp4a-latm=0
 
 [stream_out_standard] # Flux de sortie standard
 
@@ -1271,29 +1481,27 @@ rc-quiet=1
 sout-standard-access=udp
 # Multiplexeur de sortie (Chaîne)
 sout-standard-mux=ts
-# URL de sortie (Chaîne)
-sout-standard-url=212.27.38.253:1234
+# Destination (Chaîne)
+sout-standard-dst=212.27.38.253:1234
 # Annonce SAP (Booléen)
 #sout-standard-sap=0
 # Nom de session (Chaîne)
 #sout-standard-name=
 # Nom du groupe de session (Chaîne)
 #sout-standard-group=
-# Annonce SLP (Booléen)
-#sout-standard-slp=0
 
 [stream_out_transcode] # Transcode le flux
 
 # Encodeur vidéo (Chaîne)
 #sout-transcode-venc=
 # Codec vidéo de destination (Chaîne)
-sout-transcode-vcodec=mp2v
+#sout-transcode-vcodec=
 # Débit vidéo (Entier)
-sout-transcode-vb=8500
+sout-transcode-vb=8000
 # Dimensionnement vidéo (Flottant)
-#sout-transcode-scale=1,000000
+#sout-transcode-scale=1.000000
 # Débit d’images vidéo (Flottant)
-sout-transcode-fps=25,000000
+sout-transcode-fps=25.000000
 # Hâter (Booléen)
 #sout-transcode-hurry-up=1
 # Désentrelacer la vidéo (Booléen)
@@ -1304,45 +1512,59 @@ sout-transcode-fps=25,000000
 #sout-transcode-width=0
 # Hauteur de la vidéo (Entier)
 #sout-transcode-height=0
-# Maximum video width (Entier)
+# Largeur maximale de la vidéo (Entier)
 sout-transcode-maxwidth=720
-# Maximum video height (Entier)
+# Hauteur maximale de la vidéo (Entier)
 sout-transcode-maxheight=576
-# Video filter (Chaîne)
+# Filtre vidéo (Chaîne)
 #sout-transcode-vfilter=
-# Coupe supérieure de l’image (Entier)
+# Rognage à droite (Entier)
 #sout-transcode-croptop=0
-# Coupe gauche de l’image (Entier)
+# Rognage à gauche (Entier)
 #sout-transcode-cropleft=0
-# Coupe inférieure de l’image (Entier)
+# Rognage en bas (Entier)
 #sout-transcode-cropbottom=0
-# Coupe droite de l’image (Entier)
+# Rognage à droite (Entier)
 #sout-transcode-cropright=0
+# Bordures en haut (Entier)
+#sout-transcode-paddtop=0
+# Bordure à gauche (Entier)
+#sout-transcode-paddleft=0
+# Bordure en bas (Entier)
+#sout-transcode-paddbottom=0
+# Bordure en haut (Entier)
+#sout-transcode-paddright=0
+# Largeur du canevas (Entier)
+#sout-transcode-canvas-width=0
+# Hauteur du canevas (Entier)
+#sout-transcode-canvas-height=0
+# Format du canevas (Chaîne)
+#sout-transcode-canvas-aspect=
 # Encodeur audio (Chaîne)
 #sout-transcode-aenc=
 # Codec audio de destination (Chaîne)
 #sout-transcode-acodec=
 # Débit audio (Entier)
-#sout-transcode-ab=64000
+sout-transcode-ab=0
 # Canaux audio (Entier)
 #sout-transcode-channels=0
 # Fréquence d’échantillonage audio (Entier)
 #sout-transcode-samplerate=0
 # Synchroniser sur la piste audio (Booléen)
-#sout-transcode-audio-sync=0
+sout-transcode-audio-sync=1
 # Encodeur de sous-titres (Chaîne)
 #sout-transcode-senc=
 # Codec de sous-titres de destination (Chaîne)
 sout-transcode-scodec=dvbs
 # Codec de sous-titres de destination (Booléen)
 sout-transcode-soverlay=1
-# Filtre d’imagettes (Chaîne)
+# Overlays (Chaîne)
 #sout-transcode-sfilter=
-# OSD menu (Booléen)
+# Menu OSD (Booléen)
 #sout-transcode-osd=0
 # Nombre de threads (Entier)
 #sout-transcode-threads=0
-# High priority (Booléen)
+# Priorité élevée (Booléen)
 #sout-transcode-high-priority=0
 
 [subsdec] # Décodeur de sous-titres texte
@@ -1351,28 +1573,32 @@ sout-transcode-soverlay=1
 #subsdec-align=0
 # Encodage des sous-titres texte (Chaîne)
 subsdec-encoding=ISO-8859-1
+# Détection des sous-titres UTF-8 (Booléen)
+#subsdec-autodetect-utf8=1
+# Formatage des sous-titres (Booléen)
+#subsdec-formatted=1
 
-[subtitle] # Démultiplexeur de sous-titres texte
+[subtitle] # Lecteur de sous-titres texte
 
 # Images par seconde (Flottant)
-#sub-fps=0,000000
+#sub-fps=0.000000
 # Retard des sous-titres (Entier)
 #sub-delay=0
-# Subtitles fileformat (Chaîne)
+# Format de sous-titres (Chaîne)
 #sub-type=auto
 
 [svcdsub] # Décodeur de sous-titres Philips OGT (Sous-titres SVCD)
 
-# Si différent de zéro, donne des informations supplémentaires de débogage. (Entier)
+# Enable debug (Entier)
 #svcdsub-debug=0
 
 [telnet] # Interface de commande à distance VLM
 
-# Telnet Interface host (Chaîne)
+# Hôte (Chaîne)
 #telnet-host=
-# Port de l’interface telnet (Entier)
+# Port (Entier)
 #telnet-port=4212
-# Mot de passe pour l’interface telnet (Chaîne)
+# Mot de passe (Chaîne)
 #telnet-password=admin
 
 [theora] # Décodeur vidéo Theora
@@ -1380,7 +1606,7 @@ subsdec-encoding=ISO-8859-1
 # Qualité d’encodage (Entier)
 #sout-theora-quality=2
 
-[time] # Filtre d’imagette affichage d’heure
+[time] # Filtre d'incrustation de l'heure
 
 # Format d’heure (%Y%m%d %H%M%S) (Chaîne)
 #time-format=%Y-%m-%d   %H:%M:%S
@@ -1388,11 +1614,11 @@ subsdec-encoding=ISO-8859-1
 #time-x=-1
 # Décalage vertical (Entier)
 #time-y=0
-# Position dans le temps (Entier)
+# Position du texte (Entier)
 #time-position=9
-# Opacité, 0 à 255 (Entier)
+# Opacité (Entier)
 #time-opacity=255
-# Couleur par défaut du texte (Entier)
+# Couleur (Entier)
 #time-color=16777215
 # Taille de la police en pixels (Entier)
 #time-size=-1
@@ -1407,14 +1633,14 @@ subsdec-encoding=ISO-8859-1
 # PMT supplémentaire (Chaîne)
 #ts-extra-pmt=
 # Sélectionner l’id de l’ES pour le PID (Booléen)
-#ts-es-id-pid=0
+#ts-es-id-pid=1
 # Diffusion UDP rapide (Chaîne)
 #ts-out=
 # MTU pour le mode de sortie (Entier)
 #ts-out-mtu=1500
 # Clé CSA (Chaîne)
 #ts-csa-ck=
-# Packet size in bytes to decrypt (Entier)
+# Taille de paquet à déchiffrer, en octets (Entier)
 #ts-csa-pkt=188
 # Mode silencieux (Booléen)
 #ts-silent=0
@@ -1422,13 +1648,13 @@ subsdec-encoding=ISO-8859-1
 #ts-dump-file=
 # Ajouter (Booléen)
 #ts-dump-append=0
-# Dump buffer size (Entier)
+# Taille du tampon de dump (Entier)
 #ts-dump-size=16384
 
 [twolame] # Encodeur audio libtwolame
 
 # Qualité d’encodage (Flottant)
-#sout-twolame-quality=0,000000
+#sout-twolame-quality=0.000000
 # Mode Stéréo (Entier)
 #sout-twolame-mode=0
 # Mode VBR (débit variable) (Booléen)
@@ -1457,35 +1683,37 @@ subsdec-encoding=ISO-8859-1
 #visual-amp=3
 # Activer les pics (Booléen)
 #visual-peaks=1
-# Enable original graphic spectrum (Booléen)
-#spect-show-original=1
-# Enable base (Booléen)
+# Activer l'analyseur linéaire (Booléen)
+#spect-show-original=0
+# Activer la base (Booléen)
 #spect-show-base=1
-# Base pixel radius (Entier)
-#spect-radius=22
-# Spectral sections (Entier)
-#spect-sections=2
-# V-plane color (Entier)
-#spect-color=16
-# Enable bands (Booléen)
+# Rayon de la base (pixels) (Entier)
+#spect-radius=42
+# Sections spectrales (Entier)
+#spect-sections=3
+# Couleur du plan V (Entier)
+#spect-color=80
+# Activer les bandes (Booléen)
 #spect-show-bands=1
 # Nombre de bandes (Entier)
-#spect-nbbands=80
+#spect-nbbands=32
 # Séparation entre les bandes (Entier)
 #spect-separ=1
 # Amplification (Entier)
-#spect-amp=3
+#spect-amp=8
 # Activer les pics (Booléen)
 #spect-show-peaks=1
-# Peak extra width (Entier)
-#spect-peak-width=1
-# Peak height (Entier)
+# Largeur additionnelle des pics (Entier)
+#spect-peak-width=61
+# Hauteur du pic (Entier)
 #spect-peak-height=1
 
 [vod_rtsp] # Serveur VoD RTSP
 
-# Adresse de l’hôte (Chaîne)
+# Adresse de l’hôte RTSP (Chaîne)
 #rtsp-host=
+# Nombre maximal de connexions. (Entier)
+#rtsp-throttle-users=0
 
 [vorbis] # Décodeur audio Vorbis
 
@@ -1514,59 +1742,137 @@ subsdec-encoding=ISO-8859-1
 # Utiliser une sortie en virgule flottante (Booléen)
 #waveout-float32=1
 
-[wxwidgets] # wxWidgets interface module
+[wxwidgets] # Module d’interface wxWidgets
 
 # Intégrer la vidéo dans l’interface (Booléen)
 #wx-embed=1
-# Affiche la fenêtre des signets (Booléen)
+# Fenêtre des signets (Booléen)
 #wx-bookmarks=0
-# Montrer sur la bare des taches (Booléen)
+# Barre des tâches (Booléen)
 #wx-taskbar=1
+# Interface étendue (Booléen)
+#wx-extended=0
 # Interface minimale (Booléen)
 #wx-minimal=0
 # S’adapter à la vidéo (Booléen)
 #wx-autosize=1
+# Liste de lecture (Entier)
+#wx-playlist-view=0
 # Icône dans la barre système (Booléen)
 #wx-systray=0
-# last config (Chaîne)
-wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
+# Texte sur les boutons de la barre d’outils (Booléen)
+#wx-labels=0
+# Dernière configuration (Chaîne)
+wx-config-last=(-1,0,0,1280,1024)(0,650,21,389,136)(2,88,116,418,587)(6,0,0,-1,150)
 
-[x264] # Encodeur vidéo h264 utilisant la bibliothèque x264
+[x264] # Encodeur vidéo H264 utilisant la bibliothèque x264
 
-# Quantisateur (Entier)
-#sout-x264-qp=0
-# Quantisateur minimal (Entier)
-#sout-x264-qp-min=10
-# Quantisateur maximal (Entier)
-#sout-x264-qp-max=51
-# Activer CABAC (Booléen)
+# Taille maximale du GOP (Entier)
+#sout-x264-keyint=250
+# Taille minimale du GOP (Entier)
+#sout-x264-min-keyint=25
+# Extra I-frames aggressivity (Entier)
+#sout-x264-scenecut=40
+# Images B entre images I et P. (Entier)
+#sout-x264-bframes=0
+# Utilisation adaptative d'images B (Booléen)
+#sout-x264-b-adapt=1
+# Influence (bias) B-frames usage (Entier)
+#sout-x264-b-bias=0
+# Garder des images B en références (Booléen)
+#sout-x264-bpyramid=0
+# CABAC (Booléen)
 #sout-x264-cabac=1
-# Activer le filtre de boucle (Booléen)
-#sout-x264-loopfilter=1
-# Mode analyse (Chaîne)
-#sout-x264-analyse=
-# Tolérance sur le débit (Flottant)
-#sout-x264-tolerance=1,000000
+# Nombre d'images de référence (Entier)
+#sout-x264-ref=1
+# Pas de filtre de boucle (Booléen)
+#sout-x264-nf=0
+# Loop filter AlphaC0 and Beta parameters alpha:beta (Chaîne)
+#sout-x264-deblock=0:0
+# H.264 level (Chaîne)
+#sout-x264-level=5.1
+# Interlaced mode (Booléen)
+#sout-x264-interlaced=0
+# QP (Entier)
+#sout-x264-qp=26
+# VBR par qalité (Entier)
+#sout-x264-crf=0
+# QP minimum (Entier)
+#sout-x264-qpmin=10
+# QP max (Entier)
+#sout-x264-qpmax=51
+# Saut de QP maximum (Entier)
+#sout-x264-qpstep=4
+# Tolérance moyenne sur le débit (Flottant)
+#sout-x264-ratetol=1.000000
 # Débit maximum local (Entier)
 #sout-x264-vbv-maxrate=0
-# Période de moyennage pour le débit maximal (Entier)
+# Buffer VBV (Entier)
 #sout-x264-vbv-bufsize=0
-# Remplissage initial du tampon (Flottant)
-#sout-x264-vbv-init=0,900000
-# Sélectionner l’intervale maximal entre deux images IDR (Entier)
-#sout-x264-keyint=250
-# Sélectionner l'intervalle maximal entre deux images I (images complètement codées). (Entier)
-#sout-x264-keyint-min=0
-# Images B (Entier)
-#sout-x264-bframes=0
-# Pyramide B (Booléen)
-#sout-x264-bpyramid=0
-# Nombre d’images précédentes utilisées pour la prédiction (Entier)
-#sout-x264-frameref=1
-# Détection de changement de scène (Entier)
-#sout-x264-scenecut=40
-# Qualité de raffinement du sous-pixel. (Entier)
-#sout-x264-subpel=5
+# Remplissage initial du buffer VBV (Flottant)
+#sout-x264-vbv-init=0.900000
+# Facteur de QP entre I et P (Flottant)
+#sout-x264-ipratio=1.400000
+# Facteur de QP entre P et B (Flottant)
+#sout-x264-pbratio=1.300000
+# Différence de QP entre chrominance et luminance (Entier)
+#sout-x264-chroma-qp-offset=0
+# Compression dynamique de QP (Flottant)
+#sout-x264-qcomp=0.600000
+# Réduire les fluctuations de QP (Flottant)
+#sout-x264-cplxblur=20.000000
+# Réduire les fluctuations de QP (Flottant)
+#sout-x264-qblur=0.500000
+# Partitions à considérer (Chaîne)
+#sout-x264-partitions=normal
+# Mode de prédiction des vecteurs de mouvement directs (Chaîne)
+#sout-x264-direct=spatial
+# Direct prediction size (Entier)
+#sout-x264-direct-8x8=0
+# Prédiction pondérée pour les images B (Booléen)
+#sout-x264-weightb=0
+# Méthode d'estimation des mouvements (Chaîne)
+#sout-x264-me=hex
+# Distance maximale de recherche (Entier)
+#sout-x264-merange=16
+# Qualité de l'estimation de mouvement sous-pixel et de la décision de partition (Entier)
+#sout-x264-subme=5
+# RD based mode decision for B-frames (Booléen)
+#sout-x264-b-rdo=0
+# Décider des références pour chaque partition (Booléen)
+#sout-x264-mixed-refs=0
+# Chroma in motion estimation (Booléen)
+#sout-x264-chroma-me=1
+# Optimiser les deux vecteurs de mouvement dans les images B (Booléen)
+#sout-x264-bime=0
+# Taille de la transformation spatiale adaptative (Booléen)
+#sout-x264-8x8dct=0
+# Quantisation treillis RD (Entier)
+#sout-x264-trellis=0
+# Détection SKIP précoce sur images P (Booléen)
+#sout-x264-fast-pskip=1
+# Coefficient thresholding on P-frames (Booléen)
+#sout-x264-dct-decimate=1
+# Résolution de bruit (Entier)
+#sout-x264-nr=0
+# Inter luma quantization deadzone (Entier)
+#sout-x264-deadzone-inter=21
+# Intra luma quantization deadzone (Entier)
+#sout-x264-deadzone-intra=11
+# Optimisations CPU (Booléen)
+#sout-x264-asm=1
+# PSNR computation (Booléen)
+#sout-x264-psnr=0
+# SSIM computation (Booléen)
+#sout-x264-ssim=0
+# Quiet mode (Booléen)
+#sout-x264-quiet=0
+# SPS and PPS id numbers (Entier)
+#sout-x264-sps-id=0
+# Access unit delimiters (Booléen)
+#sout-x264-aud=0
+# Statistiques (Booléen)
+#sout-x264-verbose=0
 
 [dshow] # Entrée DirectShow
 
@@ -1576,12 +1882,12 @@ wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
 #dshow-vdev=
 # Nom du périphérique audio (Chaîne)
 #dshow-adev=
-# Résolution (Chaîne)
+# Taille de la vidéo (Chaîne)
 #dshow-size=
-# Format de la chroma de l’entrée vidéo (Chaîne)
+# Chroma vidéo (Chaîne)
 #dshow-chroma=
-# Nombre d’images par seconde de l’entrée vidéo (Flottant)
-#dshow-fps=0,000000
+# Débit d'images par secondes (Flottant)
+#dshow-fps=0.000000
 # Propriétés du périphérique (Booléen)
 #dshow-config=0
 # Propriétés du tuner (Booléen)
@@ -1592,6 +1898,29 @@ wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
 #dshow-tuner-country=0
 # Type d’entrée du tuner (Entier)
 #dshow-tuner-input=0
+# Patte d'entrée vidéo (Entier)
+#dshow-video-input=-1
+# Patte d'entrée audio (Entier)
+#dshow-audio-input=-1
+# Patte de sortie vidéo (Entier)
+#dshow-video-output=-1
+# Patte de sortie audio (Entier)
+#dshow-audio-output=-1
+
+[skins2] # Interface skinnable
+
+# Skin (Chaîne)
+#skins2-last=
+# Configuration de la dernière skin utilisée (Chaîne)
+#skins2-config=
+# Icône dans la barre système (Booléen)
+#skins2-systray=0
+# Montrer VLC sur la barre des tâches (Booléen)
+#skins2-taskbar=1
+# Active les effets de transparence (Booléen)
+#skins2-transparency=0
+# Enable skinned playlist (Booléen)
+#skinned-playlist=1
 
 [vout_directx] # Sortie vidéo DirectX
 
@@ -1603,9 +1932,33 @@ wx-config-last=(-1,0,0,1280,1024)(0,650,21,363,105)
 #directx-3buffering=1
 # Nom du périphérique d’affichage désiré (Chaîne)
 #directx-device=
-# Activer le mode papier peint (Booléen)
+# Activer le mode papier peint  (Booléen)
 #directx-wallpaper=0
 
+[livedotcom] # démultiplexeur live.com (RTSP/RTP/SDP)
+# Utilise le RTP sur RTSP (TCP) (Booléen)
+#rtsp-tcp=0
+# Taille du cache en ms (Entier)
+#rtsp-caching=1200
+# Dialetcte RTSP Kasenna (Booléen)
+#rtsp-kasenna=0
+[stream_out_switcher] # Flux de sortie de vidéo MPEG2
+# Fichiers (Chaîne)
+#sout-switcher-files=
+# Tailles (Chaîne)
+#sout-switcher-sizes=
+# Format d’écran (Chaîne)
+#sout-switcher-aspect-ratio=4:3
+# Port UDP de commande (Entier)
+#sout-switcher-port=5001
+# Commande (Entier)
+#sout-switcher-command=0
+# Taille du GOP (Entier)
+#sout-switcher-gop=8
+# Echelle de quantisateur (Entier)
+#sout-switcher-qscale=5
+# Mute audio (Booléen)
+#sout-switcher-mute-audio=1
 [wxwindows] # Module d’interface wxWindows
 # Intégrer la vidéo dans l’interface (Booléen)
 #wxwin-embed=1

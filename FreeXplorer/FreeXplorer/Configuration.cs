@@ -24,7 +24,8 @@ namespace Wizou.FreeXplorer
         public string AudioLanguage = "fr,en";
         public string SubLanguage = "fr,en";
         public bool ShowVLC = false;
-        public AudioTranscode Transcode = AudioTranscode.MPGA;
+        public AudioTranscode TranscodeAudio = AudioTranscode.MPGA;
+        public VideoTranscode TranscodeVideo = VideoTranscode.MPG2;
         public bool StartMinimized = true;
         public bool MinimizeToTray = true;
         public bool FFMpegInterlace = false;
@@ -66,10 +67,10 @@ namespace Wizou.FreeXplorer
                             case "Transcode":
                                 switch (value.ToUpper())
                                 {
-                                    case "MPGA": Transcode = AudioTranscode.MPGA; break;
-                                    case "A52": Transcode = AudioTranscode.A52; break;
-                                    case "PC": Transcode = AudioTranscode.PC; break;
-                                    default: Transcode = AudioTranscode.None; break;
+                                    case "MPGA": TranscodeAudio = AudioTranscode.MPGA; break;
+                                    case "A52": TranscodeAudio = AudioTranscode.A52; break;
+                                    case "PC": TranscodeAudio = AudioTranscode.PC; break;
+                                    default: TranscodeAudio = AudioTranscode.None; break;
                                 }
                                 break;
                             case "StartMinimized": StartMinimized = (value == "1") || (value == System.Boolean.TrueString); break;
@@ -81,6 +82,13 @@ namespace Wizou.FreeXplorer
                             case "PCControlAllowed": PCControlAllowed = Convert.ToBoolean(value); break;
                             case "LessIconsInExplorer": LessIconsInExplorer = Convert.ToBoolean(value); break;
                             case "BlackBkgnds": BlackBkgnds = Convert.ToBoolean(value); break;
+                            case "TranscodeVideo":
+                                switch (value.ToUpper())
+                                {
+                                    case "MPG2": TranscodeVideo = VideoTranscode.MPG2; break;
+                                    default: TranscodeVideo = VideoTranscode.None; break;
+                                }
+                                break;
                         }
                     } while (reader.Read());
                 }
@@ -108,7 +116,8 @@ namespace Wizou.FreeXplorer
                 writer.WriteElementString("AudioLanguage", AudioLanguage);
                 writer.WriteElementString("SubLanguage", SubLanguage);
                 writer.WriteElementString("ShowVLC", ShowVLC.ToString());
-                writer.WriteElementString("Transcode", Transcode.ToString());
+                writer.WriteElementString("Transcode", TranscodeAudio.ToString());
+                writer.WriteElementString("TranscodeVideo", TranscodeVideo.ToString());
                 writer.WriteElementString("StartMinimized", StartMinimized.ToString());
                 writer.WriteElementString("MinimizeToTray", MinimizeToTray.ToString());
                 writer.WriteElementString("FFMpegInterlace", FFMpegInterlace.ToString());

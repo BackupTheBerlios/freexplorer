@@ -25,4 +25,9 @@ namespace Wizou.VLC
         A52,
         PC
     };
+    public enum VideoTranscode
+    {
+        None,
+        MPG2
+    };
 }

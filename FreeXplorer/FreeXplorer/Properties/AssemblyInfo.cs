@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Olivier Marcoux")]
 [assembly: AssemblyProduct("FreeXplorer")]
-[assembly: AssemblyCopyright("Copyright © Olivier Marcoux 2005-2006")]
+[assembly: AssemblyCopyright("Copyright © Olivier Marcoux 2005-2007")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("1.5.6")]
-[assembly: AssemblyFileVersion("1.5.6")]
+[assembly: AssemblyVersion("1.6")]
+[assembly: AssemblyFileVersion("1.6")]

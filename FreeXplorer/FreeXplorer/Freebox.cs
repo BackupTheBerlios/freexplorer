@@ -347,7 +347,13 @@ namespace Wizou.FreeXplorer
                         param += " - Chapitre " + (vlcCache.Chapter + 1) + "/" + vlcCache.ChapterMax;
                     }
                     else if (!param.Contains("/")) // si ce n'est pas une MRL, c'est un fichier, dans ce cas on garde juste son nom
-                        param = Path.GetFileName(param);
+                        try
+                        {
+                            param = Path.GetFileName(param);
+                        }
+                        catch (ArgumentException)
+                        {
+                        }
                     return param;
 
                 default:

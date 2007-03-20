@@ -129,7 +129,8 @@ namespace Wizou.FreeXplorer
                 {
                     m_vlcApp.RC_host_port = Convert.ToInt32(m_config.VlcPort);
                     m_vlcApp.DVDLetter = m_config.DVDLetter[0];
-                    m_vlcApp.AudioTranscode = m_config.Transcode;
+                    m_vlcApp.AudioTranscode = m_config.TranscodeAudio;
+                    m_vlcApp.VideoTranscode = m_config.TranscodeVideo;
                     m_vlcApp.SetConfig(m_config.VLCPath, m_config.AudioLanguage, m_config.SubLanguage, m_config.FFMpegInterlace, m_config.HalfScale ? 0.1 : 1.0, Convert.ToInt32(m_config.TranscodeVB));
                     m_vlcApp.Start();
                 }

@@ -49,7 +49,8 @@ namespace Wizou.FreeXplorer
             Text = "Debug";
 #endif
             m_fxp = new FreeXplorer();
-
+            LoadConfig();
+            
             if (m_fxp.Configuration.StartMinimized)
             {
                 WindowState = FormWindowState.Minimized;
@@ -106,10 +107,12 @@ namespace Wizou.FreeXplorer
             SubLanguage.Text = config.SubLanguage;
             ShowVLC.Checked = config.ShowVLC;
 
-            TranscodeMPGA.Checked = (config.Transcode == AudioTranscode.MPGA);
-            TranscodeA52.Checked = (config.Transcode == AudioTranscode.A52);
-            TranscodePC.Checked = (config.Transcode == AudioTranscode.PC);
-            TranscodeNone.Checked = (config.Transcode == AudioTranscode.None);
+            TranscodeAudioNone.Checked = (config.TranscodeAudio == AudioTranscode.None);
+            TranscodeAudioPC.Checked = (config.TranscodeAudio == AudioTranscode.PC);
+            TranscodeAudioMPGA.Checked = (config.TranscodeAudio == AudioTranscode.MPGA);
+            TranscodeAudioA52.Checked = (config.TranscodeAudio == AudioTranscode.A52);
+            TranscodeVideoNone.Checked = (config.TranscodeVideo == VideoTranscode.None);
+            TranscodeVideoMPG2.Checked = (config.TranscodeVideo == VideoTranscode.MPG2);
 
             StartMinimized.Checked = config.StartMinimized;
             MinimizeToTray.Checked = config.MinimizeToTray;
@@ -129,7 +132,7 @@ namespace Wizou.FreeXplorer
         {
             Configuration config = m_fxp.Configuration;
 
-            config.VLCPath = VLCPath.Text;
+            //config.VLCPath = VLCPath.Text;
             config.VlcPort = VlcPort.Text;
             config.DVDLetter = DVDLetter.Text;
             config.SoundExts = SoundExts.Text;
@@ -139,10 +142,12 @@ namespace Wizou.FreeXplorer
             config.SubLanguage = SubLanguage.Text;
             config.ShowVLC = ShowVLC.Checked;
 
-            config.Transcode = TranscodeMPGA.Checked ? AudioTranscode.MPGA :
-                               TranscodeA52.Checked ? AudioTranscode.A52 :
-                               TranscodePC.Checked ? AudioTranscode.PC : 
+            config.TranscodeAudio = TranscodeAudioMPGA.Checked ? AudioTranscode.MPGA :
+                               TranscodeAudioA52.Checked ? AudioTranscode.A52 :
+                               TranscodeAudioPC.Checked ? AudioTranscode.PC : 
                                AudioTranscode.None;
+            config.TranscodeVideo = TranscodeVideoMPG2.Checked ? VideoTranscode.MPG2 :
+                               VideoTranscode.None;
 
             config.StartMinimized = StartMinimized.Checked;
             config.MinimizeToTray = MinimizeToTray.Checked;
